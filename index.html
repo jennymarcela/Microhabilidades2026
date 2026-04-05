@@ -223,7 +223,7 @@
         <h1>Microhabilidades 2026</h1>
         <p>Segundo Grado · I Trimestre · Evergreen School</p>
       </div>
-      <div class="score-pill">⭐ <span id="score-display">0</span> pts · <span id="done-display">0</span>/288</div>
+      <div class="score-pill">⭐ <span id="score-display">0</span> pts · <span id="done-display">0</span>/296</div>
     </div>
     <nav class="week-nav" id="week-nav"></nav>
   </div>
@@ -502,7 +502,9 @@ const S = {
   materia: 'esp',
   score: 0,
   done: 0,
-  cache: {},   // key: "week-materia" → array of 4 exercises
+  cache: {},          // key: "week-materia" → array of 4 exercises
+  studentName: '',
+  weekData: Object.fromEntries(Array.from({length:9},(_,i)=>[i+1,{pts:0,done:0}])),
 };
 
 function cacheKey() { return `${S.week}-${S.materia}`; }
@@ -847,83 +849,34 @@ const EXERCISES = {
   {tipo:'multiple-choice', micro:'Elementos paisaje', instruccion:'¿Cuál es un elemento artificial (hecho por personas) en el paisaje?', opciones:['Un río','Una carretera','Un bosque'], correcta:'Una carretera', audioTexto:'carretera es un elemento artificial'},
   {tipo:'fill-blank', micro:'Formas de relieve', instruccion:'Una zona plana y extensa de terreno se llama ___', correcta:'planicie', audioTexto:'planicie'},
   {tipo:'true-false', micro:'Representar relieve', instruccion:'¿Se puede representar el relieve del entorno haciendo una maqueta con plastilina?', correcta:true, audioTexto:'maqueta de plastilina para el relieve'},
-  {tipo:'drag-drop', micro:'Paisaje natural y artificial', instruccion:'Clasifica: arrastra los elementos naturales:', piezas:['Río','Puente','Árbol','Edificio'], correcta:['Río','Árbol'], audioTexto:'río y árbol son elementos naturales'}
+  {tipo:'drag-drop', micro:'Paisaje natural y artificial', instruccion:'Clasifica: arrastra los elementos naturales:', piezas:['Río','Puente','Árbol','Edificio'], correcta:['Río','Árbol'], audioTexto:'río y árbol son elementos naturales'},
+  {tipo:'multiple-choice', micro:'Natural Resources', instruccion:'Which of these is a NATURAL resource?', opciones:['A plastic bottle','A river','A building'], correcta:'A river', audioTexto:'a river is a natural resource'},
+  {tipo:'true-false', micro:'School Workers', instruccion:'The librarian helps students find and read books in the school library. True or False?', correcta:true, audioTexto:'the librarian helps students find books'}
 ],
 'soc-7': [
   {tipo:'multiple-choice', micro:'Paisaje urbano y rural', instruccion:'¿Cuál es una característica del paisaje rural?', opciones:['Muchos edificios altos','Cultivos y animales de granja','Autopistas y centros comerciales'], correcta:'Cultivos y animales de granja', audioTexto:'cultivos y animales en el paisaje rural'},
   {tipo:'fill-blank', micro:'Problemas ambientales', instruccion:'Cuando las fábricas echan humo al aire, causan ___ del aire.', correcta:'contaminación', audioTexto:'contaminación del aire'},
   {tipo:'true-false', micro:'Cuidar el ambiente', instruccion:'¿Plantar árboles y no botar basura ayuda a proteger el medio ambiente?', correcta:true, audioTexto:'plantar árboles protege el ambiente'},
-  {tipo:'drag-drop', micro:'Acciones ambientales', instruccion:'Ordena las acciones de mayor a menor impacto positivo en el ambiente:', piezas:['Plantar árboles','Reciclar','Ahorrar agua','No botar basura'], correcta:['Plantar árboles','Ahorrar agua','Reciclar','No botar basura'], audioTexto:'plantar, ahorrar agua, reciclar, no botar basura'}
+  {tipo:'drag-drop', micro:'Acciones ambientales', instruccion:'Ordena las acciones de mayor a menor impacto positivo en el ambiente:', piezas:['Plantar árboles','Reciclar','Ahorrar agua','No botar basura'], correcta:['Plantar árboles','Ahorrar agua','Reciclar','No botar basura'], audioTexto:'plantar, ahorrar agua, reciclar, no botar basura'},
+  {tipo:'multiple-choice', micro:'Classify Resources', instruccion:'How do we classify resources that can run out if we use too many, like oil or coal?', opciones:['Renewable resources','Non-renewable resources','Living resources'], correcta:'Non-renewable resources', audioTexto:'oil and coal are non-renewable resources'},
+  {tipo:'fill-blank', micro:'School Workers', instruccion:'Complete: "The person who teaches us how to run, jump and play sports at school is the ___ teacher."', correcta:'PE', audioTexto:'the PE teacher teaches sports'}
 ],
 'soc-8': [
   {tipo:'multiple-choice', micro:'Actividades humanas', instruccion:'¿Qué actividad económica es más común en el campo (paisaje rural)?', opciones:['La industria','La agricultura','El comercio en tiendas'], correcta:'La agricultura', audioTexto:'agricultura en el campo'},
   {tipo:'fill-blank', micro:'Problema ambiental', instruccion:'La tala excesiva de árboles se llama ___ y daña el medio ambiente.', correcta:'deforestación', audioTexto:'deforestación'},
   {tipo:'true-false', micro:'Alternativas ambientales', instruccion:'¿El uso de energía solar es una alternativa para proteger el medio ambiente?', correcta:true, audioTexto:'energía solar protege el ambiente'},
-  {tipo:'drag-drop', micro:'Comparar paisajes', instruccion:'Clasifica los elementos: arrastra los que pertenecen al paisaje urbano:', piezas:['Semáforos','Potreros','Rascacielos','Cultivos de maíz'], correcta:['Semáforos','Rascacielos'], audioTexto:'semáforos y rascacielos son del paisaje urbano'}
+  {tipo:'drag-drop', micro:'Comparar paisajes', instruccion:'Clasifica los elementos: arrastra los que pertenecen al paisaje urbano:', piezas:['Semáforos','Potreros','Rascacielos','Cultivos de maíz'], correcta:['Semáforos','Rascacielos'], audioTexto:'semáforos y rascacielos son del paisaje urbano'},
+  {tipo:'drag-drop', micro:'Importance of Resources', instruccion:'Drag to match: why are natural resources important?', piezas:['Water','Trees','We drink it','Give us clean air'], correcta:['Water','We drink it','Trees','Give us clean air'], audioTexto:'water we drink, trees give clean air'},
+  {tipo:'multiple-choice', micro:'School Workers', instruccion:'Who is the person in charge of the whole school, makes important decisions and takes care of everyone?', opciones:['The librarian','The principal','The janitor'], correcta:'The principal', audioTexto:'the principal is in charge of the whole school'}
 ],
 'soc-9': [
   {tipo:'multiple-choice', micro:'Puntos cardinales', instruccion:'¿Cuáles son los cuatro puntos cardinales?', opciones:['Arriba, abajo, derecha, izquierda','Norte, Sur, Este, Oeste','Rojo, azul, verde, amarillo'], correcta:'Norte, Sur, Este, Oeste', audioTexto:'norte, sur, este, oeste'},
   {tipo:'fill-blank', micro:'Orientación', instruccion:'El instrumento que usamos para encontrar el Norte se llama ___', correcta:'brújula', audioTexto:'brújula'},
   {tipo:'true-false', micro:'Localización', instruccion:'¿Se puede usar un mapa para ubicar y localizar diferentes lugares?', correcta:true, audioTexto:'mapa para localizar lugares'},
-  {tipo:'drag-drop', micro:'Puntos cardinales', instruccion:'Ordena los puntos cardinales empezando por el Norte y siguiendo las manecillas del reloj:', piezas:['Sur','Norte','Oeste','Este'], correcta:['Norte','Este','Sur','Oeste'], audioTexto:'norte, este, sur, oeste'}
+  {tipo:'drag-drop', micro:'Puntos cardinales', instruccion:'Ordena los puntos cardinales empezando por el Norte y siguiendo las manecillas del reloj:', piezas:['Sur','Norte','Oeste','Este'], correcta:['Norte','Este','Sur','Oeste'], audioTexto:'norte, este, sur, oeste'},
+  {tipo:'true-false', micro:'Save Resources', instruccion:'Turning off the water while brushing your teeth helps to save a natural resource. True or False?', correcta:true, audioTexto:'turning off water saves a natural resource'},
+  {tipo:'multiple-choice', micro:'School Workers', instruccion:'Which sentence BEST describes the school janitor?', opciones:['She teaches math every day','He keeps the school clean and fixes things that are broken','She helps students choose books'], correcta:'He keeps the school clean and fixes things that are broken', audioTexto:'the janitor keeps the school clean and fixes things'}
 ],
-
-// ──────────────── ARTE Y EXPRESIÓN ────────────────
-'art-1': [
-  {tipo:'multiple-choice', micro:'Colores primarios', instruccion:'¿Cuáles son los tres colores primarios?', opciones:['Verde, naranja, morado','Rojo, azul y amarillo','Rosa, gris y café'], correcta:'Rojo, azul y amarillo', audioTexto:'rojo, azul y amarillo son colores primarios'},
-  {tipo:'fill-blank', micro:'Observar arte', instruccion:'Cuando miro una pintura y describo lo que veo, estoy haciendo una ___ artística.', correcta:'observación', audioTexto:'observación artística'},
-  {tipo:'true-false', micro:'Líneas en el arte', instruccion:'¿Las líneas, formas y colores son elementos básicos del arte visual?', correcta:true, audioTexto:'líneas, formas y colores en el arte'},
-  {tipo:'drag-drop', micro:'Elementos visuales', instruccion:'Ordena los elementos básicos del arte de menor a mayor complejidad:', piezas:['Composición completa','Punto','Línea','Forma'], correcta:['Punto','Línea','Forma','Composición completa'], audioTexto:'punto, línea, forma, composición'}
-],
-'art-2': [
-  {tipo:'multiple-choice', micro:'Colores secundarios', instruccion:'¿Qué color obtienes mezclando rojo y amarillo?', opciones:['Morado','Verde','Naranja'], correcta:'Naranja', audioTexto:'rojo más amarillo igual naranja'},
-  {tipo:'fill-blank', micro:'Mezcla de colores', instruccion:'Mezclando azul y amarillo obtienes el color ___', correcta:'verde', audioTexto:'azul más amarillo igual verde'},
-  {tipo:'true-false', micro:'Colores secundarios', instruccion:'¿El morado se obtiene mezclando rojo y azul?', correcta:true, audioTexto:'rojo más azul igual morado'},
-  {tipo:'drag-drop', micro:'Mezcla colores', instruccion:'Empareja la mezcla de colores con el resultado:', piezas:['Rojo + Azul','Azul + Amarillo','Morado','Verde'], correcta:['Rojo + Azul','Morado','Azul + Amarillo','Verde'], audioTexto:'rojo más azul es morado, azul más amarillo es verde'}
-],
-'art-3': [
-  {tipo:'multiple-choice', micro:'Tipos de líneas', instruccion:'¿Cómo se llama la línea que va de arriba a abajo en forma de Z o W?', opciones:['Curva','Ondulada','Zigzag'], correcta:'Zigzag', audioTexto:'línea en zigzag'},
-  {tipo:'fill-blank', micro:'Líneas en la naturaleza', instruccion:'Las olas del mar tienen una forma de línea ___ (va y viene suavemente).', correcta:'ondulada', audioTexto:'línea ondulada como las olas'},
-  {tipo:'true-false', micro:'Líneas expresivas', instruccion:'¿Las líneas rectas transmiten calma y orden, mientras que las curvas transmiten movimiento?', correcta:true, audioTexto:'líneas rectas y curvas transmiten emociones'},
-  {tipo:'drag-drop', micro:'Tipos de líneas', instruccion:'Clasifica los tipos de líneas en orden de más rígidas a más suaves:', piezas:['Ondulada','Recta','Zigzag','Curva'], correcta:['Recta','Zigzag','Curva','Ondulada'], audioTexto:'recta, zigzag, curva, ondulada'}
-],
-'art-4': [
-  {tipo:'multiple-choice', micro:'Figuras geométricas', instruccion:'¿Qué figura geométrica tiene todos sus lados iguales y cuatro esquinas?', opciones:['Triángulo','Cuadrado','Círculo'], correcta:'Cuadrado', audioTexto:'cuadrado tiene cuatro lados iguales'},
-  {tipo:'fill-blank', micro:'Figuras en el arte', instruccion:'Una figura sin esquinas, perfectamente redonda, se llama ___', correcta:'círculo', audioTexto:'círculo'},
-  {tipo:'true-false', micro:'Arte geométrico', instruccion:'¿Se pueden crear obras de arte usando solo figuras geométricas?', correcta:true, audioTexto:'arte con figuras geométricas'},
-  {tipo:'drag-drop', micro:'Figuras y lados', instruccion:'Ordena las figuras por número de lados (de menor a mayor):', piezas:['Cuadrado','Hexágono','Triángulo','Pentágono'], correcta:['Triángulo','Cuadrado','Pentágono','Hexágono'], audioTexto:'triángulo tres, cuadrado cuatro, pentágono cinco, hexágono seis'}
-],
-'art-5': [
-  {tipo:'multiple-choice', micro:'Texturas', instruccion:'¿Cómo se llama la textura que puedes sentir con los dedos?', opciones:['Visual','Táctil','Auditiva'], correcta:'Táctil', audioTexto:'textura táctil se siente con los dedos'},
-  {tipo:'fill-blank', micro:'Collage', instruccion:'Una obra creada pegando diferentes materiales sobre una superficie se llama ___', correcta:'collage', audioTexto:'collage'},
-  {tipo:'true-false', micro:'Materiales reciclados', instruccion:'¿Se puede crear arte usando materiales reciclados como papel, cartón o tela?', correcta:true, audioTexto:'arte con materiales reciclados'},
-  {tipo:'drag-drop', micro:'Tipos de textura', instruccion:'Clasifica: arrastra los materiales con textura rugosa:', piezas:['Papel de lija','Tela suave','Corteza de árbol','Vidrio liso'], correcta:['Papel de lija','Corteza de árbol'], audioTexto:'papel de lija y corteza son rugosos'}
-],
-'art-6': [
-  {tipo:'multiple-choice', micro:'Ritmo en el arte', instruccion:'¿Qué es un patrón en el arte?', opciones:['Una sola figura sin repetición','Una secuencia de formas o colores que se repite','Un color muy brillante'], correcta:'Una secuencia de formas o colores que se repite', audioTexto:'patrón es una secuencia que se repite'},
-  {tipo:'fill-blank', micro:'Patrón repetitivo', instruccion:'En el patrón: ⭐🔴⭐🔴⭐___ , el siguiente elemento es ___', correcta:'🔴', audioTexto:'estrella círculo rojo, el patrón continúa'},
-  {tipo:'true-false', micro:'Ritmo visual', instruccion:'¿El ritmo en el arte visual se logra repitiendo colores, formas o líneas?', correcta:true, audioTexto:'ritmo con repetición de colores y formas'},
-  {tipo:'drag-drop', micro:'Crear patrón', instruccion:'Ordena los elementos para crear un patrón ABAB:', piezas:['Triángulo','Círculo','Triángulo','Círculo'], correcta:['Triángulo','Círculo','Triángulo','Círculo'], audioTexto:'triángulo, círculo, triángulo, círculo'}
-],
-'art-7': [
-  {tipo:'multiple-choice', micro:'Figura humana', instruccion:'¿Qué parte del cuerpo es más grande en las proporciones básicas del dibujo?', opciones:['La cabeza','El tronco','Los pies'], correcta:'El tronco', audioTexto:'el tronco es la parte más grande del cuerpo'},
-  {tipo:'fill-blank', micro:'Proporciones', instruccion:'Al dibujar una figura humana, debemos respetar las ___ del cuerpo para que se vea natural.', correcta:'proporciones', audioTexto:'proporciones del cuerpo'},
-  {tipo:'true-false', micro:'Figura en movimiento', instruccion:'¿Se puede mostrar que una figura corre cambiando la posición de sus brazos y piernas?', correcta:true, audioTexto:'figura en movimiento'},
-  {tipo:'drag-drop', micro:'Partes del cuerpo', instruccion:'Ordena las partes del cuerpo de arriba hacia abajo:', piezas:['Pies','Cabeza','Cintura','Tronco'], correcta:['Cabeza','Tronco','Cintura','Pies'], audioTexto:'cabeza, tronco, cintura, pies'}
-],
-'art-8': [
-  {tipo:'multiple-choice', micro:'Escultura', instruccion:'¿Cuál es la característica principal de una escultura?', opciones:['Es una imagen plana en papel','Es una obra tridimensional con volumen','Es solo una pintura colorida'], correcta:'Es una obra tridimensional con volumen', audioTexto:'la escultura es tridimensional'},
-  {tipo:'fill-blank', micro:'Materiales 3D', instruccion:'Un material suave que se puede moldear y se usa para crear figuras es la ___', correcta:'arcilla', audioTexto:'arcilla'},
-  {tipo:'true-false', micro:'Obras 3D', instruccion:'¿Una escultura puede verse desde diferentes ángulos, no solo de frente?', correcta:true, audioTexto:'la escultura se ve desde todos los ángulos'},
-  {tipo:'drag-drop', micro:'Pasos escultura', instruccion:'Ordena los pasos para crear una escultura con arcilla:', piezas:['Dar forma final','Elegir qué crear','Modelar la arcilla','Dejar secar'], correcta:['Elegir qué crear','Modelar la arcilla','Dar forma final','Dejar secar'], audioTexto:'elegir, modelar, dar forma, secar'}
-],
-'art-9': [
-  {tipo:'multiple-choice', micro:'Presentar obra', instruccion:'¿Qué incluyes cuando presentas tu obra de arte favorita?', opciones:['Solo el nombre de la obra','El nombre, lo que representa y por qué te gusta','Solo el precio de los materiales'], correcta:'El nombre, lo que representa y por qué te gusta', audioTexto:'nombre, descripción y por qué te gusta'},
-  {tipo:'fill-blank', micro:'Exposición', instruccion:'Una muestra organizada de obras de arte para que otros las vean se llama ___', correcta:'exposición', audioTexto:'exposición de arte'},
-  {tipo:'true-false', micro:'Reflexión artística', instruccion:'¿Mirar y comentar las obras de los compañeros es parte del aprendizaje artístico?', correcta:true, audioTexto:'aprender comentando el arte de otros'},
-  {tipo:'drag-drop', micro:'Organizar exposición', instruccion:'Ordena los pasos para organizar una mini-exposición:', piezas:['Invitar a los visitantes','Seleccionar las obras','Colocar las obras en el espacio','Preparar la descripción de cada obra'], correcta:['Seleccionar las obras','Preparar la descripción de cada obra','Colocar las obras en el espacio','Invitar a los visitantes'], audioTexto:'seleccionar, describir, colocar, invitar'}
-],
-
 // ──────────────── STEAM · CODING ────────────────
 'stm-1': [
   {tipo:'multiple-choice', micro:'Algoritmo', instruccion:'¿Qué es un algoritmo?', opciones:['Un tipo de videojuego','Una serie de pasos ordenados para resolver un problema','Un lenguaje extranjero'], correcta:'Una serie de pasos ordenados para resolver un problema', audioTexto:'algoritmo es una serie de pasos ordenados'},
@@ -1007,8 +960,9 @@ async function renderExercises() {
   const grid = document.getElementById('ex-grid');
   const mat  = MATERIAS.find(m => m.id === S.materia);
 
-  // Show 4 loading cards
-  grid.innerHTML = Array(4).fill(0).map(() => `
+  // Show loading cards (6 for soc weeks 6-9, else 4)
+  const previewCount = (S.materia === 'soc' && S.week >= 6) ? 6 : 4;
+  grid.innerHTML = Array(previewCount).fill(0).map(() => `
     <div class="loading-card">
       <div class="spinner"></div>
       <div class="loading-text">⚡ Cargando misión...</div>
@@ -1222,8 +1176,12 @@ function markCorrect(card) {
 
   S.score += 10;
   S.done  += 1;
+  S.weekData[S.week].pts  += 10;
+  S.weekData[S.week].done += 1;
   document.getElementById('score-display').textContent = S.score;
   document.getElementById('done-display').textContent  = S.done;
+  updateWeekBadge(S.week);
+  saveProgress();
 
   const msgs = ['¡Increíble! 🌟','¡Lo lograste! 🏆','¡Fantástico! 🦄','¡Eres un genio! 🧠','¡Bravo! 🎊','¡Perfecto! ⭐'];
   const icons = ['🌟','🏆','🦄','🎉','🧠','🚀','⭐'];
@@ -1251,11 +1209,19 @@ function initNav() {
   // Week buttons
   const wn = document.getElementById('week-nav');
   for (let i = 1; i <= 9; i++) {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:3px;';
     const b = document.createElement('button');
     b.className = `week-btn${S.week===i?' active':''}`;
     b.textContent = `Semana ${i}`;
     b.onclick = () => { S.week = i; updateUI(); };
-    wn.appendChild(b);
+    const badge = document.createElement('span');
+    badge.id = `wbadge-${i}`;
+    badge.style.cssText = 'font-size:10px;font-weight:800;color:#64748b;white-space:nowrap;min-height:14px;';
+    badge.textContent = '';
+    wrap.appendChild(b);
+    wrap.appendChild(badge);
+    wn.appendChild(wrap);
   }
 
   // Subject buttons
@@ -1289,9 +1255,111 @@ function updateUI() {
 // ═══════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// STUDENT PROFILE — localStorage per name
+// ═══════════════════════════════════════════════════════
+function lsKey(name) { return `mh2026_${name.trim().toLowerCase().replace(/\s+/g,'_')}`; }
+
+function saveProgress() {
+  if (!S.studentName) return;
+  const data = { score: S.score, done: S.done, weekData: S.weekData };
+  localStorage.setItem(lsKey(S.studentName), JSON.stringify(data));
+}
+
+function loadProgress(name) {
+  const raw = localStorage.getItem(lsKey(name));
+  if (!raw) return;
+  try {
+    const data = JSON.parse(raw);
+    S.score    = data.score    || 0;
+    S.done     = data.done     || 0;
+    S.weekData = data.weekData || S.weekData;
+    document.getElementById('score-display').textContent = S.score;
+    document.getElementById('done-display').textContent  = S.done;
+    for (let w = 1; w <= 9; w++) updateWeekBadge(w);
+  } catch(e) {}
+}
+
+function updateWeekBadge(w) {
+  const el = document.getElementById(`wbadge-${w}`);
+  if (!el) return;
+  const d = S.weekData[w];
+  if (d.pts > 0) {
+    el.textContent = `⭐ ${d.pts} pts · ${d.done} ✓`;
+    el.style.color = '#1d4ed8';
+  } else {
+    el.textContent = '';
+  }
+}
+
+function showNameModal() {
+  // Inject styles once
+  if (!document.getElementById('nm-style')) {
+    const st = document.createElement('style');
+    st.id = 'nm-style';
+    st.textContent = `
+      #nm-overlay { position:fixed;inset:0;background:rgba(15,23,42,.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px; }
+      #nm-box { background:white;border-radius:28px;padding:40px 32px;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.25);animation:popIn .25s ease; }
+      #nm-box h2 { font-size:22px;font-weight:900;color:#1e293b;margin-bottom:8px; }
+      #nm-box p  { font-size:14px;color:#64748b;font-weight:600;margin-bottom:24px; }
+      #nm-input  { width:100%;padding:12px 16px;border:2.5px solid #e2e8f0;border-radius:14px;font-family:'Nunito',sans-serif;font-weight:700;font-size:16px;outline:none;margin-bottom:12px;transition:border-color .2s;box-sizing:border-box; }
+      #nm-input:focus { border-color:#3b82f6; }
+      #nm-go { width:100%;background:#3b82f6;color:white;border:none;border-radius:14px;padding:13px;font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;cursor:pointer;transition:background .15s; }
+      #nm-go:hover { background:#1d4ed8; }
+      #nm-profiles { margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center; }
+      .nm-chip { background:#dbeafe;color:#1d4ed8;border:none;border-radius:999px;padding:5px 14px;font-family:'Nunito',sans-serif;font-weight:700;font-size:12px;cursor:pointer; }
+      .nm-chip:hover { background:#bfdbfe; }
+      #nm-emoji { font-size:56px;margin-bottom:12px; }
+    `;
+    document.head.appendChild(st);
+  }
+
+  // Find saved profiles
+  const profiles = [];
+  for (let k in localStorage) {
+    if (k.startsWith('mh2026_')) profiles.push(k.replace('mh2026_','').replace(/_/g,' '));
+  }
+
+  const ov = document.createElement('div');
+  ov.id = 'nm-overlay';
+  ov.innerHTML = `
+    <div id="nm-box">
+      <div id="nm-emoji">🎓</div>
+      <h2>¡Hola, explorador!</h2>
+      <p>Escribe tu nombre para guardar<br>tu progreso y tus puntos 🌟</p>
+      <input id="nm-input" type="text" placeholder="Tu nombre aquí..." maxlength="30" autocomplete="off" />
+      <button id="nm-go" onclick="startSession()">¡Empezar aventura! 🚀</button>
+      ${profiles.length ? `<div id="nm-profiles"><span style="font-size:11px;color:#94a3b8;width:100%;font-weight:700;">O elige tu perfil:</span>${profiles.map(p=>`<button class="nm-chip" onclick="loadProfile('${p}')">${p}</button>`).join('')}</div>` : ''}
+    </div>
+  `;
+  document.body.appendChild(ov);
+
+  const inp = document.getElementById('nm-input');
+  inp.focus();
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') startSession(); });
+}
+
+function startSession() {
+  const inp = document.getElementById('nm-input');
+  const name = (inp.value || '').trim();
+  if (!name) { inp.style.borderColor='#ef4444'; inp.focus(); return; }
+  S.studentName = name;
+  // Update greeting in header
+  const p = document.querySelector('.logo-text p');
+  if (p) p.textContent = `Hola, ${name} · I Trimestre 2026`;
+  document.getElementById('nm-overlay').remove();
+  loadProgress(name);
+}
+
+function loadProfile(name) {
+  document.getElementById('nm-input').value = name;
+  startSession();
+}
+
 window.onload = () => {
   initNav();
   updateUI();
+  showNameModal();
 };
 </script>
 </body>
