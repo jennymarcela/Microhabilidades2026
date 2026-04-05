@@ -505,6 +505,8 @@ const S = {
   cache: {},          // key: "week-materia" → array of 4 exercises
   studentName: '',
   weekData: Object.fromEntries(Array.from({length:9},(_,i)=>[i+1,{pts:0,done:0}])),
+  completed: {},      // key: "materia-week-idx" → { attempts, correcta, tipo }
+  attempts: {},       // key: cardId → count (session, also persisted)
 };
 
 function cacheKey() { return `${S.week}-${S.materia}`; }
@@ -1007,6 +1009,12 @@ async function renderExercises() {
     card._ex = ex;
     card._dropped = [];
     grid.appendChild(card);
+
+    // Restore completed state if this exercise was already done
+    const key = `${S.materia}-${S.week}-${i}`;
+    if (S.completed[key]) {
+      restoreCompletedCard(card, S.completed[key]);
+    }
   });
 }
 
@@ -1056,6 +1064,49 @@ function esc(str) {
 }
 
 // ═══════════════════════════════════════════════════════
+// COMPLETED STATE RESTORATION
+// ═══════════════════════════════════════════════════════
+function restoreCompletedCard(card, data) {
+  const { attempts } = data;
+  const attemptTxt = attempts === 1 ? '¡Al primer intento! 🎯' : `${attempts} intentos`;
+
+  card.classList.add('correct');
+  card.querySelectorAll('button,input').forEach(el => el.disabled = true);
+  card.querySelectorAll('.piece').forEach(p => p.setAttribute('draggable','false'));
+  card.style.opacity = '0.88';
+
+  const az = card.querySelector('.action-zone');
+  if (az) {
+    az.innerHTML = `
+      <div style="text-align:center;padding:6px 0 2px;">
+        <div style="font-size:26px;margin-bottom:3px;">✅</div>
+        <div style="font-size:12px;font-weight:800;color:#059669;margin-bottom:2px;">¡Ya completaste esta misión!</div>
+        <div style="font-size:11px;color:#64748b;font-weight:700;margin-bottom:10px;">${attemptTxt}</div>
+        <button
+          style="background:#f1f5f9;border:2px solid #cbd5e1;border-radius:12px;padding:6px 16px;font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;color:#475569;cursor:pointer;transition:all .15s;"
+          onmouseover="this.style.background='#e2e8f0'"
+          onmouseout="this.style.background='#f1f5f9'"
+          onclick="retryCard(this.closest('.card'))">
+          🔄 Intentar de nuevo
+        </button>
+      </div>`;
+  }
+}
+
+function retryCard(card) {
+  const ex = card._ex;
+  if (!ex) return;
+  card.classList.remove('correct', 'incorrect-flash');
+  card.style.opacity = '1';
+  const az = card.querySelector('.action-zone');
+  if (az) az.innerHTML = buildActionZone(ex, card.id);
+  card._dropped = [];
+  // Start attempt count from where it left off (no bonus for retries)
+  S.attempts[card.id] = S.completed[exKey(card.id)]?.attempts || 0;
+}
+
+
+// ═══════════════════════════════════════════════════════
 // VALIDATORS
 // ═══════════════════════════════════════════════════════
 function checkMC(cardId, val, correct) {
@@ -1070,6 +1121,7 @@ function checkMC(cardId, val, correct) {
     btns.forEach(b => { if (b.textContent.trim().toLowerCase() === correct.toLowerCase().trim()) b.classList.add('opt-correct'); });
     markCorrect(card);
   } else {
+    S.attempts[cardId] = (S.attempts[cardId] || 0) + 1;
     const clicked = [...btns].find(b => b.textContent.trim().toLowerCase() === val.toLowerCase().trim());
     if (clicked) clicked.classList.add('opt-incorrect');
     setTimeout(() => { btns.forEach(b => { b.classList.remove('opt-incorrect'); b.disabled = false; }); }, 900);
@@ -1086,6 +1138,7 @@ function checkFill(cardId, correct) {
   if (val === okVal || val.includes(okVal) || okVal.includes(val) && val.length > 1) {
     markCorrect(card);
   } else {
+    S.attempts[cardId] = (S.attempts[cardId] || 0) + 1;
     inp.classList.add('wrong');
     setTimeout(() => { inp.classList.remove('wrong'); inp.value = ''; inp.focus(); }, 800);
   }
@@ -1097,6 +1150,7 @@ function checkTF(cardId, val, correct) {
   if (val === correct) {
     markCorrect(card);
   } else {
+    S.attempts[cardId] = (S.attempts[cardId] || 0) + 1;
     card.classList.add('incorrect-flash');
     setTimeout(() => card.classList.remove('incorrect-flash'), 400);
     const mat = MATERIAS.find(m => m.id === S.materia);
@@ -1150,6 +1204,7 @@ function dDrop(ev, cardId, correctArr) {
     if (ok) {
       markCorrect(card);
     } else {
+      S.attempts[cardId] = (S.attempts[cardId] || 0) + 1;
       zone.innerHTML = '<span class="dropzone-hint">👆 Arrastra las piezas aquí</span>';
       card._dropped = [];
       pieces.forEach(p => p.classList.remove('used'));
@@ -1164,38 +1219,60 @@ function dDrop(ev, cardId, correctArr) {
 // ═══════════════════════════════════════════════════════
 // SUCCESS
 // ═══════════════════════════════════════════════════════
+function exKey(cardId) {
+  // cardId: "card-week-materia-idx"
+  const p = cardId.replace('card-','').split('-');
+  return `${p[1]}-${p[0]}-${p[2]}`;   // "materia-week-idx"
+}
+
 function markCorrect(card) {
+  const cardId   = card.id;
+  const key      = exKey(cardId);
+  const alreadyDone = !!S.completed[key];
+
+  // Increment attempt count (this correct attempt counts too)
+  S.attempts[cardId] = (S.attempts[cardId] || 0) + 1;
+  const attempts = S.attempts[cardId];
+
+  // Save completion record
+  const ex = card._ex || {};
+  S.completed[key] = { attempts, correcta: ex.correcta || '', tipo: ex.tipo || '' };
+
   card.classList.add('correct');
-  // Disable all interactive elements
   card.querySelectorAll('button,input').forEach(el => el.disabled = true);
   card.querySelectorAll('.piece').forEach(p => p.setAttribute('draggable','false'));
 
-  // Add check
   const az = card.querySelector('.action-zone');
-  if (az) { az.innerHTML = '<div class="check-overlay">🎉 ¡Correcto!</div>'; }
+  const attemptTxt = attempts === 1 ? '¡Al primer intento! 🎯' : `${attempts} intentos`;
+  if (az) {
+    az.innerHTML = `<div class="check-overlay">✅ ¡Correcto! · <span style="font-size:11px;font-weight:700;opacity:.8;">${attemptTxt}</span></div>`;
+  }
 
-  S.score += 10;
-  S.done  += 1;
-  S.weekData[S.week].pts  += 10;
-  S.weekData[S.week].done += 1;
-  document.getElementById('score-display').textContent = S.score;
-  document.getElementById('done-display').textContent  = S.done;
-  updateWeekBadge(S.week);
+  // Only add points & update counters if first time
+  if (!alreadyDone) {
+    S.score += 10;
+    S.done  += 1;
+    S.weekData[S.week].pts  += 10;
+    S.weekData[S.week].done += 1;
+    document.getElementById('score-display').textContent = S.score;
+    document.getElementById('done-display').textContent  = S.done;
+    updateWeekBadge(S.week);
+  }
+
   saveProgress();
 
-  const msgs = ['¡Increíble! 🌟','¡Lo lograste! 🏆','¡Fantástico! 🦄','¡Eres un genio! 🧠','¡Bravo! 🎊','¡Perfecto! ⭐'];
-  const icons = ['🌟','🏆','🦄','🎉','🧠','🚀','⭐'];
-  const msg  = msgs[Math.floor(Math.random()*msgs.length)];
-  const ico  = icons[Math.floor(Math.random()*icons.length)];
-
-  document.getElementById('m-icon').textContent  = ico;
-  document.getElementById('m-title').textContent = msg;
-  document.getElementById('m-msg').textContent   = '¡Has completado esta misión correctamente!';
-
-  const mat = MATERIAS.find(m => m.id === S.materia);
-  speak(msg, 'es-ES');
-
-  document.getElementById('modal').classList.add('show');
+  // Only show celebration modal on first completion
+  if (!alreadyDone) {
+    const msgs = ['¡Increíble! 🌟','¡Lo lograste! 🏆','¡Fantástico! 🦄','¡Eres un genio! 🧠','¡Bravo! 🎊','¡Perfecto! ⭐'];
+    const icons = ['🌟','🏆','🦄','🎉','🧠','🚀','⭐'];
+    const msg = msgs[Math.floor(Math.random()*msgs.length)];
+    const ico = icons[Math.floor(Math.random()*icons.length)];
+    document.getElementById('m-icon').textContent  = ico;
+    document.getElementById('m-title').textContent = msg;
+    document.getElementById('m-msg').textContent   = `¡Misión completada! ${attemptTxt}`;
+    speak(msg, 'es-ES');
+    document.getElementById('modal').classList.add('show');
+  }
 }
 
 function closeModal() {
@@ -1262,7 +1339,8 @@ function lsKey(name) { return `mh2026_${name.trim().toLowerCase().replace(/\s+/g
 
 function saveProgress() {
   if (!S.studentName) return;
-  const data = { score: S.score, done: S.done, weekData: S.weekData };
+  const data = { score: S.score, done: S.done, weekData: S.weekData,
+                 completed: S.completed, attempts: S.attempts };
   localStorage.setItem(lsKey(S.studentName), JSON.stringify(data));
 }
 
@@ -1271,9 +1349,11 @@ function loadProgress(name) {
   if (!raw) return;
   try {
     const data = JSON.parse(raw);
-    S.score    = data.score    || 0;
-    S.done     = data.done     || 0;
-    S.weekData = data.weekData || S.weekData;
+    S.score     = data.score     || 0;
+    S.done      = data.done      || 0;
+    S.weekData  = data.weekData  || S.weekData;
+    S.completed = data.completed || {};
+    S.attempts  = data.attempts  || {};
     document.getElementById('score-display').textContent = S.score;
     document.getElementById('done-display').textContent  = S.done;
     for (let w = 1; w <= 9; w++) updateWeekBadge(w);
