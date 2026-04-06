@@ -1324,7 +1324,8 @@ function updateUI() {
 
   const mat = MATERIAS.find(m => m.id === S.materia);
   document.getElementById('main-title').textContent = `${mat.ico} ${mat.nombre}`;
-  document.getElementById('main-sub').textContent   = `Semana ${S.week} · 4 Misiones`;
+  const misionCount = (S.materia === 'soc' && S.week >= 6) ? 6 : 4;
+  document.getElementById('main-sub').textContent   = `Semana ${S.week} · ${misionCount} Misiones`;
 
   renderExercises();
 }
