@@ -223,7 +223,8 @@
         <h1>Microhabilidades 2026</h1>
         <p>Segundo Grado · I Trimestre · Evergreen School</p>
       </div>
-      <div class="score-pill">⭐ <span id="score-display">0</span> pts · <span id="done-display">0</span>/296</div>
+      <!-- ACTUALIZADO EL TOTAL DE MISIONES A 304 -->
+      <div class="score-pill">⭐ <span id="score-display">0</span> pts · <span id="done-display">0</span>/304</div>
     </div>
     <nav class="week-nav" id="week-nav"></nav>
   </div>
@@ -262,251 +263,22 @@
 // ═══════════════════════════════════════════════════════
 // MICROHABILIDADES DATABASE (del PDF oficial)
 // ═══════════════════════════════════════════════════════
+// ¡ACTUALIZADO! Se ha cambiado el idioma (lang) a 'en-US' para Ciencias, Matemáticas, Sociales, Arte y STEAM.
 const MATERIAS = [
   { id:'esp', nombre:'Español',          ico:'📖', lang:'es-ES', color:'#3b82f6', badge:'#dbeafe',badgeText:'#1e40af' },
   { id:'eng', nombre:'English A1',       ico:'🌎', lang:'en-US', color:'#10b981', badge:'#d1fae5',badgeText:'#065f46' },
   { id:'pho', nombre:'Phonics',          ico:'🗣️', lang:'en-US', color:'#8b5cf6', badge:'#ede9fe',badgeText:'#5b21b6' },
-  { id:'cie', nombre:'Ciencias',         ico:'🔬', lang:'es-ES', color:'#14b8a6', badge:'#ccfbf1',badgeText:'#134e4a' },
-  { id:'mat', nombre:'Matemáticas',      ico:'➗', lang:'es-ES', color:'#f59e0b', badge:'#fef3c7',badgeText:'#78350f' },
-  { id:'soc', nombre:'Ciencias Sociales',ico:'🌍', lang:'es-ES', color:'#ec4899', badge:'#fce7f3',badgeText:'#9d174d' },
-  { id:'art', nombre:'Arte y Expresión', ico:'🎨', lang:'es-ES', color:'#f97316', badge:'#ffedd5',badgeText:'#7c2d12' },
-  { id:'stm', nombre:'STEAM · Coding',   ico:'💻', lang:'es-ES', color:'#6366f1', badge:'#e0e7ff',badgeText:'#3730a3' },
+  { id:'cie', nombre:'Science',          ico:'🔬', lang:'en-US', color:'#14b8a6', badge:'#ccfbf1',badgeText:'#134e4a' },
+  { id:'mat', nombre:'Math',             ico:'➗', lang:'en-US', color:'#f59e0b', badge:'#fef3c7',badgeText:'#78350f' },
+  { id:'soc', nombre:'Social Studies',   ico:'🌍', lang:'en-US', color:'#ec4899', badge:'#fce7f3',badgeText:'#9d174d' },
+  { id:'art', nombre:'Art & Expression', ico:'🎨', lang:'en-US', color:'#f97316', badge:'#ffedd5',badgeText:'#7c2d12' },
+  { id:'stm', nombre:'STEAM · Coding',   ico:'💻', lang:'en-US', color:'#6366f1', badge:'#e0e7ff',badgeText:'#3730a3' },
 ];
 
-// Microhabilidades reales de cada semana (fuente: PDF Evergreen School)
-const MH = {
-  esp: {
-    1: ['Leo con fluidez diferentes tipos de textos y recupero la información que contienen.',
-        'Empleo sinónimos y antónimos para enriquecer mis producciones escritas.',
-        'Escribo correctamente palabras con letras v-b y y-ll.',
-        'Empleo de manera adecuada los artículos en concordancia con los sustantivos.',
-        'Uso mayúscula después del punto y en los sustantivos propios.',
-        'Escribo oraciones atendiendo el orden lógico de las palabras.'],
-    2: ['Leo textos cotidianos como avisos y menús, y propongo contenidos.',
-        'Tengo en cuenta el género y número del sustantivo en mis escritos.',
-        'Escribo correctamente palabras con que-qui / gue-gui / güe-güi / ca-co-cu.',
-        'Escribo con letra legible y separo las palabras con espacios.',
-        'Hablo frente a mis compañeros con volumen audible y buena pronunciación.'],
-    3: ['Leo señales del entorno (informativas, preventivas, instructivas) y reconozco su propósito.',
-        'Comprendo el uso de ilustraciones, esquemas y símbolos en textos no verbales.',
-        'Respondo preguntas sobre información explícita en un texto no verbal.',
-        'Indago en fuentes impresas y digitales el significado de palabras desconocidas.'],
-    4: ['Leo etiquetas, recetas y manuales e infiero información.',
-        'Busco información en periódicos y revistas en internet y doy mi opinión.',
-        'Respondo preguntas sobre información explícita en una noticia (qué, cuándo, cómo).',
-        'Infiero el significado de una palabra nueva a partir del contexto.'],
-    5: ['Leo versos y subrayo las palabras que riman.',
-        'Leo en voz alta rimas, poemas y trabalenguas, teniendo en cuenta ritmo y pausas.',
-        'Identifico los versos que componen una estrofa y reconozco los que riman.',
-        'Escribo parejas de versos que riman y compongo una estrofa.'],
-    6: ['Leo un cuento y un poema, los comparo y hallo la diferencia en su intención.',
-        'Selecciono un objeto o animal, lo describo con palabras que riman y escribo un caligrama.',
-        'Escribo rimas con buena ortografía y de forma comprensible.'],
-    7: ['Leo en voz alta narraciones teniendo en cuenta ritmo, pausas y velocidad.',
-        'Anticipo el contenido de narraciones a partir del título y las imágenes.',
-        'Relaciono personajes, tiempo, espacio y acciones para comprender la historia.',
-        'Reconozco el orden lógico de los eventos en las narraciones.'],
-    8: ['Planeo la escritura de un cuento con inicio, nudo y desenlace.',
-        'Organizo la secuencia de eventos en un organizador gráfico.',
-        'Redacto un primer borrador usando conectores temporales (primero, luego, después).'],
-    9: ['Reviso mi texto con el docente y compañeros, y tomo nota de sugerencias.',
-        'Corrijo y reescribo mi texto atendiendo sugerencias y reglas ortográficas.',
-        'Escribo mi texto final con letra legible y lo complemento con imágenes.'],
-  },
-  eng: {
-    1: ['Understanding and following simple classroom instructions using common materials.',
-        'Identifying and naming animals and actions during games and listening tasks.',
-        'Expressing ideas about actions.',
-        'Using learned vocabulary to describe animals and actions with support.'],
-    2: ['Recognizing adjectives, actions, and people by underlining them in short texts.',
-        'Choosing key words from a list to complete sentences about a story.',
-        'Identifying main vocabulary in short readings using colors to classify words.',
-        'Answering simple comprehension questions about characters, places, and objects.'],
-    3: ['Writing short phrases to express personal ideas about days and school subjects.',
-        'Describing pictures using simple sentences about what they see.'],
-    4: ['Numbering pictures in the correct sequence based on the story read in class.',
-        'Matching sentences to images from the reading to show comprehension.',
-        'Using learned vocabulary to present my work to the class.'],
-    5: ['Writing key words to complete phrases from class activities.',
-        'Recognizing classroom actions and routines by demonstrating them during the activity.'],
-    6: ['Identifying nouns (people, places, things) in simple sentences.',
-        'Forming simple sentences using vocabulary learned in class.',
-        'Answering simple questions about familiar topics (objects, emotions, classroom routines).',
-        'Talking about a favorite object or activity using short and clear sentences.'],
-    7: ['Making short descriptions using new vocabulary from the lesson.',
-        'Writing simple phrases to express personal ideas about objects or activities.'],
-    8: ['Following short oral or written instructions to match images with sentences.',
-        'Describing actions by answering "what" questions about what happens in a story.',
-        'Writing short sentences to describe actions or events from the story.',
-        'Expressing personal ideas about what I like or notice in the story.'],
-    9: ['Answering basic questions about short stories, videos, or classroom activities.',
-        'Matching pictures and words by listening carefully to instructions.'],
-  },
-  pho: {
-    1: ['Listening and recognizing the /aɪ/ sound in words like "right", "crocodile", "bye", "fly".',
-        'Identifying the spelling of the /aɪ/ sound in different words reviewed in class.'],
-    2: ['Reading a book and creating a glossary in my notebook to remember key words.',
-        'Answering comprehension questions about vocabulary found in stories I read in class.'],
-    3: ['Recognizing word families associated with new vocabulary with the sound /oʊ/.',
-        'Identifying words with the sound /oʊ/ and distinguishing the spelling rule in each case.'],
-    4: ['Inferring the spelling rule from patterns of word spellings.',
-        'Identifying words with the initial sound /b/, middle sound /æ/ and final sound /t/.'],
-    5: ['Writing and telling short sentences using words that sound similar to learned patterns.',
-        'Identifying words with /b/, /æ/, /t/ sounds and distinguishing spelling rules.'],
-    6: ['Identifying the main idea and supporting details in the assigned book.',
-        'Identifying the differences between British and American sounds: /ɜː/ and /ɝ/.'],
-    7: ['Identifying and understanding new vocabulary words by using context clues or visuals.',
-        'Differentiating words with similar sounds /ph/ and /f/.'],
-    8: ['Answering comprehension questions in written form using complete sentences.',
-        'Identifying the differences between British and American sounds: /eə/ and /ɛr/.'],
-    9: ['Developing and presenting a creative booklet with the vocabulary learned this term.'],
-  },
-  cie: {
-    1: ['Reconozco y aplico las prácticas de seguridad en investigaciones del salón y al aire libre, incluyendo el uso de lentes y lavado de manos.',
-        'Explico la importancia de las prácticas de seguridad para protegerme a mí mismo y a los demás.',
-        'Comprendo cómo usar recursos naturales atendiendo la conservación y reutilización de papel, plástico y metal.'],
-    2: ['Realizo observaciones y describo lo que veo a partir de preguntas de mi docente.',
-        'Formulo preguntas y planeo investigaciones simples para responderlas.',
-        'Clasifico objetos de mi entorno usando criterios de clasificación dados y propios.'],
-    3: ['Represento y registro mis observaciones en gráficas y tablas.',
-        'Interpreto información de mi entorno y la represento haciendo un modelo.',
-        'Comunico mis observaciones y hallazgos a mis compañeros y docente.'],
-    4: ['Reconozco cómo las destrezas de investigación me permiten descubrir información sobre el mundo.',
-        'Participo en prácticas que requieren observar, clasificar, comparar, predecir y medir.',
-        'Demuestro interés en el uso de las destrezas de investigación para hallar respuestas.'],
-    5: ['Uso instrumentos de medición siguiendo pautas y procedimientos establecidos.',
-        'Reúno información usando balanza, recipientes volumétricos, termómetro y cinta métrica.',
-        'Interpreto la información de mis registros para hacer predicciones o sacar conclusiones.'],
-    6: ['Uso instrumentos de medición siguiendo pautas establecidas.',
-        'Realizo observaciones con instrumentos como balanza, termómetro y cinta métrica.',
-        'Interpreto mis registros para hacer predicciones o sacar conclusiones.'],
-    7: ['Planeo y llevo a cabo una investigación para probar una hipótesis.',
-        'Realizo pruebas y formulo conclusiones.',
-        'Comunico los resultados de mis observaciones con números o representaciones gráficas.'],
-    8: ['Observo imágenes y videos de paisajes urbanos y rurales, y comento sus características.',
-        'Comparo y escribo las diferencias entre tipos de paisajes: vereda, conjunto o barrio.',
-        'Identifico problemas ambientales y planteo alternativas para proteger el medio ambiente.'],
-    9: ['Identifico un problema y planeo el diseño de un objeto para solucionarlo.',
-        'Explico el problema y la solución con mis propias palabras.',
-        'Aplico los pasos del diseño para construir el objeto que soluciona el problema.'],
-  },
-  mat: {
-    1: ['Leo cantidades hasta 9999 escritas en palabras o en símbolos numéricos.',
-        'Escribo en palabras cantidades hasta 9999 escritas en símbolos numéricos.',
-        'Represento en unidades el valor de cada posición de una cantidad hasta 9999.',
-        'Descompongo números hasta 9999 en forma de sumas de potencias de 10.',
-        'Escribo el número que corresponde a una suma de potencias de 10 hasta 9999.'],
-    2: ['Comparo y ordeno dos cantidades hasta 9999 usando los símbolos > y <.',
-        'Nombro y escribo la cantidad que sigue y la que antecede a un número hasta 9999.',
-        'Leo cantidades hasta 99999 escritas en palabras o en símbolos numéricos.',
-        'Escribo en palabras cantidades hasta 99999 y represento el valor posicional.'],
-    3: ['Descompongo números hasta 99999 en sumas de potencias de 10.',
-        'Escribo el número que corresponde a una suma de potencias de 10 hasta 99999.',
-        'Comparo y ordeno dos cantidades usando los símbolos > y <.',
-        'Interpreto y resuelvo situaciones que requieren comparación de cantidades de hasta siete cifras.'],
-    4: ['Doy ejemplos de situaciones en las que se debe agregar, quitar o calcular diferencias.',
-        'Represento en forma de sumas o restas situaciones cotidianas.',
-        'Uso estrategias para resolver sumas de forma rápida.',
-        'Resuelvo sumas entre cantidades de cinco cifras sin agrupar.'],
-    5: ['Resuelvo sumas entre cantidades de cinco cifras agrupando con el algoritmo vertical.',
-        'Resuelvo sumas entre dos o más números naturales usando propiedades conmutativa y asociativa.'],
-    6: ['Resuelvo restas entre cantidades de cinco cifras sin desagrupar usando cálculo mental.',
-        'Resuelvo restas entre dos cantidades hasta siete cifras usando el algoritmo vertical y las compruebo con la suma.'],
-    7: ['Escribo si en una situación se debe agregar, agrupar, quitar o hallar la diferencia.',
-        'Identifico los datos relevantes de un problema aditivo y los expreso en forma verbal o escrita.',
-        'Escribo las cantidades y operaciones para resolver un problema aditivo.',
-        'Realizo la adición, sustracción o acción para resolver el problema.',
-        'Doy respuesta verificando que corresponde a la pregunta de la situación.'],
-    8: ['Expreso los significados de recta, semirrecta y segmento con representaciones y ejemplos.',
-        'Expreso los significados de líneas secantes, paralelas y perpendiculares.',
-        'Represento y uso giros en diferentes situaciones y contextos.'],
-    9: ['Expreso los significados de ángulo, ángulo recto, agudo, obtuso y llano.',
-        'Reconozco, caracterizo y dibujo triángulos, cuadriláteros y otros polígonos.',
-        'Creo y represento formas planas usando líneas, ángulos y polígonos.'],
-  },
-  soc: {
-    1: ['Reconozco las dependencias de mi colegio y valoro las personas que trabajan allí.',
-        'Identifico situaciones de maltrato en el entorno escolar y sé a quiénes acudir para pedir ayuda.'],
-    2: ['Participo en la construcción de acuerdos básicos sobre normas para el logro de metas comunes.',
-        'Discuto y planteo alternativas de solución frente a situaciones conflictivas en el colegio.'],
-    3: ['Reconozco el colegio como una organización social a la cual pertenezco.',
-        'Participo en acciones que fomentan una sana convivencia en el colegio.'],
-    4: ['Reconozco el colegio como una organización social y participo en acciones de convivencia.'],
-    5: ['Observo el entorno de mi colegio, la granja, las montañas y el río, y represento con dibujos los elementos del paisaje.',
-        'Describo oralmente las diferentes formas de relieve (montañas, valles) y las represento con plastilina.'],
-    6: ['Observo y represento elementos del paisaje de mi entorno.',
-        'Describo formas de relieve de mi entorno geográfico.'],
-    7: ['Observo imágenes y videos de paisajes urbanos y rurales y comento sus características.',
-        'Identifico y describo problemas ambientales en paisajes que observo y planteo alternativas.'],
-    8: ['Observo imágenes de paisajes urbanos y rurales y comento sus características.',
-        'Identifico y describo problemas ambientales y planteo alternativas para proteger el medio ambiente.'],
-    9: ['Comparo los conceptos de ubicación, orientación y localización con instrumentos como mapas y brújulas.',
-        'Me oriento en el paisaje usando los puntos cardinales y ubico diferentes lugares.'],
-  },
-  art: {
-    1: ['Observo obras de arte y describo los colores, formas y líneas que veo.',
-        'Creo una composición libre usando los colores primarios: rojo, azul y amarillo.'],
-    2: ['Mezclo colores primarios para crear colores secundarios (naranja, verde, morado).',
-        'Dibujo y pinto un paisaje usando colores primarios y secundarios.'],
-    3: ['Identifico las líneas rectas, curvas, zigzag y onduladas en obras de arte y en la naturaleza.',
-        'Uso diferentes tipos de líneas para crear un dibujo expresivo.'],
-    4: ['Reconozco las figuras geométricas básicas (círculo, cuadrado, triángulo, rectángulo) en el arte.',
-        'Creo una composición artística usando figuras geométricas.'],
-    5: ['Exploro diferentes texturas visuales y táctiles en materiales del entorno.',
-        'Creo un collage usando materiales reciclados con distintas texturas.'],
-    6: ['Identifico el ritmo y el patrón en diseños artísticos y decorativos.',
-        'Creo un diseño de patrón repetitivo usando formas y colores.'],
-    7: ['Reconozco la figura humana en el arte y aprendo a dibujar las proporciones básicas del cuerpo.',
-        'Dibujo una figura humana en movimiento expresando una acción.'],
-    8: ['Observo y describo esculturas y obras tridimensionales.',
-        'Creo una forma tridimensional usando arcilla o material reciclado.'],
-    9: ['Presento mi obra de arte favorita del trimestre y explico por qué la elegí.',
-        'Organizo una mini-exposición del trabajo artístico realizado durante el trimestre.'],
-  },
-  stm: {
-    1: ['Identifico qué es un algoritmo: una serie de pasos ordenados para resolver un problema.',
-        'Sigo instrucciones paso a paso para completar una tarea sencilla, como una receta o un juego.',
-        'Creo mis propios algoritmos en papel para actividades cotidianas (cepillarse los dientes, preparar un sándwich).'],
-    2: ['Reconozco los conceptos de secuencia: las instrucciones deben seguir un orden correcto.',
-        'Identifico errores en una secuencia de pasos (depuración o debugging) y los corrijo.',
-        'Programo una pequeña secuencia de movimientos en un robot de papel o en ScratchJr.'],
-    3: ['Comprendo qué es un bucle (loop): repetir una acción varias veces.',
-        'Identifico patrones repetitivos en situaciones cotidianas y los expreso como bucles.',
-        'Uso bucles en ScratchJr para hacer que un personaje repita un movimiento varias veces.'],
-    4: ['Entiendo qué es una condición (si… entonces…) en programación.',
-        'Identifico situaciones cotidianas con condiciones: "Si llueve, tomo el paraguas".',
-        'Programo una condición simple en ScratchJr: si el personaje toca un color, hace una acción.'],
-    5: ['Reconozco qué son los eventos en programación: algo que hace que el programa empiece.',
-        'Identifico eventos en juegos y programas: al presionar un botón, al tocar una tecla.',
-        'Creo un proyecto en ScratchJr que responde a diferentes eventos (tocar, agitar).'],
-    6: ['Comprendo el concepto de variable: un espacio para guardar información que puede cambiar.',
-        'Identifico variables en juegos: puntos, vidas, nivel.',
-        'Uso una variable de contador sencilla en un proyecto de Scratch o en papel.'],
-    7: ['Identifico las partes de un programa: entrada, proceso y salida.',
-        'Diseño el esquema de un mini-programa: qué datos entran, qué sucede y qué se muestra.',
-        'Creo un proyecto creativo en ScratchJr combinando secuencias, bucles y eventos.'],
-    8: ['Comprendo qué significa depurar (debug): encontrar y corregir errores en un programa.',
-        'Identifico y corrijo errores en secuencias de código presentadas en papel o pantalla.',
-        'Pruebo y mejoro mi proyecto detectando qué no funciona como esperaba.'],
-    9: ['Presento el proyecto de programación que desarrollé durante el trimestre.',
-        'Explico con mis palabras qué hace mi programa, cómo lo construí y qué aprendí.',
-        'Reflexiono sobre cómo el pensamiento computacional me ayuda a resolver problemas de la vida real.'],
-  },
-};
-
-// ═══════════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════════
 const S = {
-  week: 1,
-  materia: 'esp',
-  score: 0,
-  done: 0,
-  cache: {},          // key: "week-materia" → array of 4 exercises
-  studentName: '',
+  week: 1, materia: 'esp', score: 0, done: 0, cache: {}, studentName: '',
   weekData: Object.fromEntries(Array.from({length:9},(_,i)=>[i+1,{pts:0,done:0}])),
-  completed: {},      // key: "materia-week-idx" → { attempts, correcta, tipo }
-  attempts: {},       // key: cardId → count (session, also persisted)
+  completed: {}, attempts: {},
 };
 
 function cacheKey() { return `${S.week}-${S.materia}`; }
@@ -517,25 +289,20 @@ function cacheKey() { return `${S.week}-${S.materia}`; }
 function speak(text, lang = 'es-ES') {
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang  = lang;
-  u.rate  = 0.9;
-  u.pitch = 1.05;
-  u.volume= 1.0;
-  // Prefer a kid-friendly voice if available
+  u.lang  = lang; u.rate = 0.9; u.pitch = 1.05; u.volume= 1.0;
   const voices = window.speechSynthesis.getVoices();
   const match = voices.find(v => v.lang.startsWith(lang.split('-')[0]) && !v.name.toLowerCase().includes('compact'));
   if (match) u.voice = match;
   window.speechSynthesis.speak(u);
 }
-// Preload voices
 window.speechSynthesis.onvoiceschanged = () => {};
 
 // ═══════════════════════════════════════════════════════
-// 288 EJERCICIOS PRE-GENERADOS (sin API, sin costo)
-// 8 materias × 9 semanas × 4 ejercicios = 288 misiones
+// EJERCICIOS PRE-GENERADOS 
+// ¡ACTUALIZADO! Todas las materias en inglés (excepto español).
+// Incluye Misiones Especiales de Recuperación para "Antonio" en la Semana 6.
 // ═══════════════════════════════════════════════════════
 const EXERCISES = {
-
 // ──────────────── ESPAÑOL ────────────────
 'esp-1': [
   {tipo:'multiple-choice', micro:'Sinónimos', instruccion:'¿Cuál es un sinónimo de "feliz"?', opciones:['Triste','Contento','Enojado'], correcta:'Contento', audioTexto:'Feliz significa contento'},
@@ -571,11 +338,12 @@ const EXERCISES = {
   {tipo:'multiple-choice', micro:'Cuento vs Poema', instruccion:'¿Cuál es la principal diferencia entre un cuento y un poema?', opciones:['El cuento tiene personajes y el poema tiene versos','Los dos son iguales','El poema es más largo'], correcta:'El cuento tiene personajes y el poema tiene versos', audioTexto:'cuento y poema son diferentes'},
   {tipo:'fill-blank', micro:'Caligrama', instruccion:'Un texto cuya forma dibuja el objeto del que habla se llama ___', correcta:'caligrama', audioTexto:'caligrama'},
   {tipo:'true-false', micro:'Ortografía', instruccion:'¿Se debe escribir con mayúscula la primera palabra después de un punto?', correcta:true, audioTexto:'mayúscula después del punto'},
-  {tipo:'drag-drop', micro:'Rimas ortografía', instruccion:'Ordena los versos para formar una estrofa con sentido:', piezas:['El sol brilla con calor','y el campo tiene color'], correcta:['El sol brilla con calor','y el campo tiene color'], audioTexto:'El sol brilla con calor y el campo tiene color'}
+  {tipo:'drag-drop', micro:'Rimas ortografía', instruccion:'Ordena los versos para formar una estrofa con sentido:', piezas:['El sol brilla con calor','y el campo tiene color'], correcta:['El sol brilla con calor','y el campo tiene color'], audioTexto:'El sol brilla con calor y el campo tiene color'},
+  {tipo:'drag-drop', micro:'Misión Antonio 🚀', instruccion:'¡Capitán Antonio! Arma la rima arrastrando las palabras en el orden correcto:', piezas:['un buen rato','El gato','juega','con el zapato'], correcta:['El gato','juega','un buen rato','con el zapato'], audioTexto:'El gato juega un buen rato con el zapato'}
 ],
 'esp-7': [
   {tipo:'multiple-choice', micro:'Narración', instruccion:'¿Qué elemento NO es parte de una narración?', opciones:['Personajes','Estrofa','Lugar'], correcta:'Estrofa', audioTexto:'elementos de la narración'},
-  {tipo:'fill-blank', micro:'Anticipar contenido', instruccion:'Antes de leer un cuento, ¿qué miramos para anticipar de qué trata?', correcta:'el título y las imágenes', audioTexto:'título e imágenes'},
+  {tipo:'fill-blank', micro:'Anticipar contenido', instruccion:'Antes de leer un cuento, ¿qué miramos para anticipar de qué trata?', correcta:'título', audioTexto:'título'},
   {tipo:'true-false', micro:'Orden eventos', instruccion:'¿En una narración, los eventos deben seguir un orden lógico: inicio, nudo y desenlace?', correcta:true, audioTexto:'inicio nudo desenlace'},
   {tipo:'drag-drop', micro:'Estructura narración', instruccion:'Ordena las partes de la narración:', piezas:['Desenlace','Inicio','Nudo'], correcta:['Inicio','Nudo','Desenlace'], audioTexto:'inicio, nudo y desenlace'}
 ],
@@ -627,7 +395,8 @@ const EXERCISES = {
   {tipo:'multiple-choice', micro:'Nouns', instruccion:'Which word is a NOUN (thing or place)?', opciones:['Run','Beautiful','School'], correcta:'School', audioTexto:'School is a noun'},
   {tipo:'fill-blank', micro:'Simple Sentences', instruccion:'Complete: "My favorite ___ is blue." (color/run/happy)', correcta:'color', audioTexto:'My favorite color is blue'},
   {tipo:'true-false', micro:'Familiar Topics', instruccion:'Can you use "I like..." to talk about your favorite things?', correcta:true, audioTexto:'I like pizza'},
-  {tipo:'drag-drop', micro:'Sentence Building', instruccion:'Build a sentence about a favorite object:', piezas:['My','is','book','favorite'], correcta:['My','favorite','book','is'], audioTexto:'My favorite book is'}
+  {tipo:'drag-drop', micro:'Sentence Building', instruccion:'Build a sentence about a favorite object:', piezas:['My','is','book','favorite'], correcta:['My','favorite','book','is'], audioTexto:'My favorite book is'},
+  {tipo:'multiple-choice', micro:'Antonio\'s Mission 🚀', instruccion:'Super Antonio! Which of these is a NOUN (a person, place, or thing you can touch)?', opciones:['Running','School','Quickly'], correcta:'School', audioTexto:'School is a noun'}
 ],
 'eng-7': [
   {tipo:'multiple-choice', micro:'Descriptions', instruccion:'Which sentence best describes a dog?', opciones:['The dog is big and has four legs','The dog can swim like a fish','The dog is a type of bird'], correcta:'The dog is big and has four legs', audioTexto:'The dog is big and has four legs'},
@@ -668,7 +437,7 @@ const EXERCISES = {
   {tipo:'drag-drop', micro:'Word Families', instruccion:'Drag the words that belong to the /oʊ/ family:', piezas:['snow','go','sit','run'], correcta:['snow','go'], audioTexto:'snow and go have the long o sound'}
 ],
 'pho-4': [
-  {tipo:'multiple-choice', micro:'Spelling Rules', instruccion:'In the word "bat", what is the middle sound?', opciones:['/eɪ/','æ/','iː/'], correcta:'æ/', audioTexto:'bat has the short a sound in the middle'},
+  {tipo:'multiple-choice', micro:'Spelling Rules', instruccion:'In the word "bat", what is the middle sound?', opciones:['/eɪ/','/æ/','/iː/'], correcta:'/æ/', audioTexto:'bat has the short a sound in the middle'},
   {tipo:'fill-blank', micro:'/b/ Sound', instruccion:'Complete the word with the /b/ sound: "___at" (the flying animal)', correcta:'b', audioTexto:'bat'},
   {tipo:'true-false', micro:'CVC Pattern', instruccion:'Does the word "bat" follow the pattern: consonant-vowel-consonant (CVC)?', correcta:true, audioTexto:'bat is consonant vowel consonant'},
   {tipo:'drag-drop', micro:'CVC Words', instruccion:'Build the word BAT in order:', piezas:['t','b','a'], correcta:['b','a','t'], audioTexto:'b - a - t - bat'}
@@ -683,7 +452,8 @@ const EXERCISES = {
   {tipo:'multiple-choice', micro:'Main Idea', instruccion:'What is the "main idea" of a text?', opciones:['A small detail','The most important topic of the whole text','A funny word'], correcta:'The most important topic of the whole text', audioTexto:'main idea is the most important topic'},
   {tipo:'fill-blank', micro:'Supporting Details', instruccion:'The details in a text give more ___ about the main idea.', correcta:'information', audioTexto:'information'},
   {tipo:'true-false', micro:'/ɜː/ Sound', instruccion:'Do the words "bird" and "word" have the same vowel sound /ɜː/?', correcta:true, audioTexto:'bird and word have the same vowel sound'},
-  {tipo:'drag-drop', micro:'British vs American', instruccion:'Match the sound to its example word:', piezas:['British /ɜː/','American /ɝ/','bird','butter'], correcta:['British /ɜː/','bird','American /ɝ/','butter'], audioTexto:'British bird, American butter'}
+  {tipo:'drag-drop', micro:'British vs American', instruccion:'Match the sound to its example word:', piezas:['British /ɜː/','American /ɝ/','bird','butter'], correcta:['British /ɜː/','bird','American /ɝ/','butter'], audioTexto:'British bird, American butter'},
+  {tipo:'fill-blank', micro:'Antonio\'s Mission 🚀', instruccion:'Captain Antonio, complete the word with the /ɜː/ sound (like in bird): "sh___rt" (the clothes you wear on top)', correcta:'i', audioTexto:'shirt'}
 ],
 'pho-7': [
   {tipo:'multiple-choice', micro:'Context Clues', instruccion:'In "The boy was exhausted after the long race," what does exhausted mean?', opciones:['Very excited','Very tired','Very hungry'], correcta:'Very tired', audioTexto:'exhausted means very tired'},
@@ -704,252 +474,313 @@ const EXERCISES = {
   {tipo:'drag-drop', micro:'Booklet Steps', instruccion:'Order the steps to make your vocabulary booklet:', piezas:['Add drawings','Choose your best words','Write definitions','Decorate the cover'], correcta:['Choose your best words','Write definitions','Add drawings','Decorate the cover'], audioTexto:'choose words, write definitions, draw, decorate'}
 ],
 
-// ──────────────── CIENCIAS NATURALES ────────────────
+// ──────────────── SCIENCE (CIE) - English ────────────────
 'cie-1': [
-  {tipo:'multiple-choice', micro:'Seguridad', instruccion:'¿Qué debes usar para proteger tus ojos en un experimento?', opciones:['Guantes gruesos','Lentes de seguridad','Un sombrero'], correcta:'Lentes de seguridad', audioTexto:'lentes de seguridad para los ojos'},
-  {tipo:'fill-blank', micro:'Higiene', instruccion:'Después de tocar materiales en un experimento debes ___ las manos.', correcta:'lavar', audioTexto:'lavar las manos'},
-  {tipo:'true-false', micro:'Recursos naturales', instruccion:'¿Reutilizar papel y plástico ayuda a conservar los recursos naturales?', correcta:true, audioTexto:'reutilizar conserva los recursos'},
-  {tipo:'drag-drop', micro:'Normas de seguridad', instruccion:'Ordena las normas antes de un experimento:', piezas:['Escuchar las instrucciones','Lavar las manos','Ponerse los lentes','Organizar los materiales'], correcta:['Lavar las manos','Ponerse los lentes','Escuchar las instrucciones','Organizar los materiales'], audioTexto:'lavar manos, lentes, instrucciones, materiales'}
+  {tipo:'multiple-choice', micro:'Safety', instruccion:'What should you use to protect your eyes during an experiment?', opciones:['Thick gloves','Safety glasses','A hat'], correcta:'Safety glasses', audioTexto:'safety glasses for your eyes'},
+  {tipo:'fill-blank', micro:'Hygiene', instruccion:'After touching materials in an experiment you must ___ your hands.', correcta:'wash', audioTexto:'wash your hands'},
+  {tipo:'true-false', micro:'Natural Resources', instruccion:'Does reusing paper and plastic help conserve natural resources?', correcta:true, audioTexto:'reusing conserves resources'},
+  {tipo:'drag-drop', micro:'Safety Rules', instruccion:'Order the rules before an experiment:', piezas:['Listen to instructions','Wash hands','Put on glasses','Organize materials'], correcta:['Wash hands','Put on glasses','Listen to instructions','Organize materials'], audioTexto:'wash hands, glasses, instructions, materials'}
 ],
 'cie-2': [
-  {tipo:'multiple-choice', micro:'Observación', instruccion:'Cuando describes lo que ves en un experimento, estás realizando una:', opciones:['Hipótesis','Observación','Conclusión'], correcta:'Observación', audioTexto:'observación científica'},
-  {tipo:'fill-blank', micro:'Clasificar', instruccion:'Cuando agrupamos objetos según sus características, los estamos ___', correcta:'clasificando', audioTexto:'clasificar objetos'},
-  {tipo:'true-false', micro:'Preguntas científicas', instruccion:'¿Una buena pregunta científica puede responderse haciendo una investigación?', correcta:true, audioTexto:'preguntas que se pueden investigar'},
-  {tipo:'drag-drop', micro:'Pasos investigación', instruccion:'Ordena los pasos de una investigación simple:', piezas:['Sacar conclusión','Hacer una pregunta','Observar y registrar','Planear el experimento'], correcta:['Hacer una pregunta','Planear el experimento','Observar y registrar','Sacar conclusión'], audioTexto:'pregunta, planear, observar, conclusión'}
+  {tipo:'multiple-choice', micro:'Observation', instruccion:'When you describe what you see in an experiment, you are making an:', opciones:['Hypothesis','Observation','Conclusion'], correcta:'Observation', audioTexto:'scientific observation'},
+  {tipo:'fill-blank', micro:'Classify', instruccion:'When we group objects based on their characteristics, we are ___ them.', correcta:'classifying', audioTexto:'classifying objects'},
+  {tipo:'true-false', micro:'Scientific Questions', instruccion:'Can a good scientific question be answered by doing an investigation?', correcta:true, audioTexto:'questions that can be investigated'},
+  {tipo:'drag-drop', micro:'Investigation Steps', instruccion:'Order the steps of a simple investigation:', piezas:['Draw a conclusion','Ask a question','Observe and record','Plan the experiment'], correcta:['Ask a question','Plan the experiment','Observe and record','Draw a conclusion'], audioTexto:'question, plan, observe, conclusion'}
 ],
 'cie-3': [
-  {tipo:'multiple-choice', micro:'Registrar datos', instruccion:'¿En qué herramienta puedes organizar y comparar datos de un experimento?', opciones:['Una canción','Una tabla o gráfica','Un cuento'], correcta:'Una tabla o gráfica', audioTexto:'tabla o gráfica para datos'},
-  {tipo:'fill-blank', micro:'Modelo', instruccion:'Una representación simplificada de algo real para estudiarlo se llama ___', correcta:'modelo', audioTexto:'modelo científico'},
-  {tipo:'true-false', micro:'Comunicar hallazgos', instruccion:'¿Es importante comunicar tus hallazgos a tus compañeros y docente?', correcta:true, audioTexto:'comunicar hallazgos'},
-  {tipo:'drag-drop', micro:'Interpretar datos', instruccion:'Ordena lo que haces con la información de un experimento:', piezas:['Comunicar resultados','Registrar los datos','Interpretar la información','Observar'], correcta:['Observar','Registrar los datos','Interpretar la información','Comunicar resultados'], audioTexto:'observar, registrar, interpretar, comunicar'}
+  {tipo:'multiple-choice', micro:'Record Data', instruccion:'Which tool can you use to organize and compare data from an experiment?', opciones:['A song','A table or graph','A story'], correcta:'A table or graph', audioTexto:'table or graph for data'},
+  {tipo:'fill-blank', micro:'Model', instruccion:'A simplified representation of something real used for studying is called a ___', correcta:'model', audioTexto:'scientific model'},
+  {tipo:'true-false', micro:'Communicate', instruccion:'Is it important to communicate your findings to your classmates and teacher?', correcta:true, audioTexto:'communicate findings'},
+  {tipo:'drag-drop', micro:'Interpret Data', instruccion:'Order what you do with information from an experiment:', piezas:['Communicate results','Record data','Interpret information','Observe'], correcta:['Observe','Record data','Interpret information','Communicate results'], audioTexto:'observe, record, interpret, communicate'}
 ],
 'cie-4': [
-  {tipo:'multiple-choice', micro:'Destrezas científicas', instruccion:'¿Cuál de estas es una destreza de investigación científica?', opciones:['Cantar','Predecir','Dibujar flores'], correcta:'Predecir', audioTexto:'predecir es una destreza científica'},
-  {tipo:'fill-blank', micro:'Hipótesis', instruccion:'Una ___ es una respuesta posible a una pregunta científica, que debemos comprobar.', correcta:'hipótesis', audioTexto:'hipótesis'},
-  {tipo:'true-false', micro:'Medir', instruccion:'¿Medir con exactitud es una destreza importante en ciencias?', correcta:true, audioTexto:'medir con exactitud'},
-  {tipo:'drag-drop', micro:'Destrezas', instruccion:'Ordena las destrezas de investigación del primer paso al último:', piezas:['Comunicar','Observar','Formular hipótesis','Experimentar'], correcta:['Observar','Formular hipótesis','Experimentar','Comunicar'], audioTexto:'observar, hipótesis, experimentar, comunicar'}
+  {tipo:'multiple-choice', micro:'Scientific Skills', instruccion:'Which of these is a scientific investigation skill?', opciones:['Singing','Predicting','Drawing flowers'], correcta:'Predicting', audioTexto:'predicting is a scientific skill'},
+  {tipo:'fill-blank', micro:'Hypothesis', instruccion:'A ___ is a possible answer to a scientific question that we must test.', correcta:'hypothesis', audioTexto:'hypothesis'},
+  {tipo:'true-false', micro:'Measuring', instruccion:'Is measuring accurately an important skill in science?', correcta:true, audioTexto:'measuring accurately'},
+  {tipo:'drag-drop', micro:'Skills', instruccion:'Order the research skills from first to last step:', piezas:['Communicate','Observe','Formulate hypothesis','Experiment'], correcta:['Observe','Formulate hypothesis','Experiment','Communicate'], audioTexto:'observe, hypothesis, experiment, communicate'}
 ],
 'cie-5': [
-  {tipo:'multiple-choice', micro:'Instrumentos', instruccion:'¿Qué instrumento usas para medir la temperatura?', opciones:['Balanza','Termómetro','Cinta métrica'], correcta:'Termómetro', audioTexto:'el termómetro mide la temperatura'},
-  {tipo:'fill-blank', micro:'Balanza', instruccion:'El instrumento que usamos para medir el peso o masa de un objeto se llama ___', correcta:'balanza', audioTexto:'balanza'},
-  {tipo:'true-false', micro:'Predicciones', instruccion:'¿Puedes usar los datos que recoges en un experimento para hacer predicciones?', correcta:true, audioTexto:'datos para hacer predicciones'},
-  {tipo:'drag-drop', micro:'Instrumentos y usos', instruccion:'Empareja el instrumento con lo que mide:', piezas:['Termómetro','Cinta métrica','Mide temperatura','Mide longitud'], correcta:['Termómetro','Mide temperatura','Cinta métrica','Mide longitud'], audioTexto:'termómetro mide temperatura, cinta métrica mide longitud'}
+  {tipo:'multiple-choice', micro:'Instruments', instruccion:'Which tool do you use to measure temperature?', opciones:['Scale','Thermometer','Measuring tape'], correcta:'Thermometer', audioTexto:'the thermometer measures temperature'},
+  {tipo:'fill-blank', micro:'Scale', instruccion:'The instrument we use to measure the weight or mass of an object is called a ___', correcta:'scale', audioTexto:'scale'},
+  {tipo:'true-false', micro:'Predictions', instruccion:'Can you use the data you collect in an experiment to make predictions?', correcta:true, audioTexto:'data to make predictions'},
+  {tipo:'drag-drop', micro:'Tools & Uses', instruccion:'Match the tool with what it measures:', piezas:['Thermometer','Measuring tape','Measures temperature','Measures length'], correcta:['Thermometer','Measures temperature','Measuring tape','Measures length'], audioTexto:'thermometer measures temperature, measuring tape measures length'}
 ],
 'cie-6': [
-  {tipo:'multiple-choice', micro:'Cinta métrica', instruccion:'¿Qué instrumento usas para medir la longitud de un objeto?', opciones:['Termómetro','Cinta métrica','Balanza'], correcta:'Cinta métrica', audioTexto:'cinta métrica para longitud'},
-  {tipo:'fill-blank', micro:'Conclusión', instruccion:'Al final de un experimento, con los datos recogidos, escribimos una ___', correcta:'conclusión', audioTexto:'conclusión del experimento'},
-  {tipo:'true-false', micro:'Recipientes volumétricos', instruccion:'¿Un recipiente volumétrico sirve para medir la cantidad de líquido?', correcta:true, audioTexto:'recipiente volumétrico para líquidos'},
-  {tipo:'drag-drop', micro:'Orden experimento', instruccion:'Ordena los pasos del uso correcto de un instrumento:', piezas:['Registrar el resultado','Leer la medida','Colocar el objeto','Verificar el instrumento'], correcta:['Verificar el instrumento','Colocar el objeto','Leer la medida','Registrar el resultado'], audioTexto:'verificar, colocar, leer, registrar'}
+  {tipo:'multiple-choice', micro:'Measuring Tape', instruccion:'Which tool do you use to measure the length of an object?', opciones:['Thermometer','Measuring tape','Scale'], correcta:'Measuring tape', audioTexto:'measuring tape for length'},
+  {tipo:'fill-blank', micro:'Conclusion', instruccion:'At the end of an experiment, using the collected data, we write a ___', correcta:'conclusion', audioTexto:'conclusion of the experiment'},
+  {tipo:'true-false', micro:'Volumetric containers', instruccion:'Is a volumetric container used to measure the amount of liquid?', correcta:true, audioTexto:'volumetric container for liquids'},
+  {tipo:'drag-drop', micro:'Experiment order', instruccion:'Order the steps for the correct use of an instrument:', piezas:['Record the result','Read the measurement','Place the object','Check the instrument'], correcta:['Check the instrument','Place the object','Read the measurement','Record the result'], audioTexto:'check, place, read, record'},
+  {tipo:'drag-drop', micro:'Antonio\'s Mission 🚀', instruccion:'Antonio, match the scientific tool to its use!', piezas:['Measure temperature','Measure length','Thermometer','Tape'], correcta:['Thermometer','Measure temperature','Tape','Measure length'], audioTexto:'Thermometer for temperature, tape for length'}
 ],
 'cie-7': [
-  {tipo:'multiple-choice', micro:'Hipótesis', instruccion:'¿Qué haces primero al planear una investigación científica?', opciones:['Sacar conclusiones','Formular una hipótesis','Comunicar resultados'], correcta:'Formular una hipótesis', audioTexto:'formular hipótesis primero'},
-  {tipo:'fill-blank', micro:'Conclusión', instruccion:'Después de hacer pruebas y analizar datos, formulo mis ___', correcta:'conclusiones', audioTexto:'conclusiones'},
-  {tipo:'true-false', micro:'Comunicar resultados', instruccion:'¿Se pueden usar gráficas y números para comunicar los resultados de una investigación?', correcta:true, audioTexto:'gráficas y números para comunicar'},
-  {tipo:'drag-drop', micro:'Investigación', instruccion:'Ordena los pasos de una investigación científica completa:', piezas:['Comunicar resultados','Formular hipótesis','Realizar pruebas','Planear investigación'], correcta:['Formular hipótesis','Planear investigación','Realizar pruebas','Comunicar resultados'], audioTexto:'hipótesis, planear, pruebas, comunicar'}
+  {tipo:'multiple-choice', micro:'Hypothesis', instruccion:'What do you do first when planning a scientific investigation?', opciones:['Draw conclusions','Formulate a hypothesis','Communicate results'], correcta:'Formulate a hypothesis', audioTexto:'formulate hypothesis first'},
+  {tipo:'fill-blank', micro:'Conclusion', instruccion:'After testing and analyzing data, I formulate my ___', correcta:'conclusions', audioTexto:'conclusions'},
+  {tipo:'true-false', micro:'Communicate', instruccion:'Can graphs and numbers be used to communicate the results of an investigation?', correcta:true, audioTexto:'graphs and numbers to communicate'},
+  {tipo:'drag-drop', micro:'Investigation', instruccion:'Order the steps of a complete scientific investigation:', piezas:['Communicate results','Formulate hypothesis','Run tests','Plan investigation'], correcta:['Formulate hypothesis','Plan investigation','Run tests','Communicate results'], audioTexto:'hypothesis, plan, tests, communicate'}
 ],
 'cie-8': [
-  {tipo:'multiple-choice', micro:'Paisajes', instruccion:'¿Cuál es una diferencia entre un paisaje urbano y uno rural?', opciones:['El urbano tiene edificios, el rural tiene campos y naturaleza','Son exactamente iguales','El rural tiene más carros'], correcta:'El urbano tiene edificios, el rural tiene campos y naturaleza', audioTexto:'paisaje urbano con edificios, rural con naturaleza'},
-  {tipo:'fill-blank', micro:'Problemas ambientales', instruccion:'La basura en ríos y lagos es un ejemplo de un ___ ambiental.', correcta:'problema', audioTexto:'problema ambiental'},
-  {tipo:'true-false', micro:'Comparar paisajes', instruccion:'¿Una vereda y un barrio de ciudad son tipos de paisajes diferentes?', correcta:true, audioTexto:'vereda y barrio son paisajes diferentes'},
-  {tipo:'drag-drop', micro:'Tipos de paisaje', instruccion:'Clasifica: arrastra los elementos que pertenecen al paisaje rural:', piezas:['Rascacielos','Cultivos','Semáforos','Ríos y montañas'], correcta:['Cultivos','Ríos y montañas'], audioTexto:'cultivos y ríos pertenecen al paisaje rural'}
+  {tipo:'multiple-choice', micro:'Landscapes', instruccion:'What is a difference between an urban and a rural landscape?', opciones:['Urban has buildings, rural has fields and nature','They are exactly the same','Rural has more cars'], correcta:'Urban has buildings, rural has fields and nature', audioTexto:'urban landscape with buildings, rural with nature'},
+  {tipo:'fill-blank', micro:'Environmental Problems', instruccion:'Trash in rivers and lakes is an example of an environmental ___', correcta:'problem', audioTexto:'environmental problem'},
+  {tipo:'true-false', micro:'Compare landscapes', instruccion:'Are a village and a city neighborhood different types of landscapes?', correcta:true, audioTexto:'village and neighborhood are different landscapes'},
+  {tipo:'drag-drop', micro:'Landscape Types', instruccion:'Classify: drag the elements that belong to the rural landscape:', piezas:['Skyscrapers','Crops','Traffic lights','Rivers and mountains'], correcta:['Crops','Rivers and mountains'], audioTexto:'crops and rivers belong to the rural landscape'}
 ],
 'cie-9': [
-  {tipo:'multiple-choice', micro:'Diseño solución', instruccion:'El primer paso para diseñar un objeto que solucione un problema es:', opciones:['Construirlo de una vez','Identificar claramente el problema','Decorarlo'], correcta:'Identificar claramente el problema', audioTexto:'identificar el problema primero'},
-  {tipo:'fill-blank', micro:'Explicar solución', instruccion:'Cuando explicas el problema y la solución con tus propias palabras, estás ___ tu proyecto.', correcta:'comunicando', audioTexto:'comunicar el proyecto'},
-  {tipo:'true-false', micro:'Pasos de diseño', instruccion:'¿El proceso de diseño incluye identificar el problema, diseñar, construir y mejorar?', correcta:true, audioTexto:'identificar, diseñar, construir, mejorar'},
-  {tipo:'drag-drop', micro:'Proceso de diseño', instruccion:'Ordena los pasos del proceso de diseño:', piezas:['Construir el objeto','Mejorar si es necesario','Identificar el problema','Diseñar la solución'], correcta:['Identificar el problema','Diseñar la solución','Construir el objeto','Mejorar si es necesario'], audioTexto:'identificar, diseñar, construir, mejorar'}
+  {tipo:'multiple-choice', micro:'Design Solution', instruccion:'The first step to design an object that solves a problem is:', opciones:['Build it right away','Clearly identify the problem','Decorate it'], correcta:'Clearly identify the problem', audioTexto:'identify the problem first'},
+  {tipo:'fill-blank', micro:'Explain Solution', instruccion:'When you explain the problem and the solution in your own words, you are ___ your project.', correcta:'communicating', audioTexto:'communicating the project'},
+  {tipo:'true-false', micro:'Design Steps', instruccion:'Does the design process include identifying the problem, designing, building, and improving?', correcta:true, audioTexto:'identify, design, build, improve'},
+  {tipo:'drag-drop', micro:'Design Process', instruccion:'Order the steps of the design process:', piezas:['Build the object','Improve if necessary','Identify the problem','Design the solution'], correcta:['Identify the problem','Design the solution','Build the object','Improve if necessary'], audioTexto:'identify, design, build, improve'}
 ],
 
-// ──────────────── MATEMÁTICAS ────────────────
+// ──────────────── MATH (MAT) - English ────────────────
 'mat-1': [
-  {tipo:'multiple-choice', micro:'Valor posicional', instruccion:'En el número 3.452, ¿qué valor tiene el dígito 3?', opciones:['3 unidades','3 decenas','3 millares'], correcta:'3 millares', audioTexto:'tres mil cuatrocientos cincuenta y dos'},
-  {tipo:'fill-blank', micro:'Leer cantidades', instruccion:'Escribe en palabras el número 205: doscientos ___', correcta:'cinco', audioTexto:'doscientos cinco'},
-  {tipo:'true-false', micro:'Descomponer números', instruccion:'¿El número 1.342 se puede descomponer como 1000 + 300 + 40 + 2?', correcta:true, audioTexto:'mil más trescientos más cuarenta más dos'},
-  {tipo:'drag-drop', micro:'Descomposición', instruccion:'Ordena la descomposición del número 2.531:', piezas:['30','2000','1','500'], correcta:['2000','500','30','1'], audioTexto:'dos mil quinientos treinta y uno'}
+  {tipo:'multiple-choice', micro:'Place Value', instruccion:'In the number 3,452, what value does the digit 3 have?', opciones:['3 units','3 tens','3 thousands'], correcta:'3 thousands', audioTexto:'three thousand four hundred fifty two'},
+  {tipo:'fill-blank', micro:'Read Amounts', instruccion:'Write in words the number 205: two hundred ___', correcta:'five', audioTexto:'two hundred five'},
+  {tipo:'true-false', micro:'Decompose', instruccion:'Can the number 1,342 be decomposed as 1000 + 300 + 40 + 2?', correcta:true, audioTexto:'one thousand plus three hundred plus forty plus two'},
+  {tipo:'drag-drop', micro:'Decomposition', instruccion:'Order the decomposition of the number 2,531:', piezas:['30','2000','1','500'], correcta:['2000','500','30','1'], audioTexto:'two thousand five hundred thirty one'}
 ],
 'mat-2': [
-  {tipo:'multiple-choice', micro:'Comparar cantidades', instruccion:'¿Cuál símbolo va entre 3.450 y 3.540?', opciones:['>','<','='], correcta:'<', audioTexto:'tres mil cuatrocientos cincuenta es menor que tres mil quinientos cuarenta'},
-  {tipo:'fill-blank', micro:'Antecesor/sucesor', instruccion:'El número que sigue al 9.999 es ___', correcta:'10000', audioTexto:'diez mil'},
-  {tipo:'true-false', micro:'Ordenar cantidades', instruccion:'¿El número 75.400 es mayor que 74.500?', correcta:true, audioTexto:'setenta y cinco mil cuatrocientos es mayor'},
-  {tipo:'drag-drop', micro:'Orden mayor a menor', instruccion:'Ordena de mayor a menor:', piezas:['3.200','9.800','5.400','1.100'], correcta:['9.800','5.400','3.200','1.100'], audioTexto:'nueve mil ochocientos, cinco mil cuatrocientos, tres mil doscientos, mil cien'}
+  {tipo:'multiple-choice', micro:'Compare Amounts', instruccion:'Which symbol goes between 3,450 and 3,540?', opciones:['>','<','='], correcta:'<', audioTexto:'three thousand four hundred fifty is less than three thousand five hundred forty'},
+  {tipo:'fill-blank', micro:'Successor', instruccion:'The number that comes after 9,999 is ___', correcta:'10000', audioTexto:'ten thousand'},
+  {tipo:'true-false', micro:'Order Amounts', instruccion:'Is the number 75,400 greater than 74,500?', correcta:true, audioTexto:'seventy five thousand four hundred is greater'},
+  {tipo:'drag-drop', micro:'Order Large to Small', instruccion:'Order from largest to smallest:', piezas:['3,200','9,800','5,400','1,100'], correcta:['9,800','5,400','3,200','1,100'], audioTexto:'nine thousand eight hundred, five thousand four hundred, three thousand two hundred, one thousand one hundred'}
 ],
 'mat-3': [
-  {tipo:'multiple-choice', micro:'Descomponer 99999', instruccion:'¿Cómo se descompone el número 45.203?', opciones:['40000+5000+200+3','4000+5000+200+3','40000+500+20+3'], correcta:'40000+5000+200+3', audioTexto:'cuarenta y cinco mil doscientos tres'},
-  {tipo:'fill-blank', micro:'Comparar 7 cifras', instruccion:'Usa el símbolo correcto: 2.345.678 ___ 2.345.876 (usa < o >)', correcta:'<', audioTexto:'dos millones trescientos cuarenta y cinco mil seiscientos setenta y ocho'},
-  {tipo:'true-false', micro:'Leer 99999', instruccion:'¿El número 99.999 se lee "noventa y nueve mil novecientos noventa y nueve"?', correcta:true, audioTexto:'noventa y nueve mil novecientos noventa y nueve'},
-  {tipo:'drag-drop', micro:'Descomposición 5 cifras', instruccion:'Ordena la descomposición de 32.405:', piezas:['400','5','30000','2000'], correcta:['30000','2000','400','5'], audioTexto:'treinta y dos mil cuatrocientos cinco'}
+  {tipo:'multiple-choice', micro:'Decompose 99999', instruccion:'How do you decompose the number 45,203?', opciones:['40000+5000+200+3','4000+5000+200+3','40000+500+20+3'], correcta:'40000+5000+200+3', audioTexto:'forty five thousand two hundred three'},
+  {tipo:'fill-blank', micro:'Compare 7 digits', instruccion:'Use the correct symbol: 2,345,678 ___ 2,345,876 (use < or >)', correcta:'<', audioTexto:'two million three hundred forty five thousand six hundred seventy eight'},
+  {tipo:'true-false', micro:'Read 99999', instruccion:'Is the number 99,999 read "ninety-nine thousand nine hundred ninety-nine"?', correcta:true, audioTexto:'ninety nine thousand nine hundred ninety nine'},
+  {tipo:'drag-drop', micro:'Decomposition 5 digits', instruccion:'Order the decomposition of 32,405:', piezas:['400','5','30000','2000'], correcta:['30000','2000','400','5'], audioTexto:'thirty two thousand four hundred five'}
 ],
 'mat-4': [
-  {tipo:'multiple-choice', micro:'Situaciones suma', instruccion:'Juan tiene 23 carros. Le regalan 15 más. ¿Qué operación usas?', opciones:['Resta','Multiplicación','Suma'], correcta:'Suma', audioTexto:'veintitres más quince'},
-  {tipo:'fill-blank', micro:'Suma 5 cifras', instruccion:'Resuelve: 12.345 + 21.432 = ___', correcta:'33777', audioTexto:'treinta y tres mil setecientos setenta y siete'},
-  {tipo:'true-false', micro:'Estrategias de suma', instruccion:'¿Puedes sumar 25 + 38 pensando en 25 + 40 - 2 = 63?', correcta:true, audioTexto:'estrategia de suma mental'},
-  {tipo:'drag-drop', micro:'Representar situación', instruccion:'Ordena los pasos para resolver una suma:', piezas:['Escribir la respuesta','Identificar los datos','Escribir la operación','Calcular el resultado'], correcta:['Identificar los datos','Escribir la operación','Calcular el resultado','Escribir la respuesta'], audioTexto:'identificar, operación, calcular, respuesta'}
+  {tipo:'multiple-choice', micro:'Addition Scenarios', instruccion:'Juan has 23 cars. He is given 15 more. What operation do you use?', opciones:['Subtraction','Multiplication','Addition'], correcta:'Addition', audioTexto:'twenty three plus fifteen'},
+  {tipo:'fill-blank', micro:'5-digit Addition', instruccion:'Solve: 12,345 + 21,432 = ___', correcta:'33777', audioTexto:'thirty three thousand seven hundred seventy seven'},
+  {tipo:'true-false', micro:'Addition Strategies', instruccion:'Can you add 25 + 38 by thinking 25 + 40 - 2 = 63?', correcta:true, audioTexto:'mental math addition strategy'},
+  {tipo:'drag-drop', micro:'Represent Scenario', instruccion:'Order the steps to solve an addition problem:', piezas:['Write the answer','Identify the data','Write the operation','Calculate the result'], correcta:['Identify the data','Write the operation','Calculate the result','Write the answer'], audioTexto:'identify data, operation, calculate, answer'}
 ],
 'mat-5': [
-  {tipo:'multiple-choice', micro:'Suma con agrupación', instruccion:'¿Cuánto es 34.567 + 28.934?', opciones:['62.501','63.501','63.401'], correcta:'63.501', audioTexto:'sesenta y tres mil quinientos uno'},
-  {tipo:'fill-blank', micro:'Propiedad conmutativa', instruccion:'La propiedad conmutativa dice que 45 + 32 = 32 + ___', correcta:'45', audioTexto:'cuarenta y cinco'},
-  {tipo:'true-false', micro:'Propiedad asociativa', instruccion:'¿La propiedad asociativa dice que (2+3)+4 = 2+(3+4)?', correcta:true, audioTexto:'propiedad asociativa de la suma'},
-  {tipo:'drag-drop', micro:'Algoritmo vertical', instruccion:'Ordena los pasos para sumar con algoritmo vertical:', piezas:['Sumar decenas','Sumar unidades y reagrupar','Escribir los números alineados','Sumar millares'], correcta:['Escribir los números alineados','Sumar unidades y reagrupar','Sumar decenas','Sumar millares'], audioTexto:'alinear, unidades, decenas, millares'}
+  {tipo:'multiple-choice', micro:'Regrouping Addition', instruccion:'What is 34,567 + 28,934?', opciones:['62,501','63,501','63,401'], correcta:'63,501', audioTexto:'sixty three thousand five hundred one'},
+  {tipo:'fill-blank', micro:'Commutative Property', instruccion:'The commutative property says that 45 + 32 = 32 + ___', correcta:'45', audioTexto:'forty five'},
+  {tipo:'true-false', micro:'Associative Property', instruccion:'Does the associative property say that (2+3)+4 = 2+(3+4)?', correcta:true, audioTexto:'associative property of addition'},
+  {tipo:'drag-drop', micro:'Vertical Algorithm', instruccion:'Order the steps to add with the vertical algorithm:', piezas:['Add tens','Add units and regroup','Write the numbers aligned','Add thousands'], correcta:['Write the numbers aligned','Add units and regroup','Add tens','Add thousands'], audioTexto:'align, units, tens, thousands'}
 ],
 'mat-6': [
-  {tipo:'multiple-choice', micro:'Resta 5 cifras', instruccion:'¿Cuánto es 75.480 - 34.260?', opciones:['41.220','41.120','40.220'], correcta:'41.220', audioTexto:'cuarenta y un mil doscientos veinte'},
-  {tipo:'fill-blank', micro:'Verificar resta', instruccion:'Para verificar la resta 50 - 18 = 32, sumamos: 32 + 18 = ___', correcta:'50', audioTexto:'cincuenta'},
-  {tipo:'true-false', micro:'Algoritmo vertical resta', instruccion:'¿En una resta se deben alinear las unidades con las unidades y las decenas con las decenas?', correcta:true, audioTexto:'alinear dígitos en la resta'},
-  {tipo:'drag-drop', micro:'Calcular y verificar', instruccion:'Ordena los pasos para restar y verificar:', piezas:['Verificar con suma','Restar usando el algoritmo','Alinear los números','Escribir la respuesta'], correcta:['Alinear los números','Restar usando el algoritmo','Escribir la respuesta','Verificar con suma'], audioTexto:'alinear, restar, respuesta, verificar'}
+  {tipo:'multiple-choice', micro:'5-digit Subtraction', instruccion:'What is 75,480 - 34,260?', opciones:['41,220','41,120','40,220'], correcta:'41,220', audioTexto:'forty one thousand two hundred twenty'},
+  {tipo:'fill-blank', micro:'Check Subtraction', instruccion:'To check the subtraction 50 - 18 = 32, we add: 32 + 18 = ___', correcta:'50', audioTexto:'fifty'},
+  {tipo:'true-false', micro:'Vertical Subtraction', instruccion:'In a subtraction, should you align units with units and tens with tens?', correcta:true, audioTexto:'align digits in subtraction'},
+  {tipo:'drag-drop', micro:'Calculate and check', instruccion:'Order the steps to subtract and check:', piezas:['Check with addition','Subtract using the algorithm','Align the numbers','Write the answer'], correcta:['Align the numbers','Subtract using the algorithm','Write the answer','Check with addition'], audioTexto:'align, subtract, answer, check'},
+  {tipo:'drag-drop', micro:'Antonio\'s Mission 🚀', instruccion:'Captain Antonio, arrange the numbers from largest to smallest to subtract correctly:', piezas:['90,000','70,000','50,000','20,000'], correcta:['90,000','70,000','50,000','20,000'], audioTexto:'ninety thousand, seventy thousand, fifty thousand, twenty thousand'}
 ],
 'mat-7': [
-  {tipo:'multiple-choice', micro:'Problemas aditivos', instruccion:'En el problema: "Ana tiene 45 cromos y regala 18. ¿Cuántos le quedan?" ¿Qué operación usas?', opciones:['Suma','Resta','Las dos'], correcta:'Resta', audioTexto:'cuarenta y cinco menos dieciocho'},
-  {tipo:'fill-blank', micro:'Identificar datos', instruccion:'En el problema: "Pedro tenía 230 estampillas y consiguió 115 más." El dato inicial es ___ estampillas.', correcta:'230', audioTexto:'doscientas treinta estampillas'},
-  {tipo:'true-false', micro:'Verificar respuesta', instruccion:'¿Después de resolver un problema, se debe verificar que la respuesta corresponde a la pregunta?', correcta:true, audioTexto:'verificar que la respuesta es correcta'},
-  {tipo:'drag-drop', micro:'Resolver problema', instruccion:'Ordena los pasos para resolver un problema matemático:', piezas:['Verificar la respuesta','Leer y comprender','Calcular','Identificar los datos y la operación'], correcta:['Leer y comprender','Identificar los datos y la operación','Calcular','Verificar la respuesta'], audioTexto:'leer, identificar, calcular, verificar'}
+  {tipo:'multiple-choice', micro:'Additive Problems', instruccion:'In the problem: "Ana has 45 stickers and gives away 18. How many are left?" What operation do you use?', opciones:['Addition','Subtraction','Both'], correcta:'Subtraction', audioTexto:'forty five minus eighteen'},
+  {tipo:'fill-blank', micro:'Identify Data', instruccion:'In the problem: "Pedro had 230 stamps and got 115 more." The initial data is ___ stamps.', correcta:'230', audioTexto:'two hundred thirty stamps'},
+  {tipo:'true-false', micro:'Check Answer', instruccion:'After solving a problem, must you verify that the answer matches the question asked?', correcta:true, audioTexto:'verify that the answer is correct'},
+  {tipo:'drag-drop', micro:'Solve Problem', instruccion:'Order the steps to solve a math word problem:', piezas:['Check the answer','Read and understand','Calculate','Identify data and operation'], correcta:['Read and understand','Identify data and operation','Calculate','Check the answer'], audioTexto:'read, identify data, calculate, check answer'}
 ],
 'mat-8': [
-  {tipo:'multiple-choice', micro:'Recta y segmento', instruccion:'¿Cuál es la diferencia entre una recta y un segmento?', opciones:['Una recta es infinita, un segmento tiene dos extremos','Son lo mismo','Un segmento es curvo'], correcta:'Una recta es infinita, un segmento tiene dos extremos', audioTexto:'recta infinita, segmento con extremos'},
-  {tipo:'fill-blank', micro:'Líneas paralelas', instruccion:'Dos líneas que nunca se cruzan y están a la misma distancia se llaman líneas ___', correcta:'paralelas', audioTexto:'líneas paralelas'},
-  {tipo:'true-false', micro:'Líneas perpendiculares', instruccion:'¿Dos líneas perpendiculares forman un ángulo de 90 grados?', correcta:true, audioTexto:'perpendiculares forman noventa grados'},
-  {tipo:'drag-drop', micro:'Tipos de líneas', instruccion:'Empareja el tipo de línea con su característica:', piezas:['Paralelas','Perpendiculares','Nunca se cruzan','Se cruzan en 90°'], correcta:['Paralelas','Nunca se cruzan','Perpendiculares','Se cruzan en 90°'], audioTexto:'paralelas no se cruzan, perpendiculares se cruzan en noventa grados'}
+  {tipo:'multiple-choice', micro:'Line and Segment', instruccion:'What is the difference between a line and a segment?', opciones:['A line is infinite, a segment has two endpoints','They are the same','A segment is curved'], correcta:'A line is infinite, a segment has two endpoints', audioTexto:'infinite line, segment with endpoints'},
+  {tipo:'fill-blank', micro:'Parallel Lines', instruccion:'Two lines that never cross and are at the same distance are called ___ lines', correcta:'parallel', audioTexto:'parallel lines'},
+  {tipo:'true-false', micro:'Perpendicular Lines', instruccion:'Do two perpendicular lines form a 90-degree angle?', correcta:true, audioTexto:'perpendicular lines form ninety degrees'},
+  {tipo:'drag-drop', micro:'Types of Lines', instruccion:'Match the line type with its characteristic:', piezas:['Parallel','Perpendicular','Never cross','Cross at 90°'], correcta:['Parallel','Never cross','Perpendicular','Cross at 90°'], audioTexto:'parallel never cross, perpendicular cross at 90 degrees'}
 ],
 'mat-9': [
-  {tipo:'multiple-choice', micro:'Tipos de ángulos', instruccion:'¿Qué tipo de ángulo mide exactamente 90 grados?', opciones:['Agudo','Recto','Obtuso'], correcta:'Recto', audioTexto:'ángulo recto mide noventa grados'},
-  {tipo:'fill-blank', micro:'Triángulos', instruccion:'Un polígono con tres lados y tres ángulos se llama ___', correcta:'triángulo', audioTexto:'triángulo'},
-  {tipo:'true-false', micro:'Ángulo obtuso', instruccion:'¿Un ángulo obtuso mide más de 90 grados y menos de 180 grados?', correcta:true, audioTexto:'ángulo obtuso entre noventa y ciento ochenta grados'},
-  {tipo:'drag-drop', micro:'Polígonos', instruccion:'Ordena los polígonos de menor a mayor número de lados:', piezas:['Pentágono','Triángulo','Hexágono','Cuadrilátero'], correcta:['Triángulo','Cuadrilátero','Pentágono','Hexágono'], audioTexto:'triángulo tres, cuadrilátero cuatro, pentágono cinco, hexágono seis'}
+  {tipo:'multiple-choice', micro:'Types of Angles', instruccion:'What type of angle measures exactly 90 degrees?', opciones:['Acute','Right','Obtuse'], correcta:'Right', audioTexto:'right angle measures ninety degrees'},
+  {tipo:'fill-blank', micro:'Triangles', instruccion:'A polygon with three sides and three angles is called a ___', correcta:'triangle', audioTexto:'triangle'},
+  {tipo:'true-false', micro:'Obtuse Angle', instruccion:'Does an obtuse angle measure more than 90 degrees and less than 180 degrees?', correcta:true, audioTexto:'obtuse angle between ninety and one hundred eighty degrees'},
+  {tipo:'drag-drop', micro:'Polygons', instruccion:'Order the polygons from smallest to largest number of sides:', piezas:['Pentagon','Triangle','Hexagon','Quadrilateral'], correcta:['Triangle','Quadrilateral','Pentagon','Hexagon'], audioTexto:'triangle 3, quadrilateral 4, pentagon 5, hexagon 6'}
 ],
 
-// ──────────────── CIENCIAS SOCIALES ────────────────
+// ──────────────── SOCIAL STUDIES (SOC) - English ────────────────
 'soc-1': [
-  {tipo:'multiple-choice', micro:'Dependencias colegio', instruccion:'¿Cuál de estos es un lugar (dependencia) que puedes encontrar en tu colegio?', opciones:['El mercado','La biblioteca','El aeropuerto'], correcta:'La biblioteca', audioTexto:'la biblioteca del colegio'},
-  {tipo:'fill-blank', micro:'Personas del colegio', instruccion:'La persona que cuida la puerta de entrada del colegio se llama ___', correcta:'portero', audioTexto:'el portero cuida la entrada'},
-  {tipo:'true-false', micro:'Maltrato escolar', instruccion:'¿Si un compañero te molesta o lastima, debes contárselo a un adulto de confianza?', correcta:true, audioTexto:'pedir ayuda a un adulto'},
-  {tipo:'drag-drop', micro:'Dependencias', instruccion:'Ordena las dependencias del colegio que visitas en un día normal:', piezas:['Salón de clases','Cafetería','Biblioteca','Patio'], correcta:['Salón de clases','Biblioteca','Patio','Cafetería'], audioTexto:'salón, biblioteca, patio, cafetería'}
+  {tipo:'multiple-choice', micro:'School Areas', instruccion:'Which of these is a place you can find in your school?', opciones:['The market','The library','The airport'], correcta:'The library', audioTexto:'the school library'},
+  {tipo:'fill-blank', micro:'School Staff', instruccion:'The person who guards the school entrance is the ___', correcta:'janitor', audioTexto:'the janitor guards the entrance'},
+  {tipo:'true-false', micro:'School Bullying', instruccion:'If a classmate bothers or hurts you, should you tell a trusted adult?', correcta:true, audioTexto:'ask an adult for help'},
+  {tipo:'drag-drop', micro:'School Places', instruccion:'Order the school places you visit on a normal day:', piezas:['Classroom','Cafeteria','Library','Playground'], correcta:['Classroom','Library','Playground','Cafeteria'], audioTexto:'classroom, library, playground, cafeteria'}
 ],
 'soc-2': [
-  {tipo:'multiple-choice', micro:'Normas de convivencia', instruccion:'¿Para qué sirven las normas en el salón de clases?', opciones:['Para que todos se peleen','Para vivir y trabajar mejor juntos','Para que nadie hable'], correcta:'Para vivir y trabajar mejor juntos', audioTexto:'normas para convivir mejor'},
-  {tipo:'fill-blank', micro:'Resolución conflictos', instruccion:'Cuando hay un problema entre compañeros, la mejor solución es el ___', correcta:'diálogo', audioTexto:'el diálogo resuelve conflictos'},
-  {tipo:'true-false', micro:'Acuerdos', instruccion:'¿Construir acuerdos juntos ayuda a que todos cumplan las normas?', correcta:true, audioTexto:'acuerdos para cumplir normas'},
-  {tipo:'drag-drop', micro:'Pasos resolver conflicto', instruccion:'Ordena los pasos para resolver un conflicto:', piezas:['Llegar a un acuerdo','Escuchar al otro','Hablar sobre el problema','Buscar soluciones juntos'], correcta:['Hablar sobre el problema','Escuchar al otro','Buscar soluciones juntos','Llegar a un acuerdo'], audioTexto:'hablar, escuchar, buscar soluciones, acuerdo'}
+  {tipo:'multiple-choice', micro:'Coexistence Rules', instruccion:'What are classroom rules for?', opciones:['For everyone to fight','To live and work better together','So no one talks'], correcta:'To live and work better together', audioTexto:'rules to live better together'},
+  {tipo:'fill-blank', micro:'Conflict Resolution', instruccion:'When there is a problem between classmates, the best solution is ___', correcta:'dialogue', audioTexto:'dialogue solves conflicts'},
+  {tipo:'true-false', micro:'Agreements', instruccion:'Does building agreements together help everyone follow the rules?', correcta:true, audioTexto:'agreements to follow rules'},
+  {tipo:'drag-drop', micro:'Conflict Steps', instruccion:'Order the steps to resolve a conflict:', piezas:['Reach an agreement','Listen to the other person','Talk about the problem','Find solutions together'], correcta:['Talk about the problem','Listen to the other person','Find solutions together','Reach an agreement'], audioTexto:'talk, listen, find solutions, agreement'}
 ],
 'soc-3': [
-  {tipo:'multiple-choice', micro:'Organización social', instruccion:'¿Qué es el colegio como organización social?', opciones:['Un lugar donde todos hacen lo que quieren','Un espacio donde personas trabajan y aprenden juntas con reglas','Solo un edificio'], correcta:'Un espacio donde personas trabajan y aprenden juntas con reglas', audioTexto:'colegio como organización social'},
-  {tipo:'fill-blank', micro:'Convivencia', instruccion:'Respetar a los compañeros y seguir las normas favorece la sana ___', correcta:'convivencia', audioTexto:'sana convivencia'},
-  {tipo:'true-false', micro:'Pertenencia', instruccion:'¿Tú eres parte de la comunidad de tu colegio y puedes participar en mejorarla?', correcta:true, audioTexto:'pertenezco a la comunidad del colegio'},
-  {tipo:'drag-drop', micro:'Valores convivencia', instruccion:'Ordena los valores más importantes para una sana convivencia:', piezas:['Respeto','Solidaridad','Responsabilidad','Honestidad'], correcta:['Respeto','Honestidad','Solidaridad','Responsabilidad'], audioTexto:'respeto, honestidad, solidaridad, responsabilidad'}
+  {tipo:'multiple-choice', micro:'Social Organization', instruccion:'What is the school as a social organization?', opciones:['A place where everyone does what they want','A space where people work and learn together with rules','Just a building'], correcta:'A space where people work and learn together with rules', audioTexto:'school as a social organization'},
+  {tipo:'fill-blank', micro:'Coexistence', instruccion:'Respecting classmates and following rules promotes healthy ___', correcta:'coexistence', audioTexto:'healthy coexistence'},
+  {tipo:'true-false', micro:'Belonging', instruccion:'Are you part of your school community and can you participate in improving it?', correcta:true, audioTexto:'I belong to the school community'},
+  {tipo:'drag-drop', micro:'Coexistence Values', instruccion:'Order the most important values for healthy coexistence:', piezas:['Respect','Solidarity','Responsibility','Honesty'], correcta:['Respect','Honesty','Solidarity','Responsibility'], audioTexto:'respect, honesty, solidarity, responsibility'}
 ],
 'soc-4': [
-  {tipo:'multiple-choice', micro:'Participación', instruccion:'¿Cómo puedes participar en las acciones de convivencia de tu colegio?', opciones:['Ignorando a todos','Cumpliendo normas y ayudando a otros','Haciendo solo lo que te gusta'], correcta:'Cumpliendo normas y ayudando a otros', audioTexto:'cumplir normas y ayudar a otros'},
-  {tipo:'fill-blank', micro:'Responsabilidad', instruccion:'Cuando cumples tus tareas y obligaciones en el colegio eres ___', correcta:'responsable', audioTexto:'responsable'},
-  {tipo:'true-false', micro:'Colegio organización', instruccion:'¿El colegio tiene directivos, docentes y estudiantes que cumplen roles diferentes?', correcta:true, audioTexto:'directivos, docentes y estudiantes con roles'},
-  {tipo:'drag-drop', micro:'Roles en el colegio', instruccion:'Empareja el rol con su función:', piezas:['Docente','Estudiante','Enseña y guía','Aprende y participa'], correcta:['Docente','Enseña y guía','Estudiante','Aprende y participa'], audioTexto:'docente enseña, estudiante aprende'}
+  {tipo:'multiple-choice', micro:'Participation', instruccion:'How can you participate in your school\'s coexistence actions?', opciones:['Ignoring everyone','Following rules and helping others','Doing only what you like'], correcta:'Following rules and helping others', audioTexto:'follow rules and help others'},
+  {tipo:'fill-blank', micro:'Responsibility', instruccion:'When you complete your tasks and duties at school you are ___', correcta:'responsible', audioTexto:'responsible'},
+  {tipo:'true-false', micro:'School Organization', instruccion:'Does the school have principals, teachers, and students who fulfill different roles?', correcta:true, audioTexto:'principals, teachers, and students have roles'},
+  {tipo:'drag-drop', micro:'School Roles', instruccion:'Match the role with its function:', piezas:['Teacher','Student','Teaches and guides','Learns and participates'], correcta:['Teacher','Teaches and guides','Student','Learns and participates'], audioTexto:'teacher teaches, student learns'}
 ],
 'soc-5': [
-  {tipo:'multiple-choice', micro:'Paisaje', instruccion:'¿Cuál de estos es un elemento natural del paisaje?', opciones:['Un edificio','Una montaña','Una calle'], correcta:'Una montaña', audioTexto:'la montaña es elemento natural del paisaje'},
-  {tipo:'fill-blank', micro:'Relieve', instruccion:'Una elevación grande y alta del terreno se llama ___', correcta:'montaña', audioTexto:'montaña'},
-  {tipo:'true-false', micro:'Elementos del paisaje', instruccion:'¿Los ríos, montañas y valles son elementos naturales del paisaje?', correcta:true, audioTexto:'ríos, montañas y valles son naturales'},
-  {tipo:'drag-drop', micro:'Tipos de relieve', instruccion:'Ordena el relieve de más alto a más bajo:', piezas:['Planicie','Montaña','Colina','Valle'], correcta:['Montaña','Colina','Planicie','Valle'], audioTexto:'montaña, colina, planicie, valle'}
+  {tipo:'multiple-choice', micro:'Landscape', instruccion:'Which of these is a natural element of the landscape?', opciones:['A building','A mountain','A street'], correcta:'A mountain', audioTexto:'a mountain is a natural element'},
+  {tipo:'fill-blank', micro:'Relief', instruccion:'A large and high elevation of land is called a ___', correcta:'mountain', audioTexto:'mountain'},
+  {tipo:'true-false', micro:'Landscape Elements', instruccion:'Are rivers, mountains, and valleys natural landscape elements?', correcta:true, audioTexto:'rivers, mountains, and valleys are natural'},
+  {tipo:'drag-drop', micro:'Relief Types', instruccion:'Order the relief from highest to lowest:', piezas:['Plain','Mountain','Hill','Valley'], correcta:['Mountain','Hill','Plain','Valley'], audioTexto:'mountain, hill, plain, valley'}
 ],
 'soc-6': [
-  {tipo:'multiple-choice', micro:'Elementos paisaje', instruccion:'¿Cuál es un elemento artificial (hecho por personas) en el paisaje?', opciones:['Un río','Una carretera','Un bosque'], correcta:'Una carretera', audioTexto:'carretera es un elemento artificial'},
-  {tipo:'fill-blank', micro:'Formas de relieve', instruccion:'Una zona plana y extensa de terreno se llama ___', correcta:'planicie', audioTexto:'planicie'},
-  {tipo:'true-false', micro:'Representar relieve', instruccion:'¿Se puede representar el relieve del entorno haciendo una maqueta con plastilina?', correcta:true, audioTexto:'maqueta de plastilina para el relieve'},
-  {tipo:'drag-drop', micro:'Paisaje natural y artificial', instruccion:'Clasifica: arrastra los elementos naturales:', piezas:['Río','Puente','Árbol','Edificio'], correcta:['Río','Árbol'], audioTexto:'río y árbol son elementos naturales'},
+  {tipo:'multiple-choice', micro:'Landscape Elements', instruccion:'Which is an artificial element (made by people) in the landscape?', opciones:['A river','A road','A forest'], correcta:'A road', audioTexto:'road is an artificial element'},
+  {tipo:'fill-blank', micro:'Relief Forms', instruccion:'A flat and extensive area of land is called a ___', correcta:'plain', audioTexto:'plain'},
+  {tipo:'true-false', micro:'Represent Relief', instruccion:'Can you represent the relief of the environment by making a clay model?', correcta:true, audioTexto:'clay model for relief'},
+  {tipo:'drag-drop', micro:'Natural vs Artificial', instruccion:'Classify: drag the natural elements:', piezas:['River','Bridge','Tree','Building'], correcta:['River','Tree'], audioTexto:'river and tree are natural elements'},
   {tipo:'multiple-choice', micro:'Natural Resources', instruccion:'Which of these is a NATURAL resource?', opciones:['A plastic bottle','A river','A building'], correcta:'A river', audioTexto:'a river is a natural resource'},
-  {tipo:'true-false', micro:'School Workers', instruccion:'The librarian helps students find and read books in the school library. True or False?', correcta:true, audioTexto:'the librarian helps students find books'}
+  {tipo:'true-false', micro:'School Workers', instruccion:'The librarian helps students find and read books in the school library. True or False?', correcta:true, audioTexto:'the librarian helps students find books'},
+  {tipo:'multiple-choice', micro:'Antonio\'s Mission 🚀', instruccion:'Captain Antonio! Where can you find many tall buildings, streets, and cars?', opciones:['In the city (Urban landscape)','In the farm (Rural landscape)','In the jungle'], correcta:'In the city (Urban landscape)', audioTexto:'the city is an urban landscape'}
 ],
 'soc-7': [
-  {tipo:'multiple-choice', micro:'Paisaje urbano y rural', instruccion:'¿Cuál es una característica del paisaje rural?', opciones:['Muchos edificios altos','Cultivos y animales de granja','Autopistas y centros comerciales'], correcta:'Cultivos y animales de granja', audioTexto:'cultivos y animales en el paisaje rural'},
-  {tipo:'fill-blank', micro:'Problemas ambientales', instruccion:'Cuando las fábricas echan humo al aire, causan ___ del aire.', correcta:'contaminación', audioTexto:'contaminación del aire'},
-  {tipo:'true-false', micro:'Cuidar el ambiente', instruccion:'¿Plantar árboles y no botar basura ayuda a proteger el medio ambiente?', correcta:true, audioTexto:'plantar árboles protege el ambiente'},
-  {tipo:'drag-drop', micro:'Acciones ambientales', instruccion:'Ordena las acciones de mayor a menor impacto positivo en el ambiente:', piezas:['Plantar árboles','Reciclar','Ahorrar agua','No botar basura'], correcta:['Plantar árboles','Ahorrar agua','Reciclar','No botar basura'], audioTexto:'plantar, ahorrar agua, reciclar, no botar basura'},
+  {tipo:'multiple-choice', micro:'Urban and Rural', instruccion:'Which is a characteristic of the rural landscape?', opciones:['Many tall buildings','Crops and farm animals','Highways and malls'], correcta:'Crops and farm animals', audioTexto:'crops and farm animals in the rural landscape'},
+  {tipo:'fill-blank', micro:'Environmental Problems', instruccion:'When factories blow smoke into the air, they cause air ___', correcta:'pollution', audioTexto:'air pollution'},
+  {tipo:'true-false', micro:'Protect Environment', instruccion:'Does planting trees and not littering help protect the environment?', correcta:true, audioTexto:'planting trees protects the environment'},
+  {tipo:'drag-drop', micro:'Environmental Actions', instruccion:'Order the actions from highest to lowest positive impact on the environment:', piezas:['Plant trees','Recycle','Save water','Do not litter'], correcta:['Plant trees','Save water','Recycle','Do not litter'], audioTexto:'plant, save water, recycle, do not litter'},
   {tipo:'multiple-choice', micro:'Classify Resources', instruccion:'How do we classify resources that can run out if we use too many, like oil or coal?', opciones:['Renewable resources','Non-renewable resources','Living resources'], correcta:'Non-renewable resources', audioTexto:'oil and coal are non-renewable resources'},
   {tipo:'fill-blank', micro:'School Workers', instruccion:'Complete: "The person who teaches us how to run, jump and play sports at school is the ___ teacher."', correcta:'PE', audioTexto:'the PE teacher teaches sports'}
 ],
 'soc-8': [
-  {tipo:'multiple-choice', micro:'Actividades humanas', instruccion:'¿Qué actividad económica es más común en el campo (paisaje rural)?', opciones:['La industria','La agricultura','El comercio en tiendas'], correcta:'La agricultura', audioTexto:'agricultura en el campo'},
-  {tipo:'fill-blank', micro:'Problema ambiental', instruccion:'La tala excesiva de árboles se llama ___ y daña el medio ambiente.', correcta:'deforestación', audioTexto:'deforestación'},
-  {tipo:'true-false', micro:'Alternativas ambientales', instruccion:'¿El uso de energía solar es una alternativa para proteger el medio ambiente?', correcta:true, audioTexto:'energía solar protege el ambiente'},
-  {tipo:'drag-drop', micro:'Comparar paisajes', instruccion:'Clasifica los elementos: arrastra los que pertenecen al paisaje urbano:', piezas:['Semáforos','Potreros','Rascacielos','Cultivos de maíz'], correcta:['Semáforos','Rascacielos'], audioTexto:'semáforos y rascacielos son del paisaje urbano'},
+  {tipo:'multiple-choice', micro:'Human Activities', instruccion:'Which economic activity is most common in the countryside (rural landscape)?', opciones:['Industry','Agriculture','Retail in stores'], correcta:'Agriculture', audioTexto:'agriculture in the countryside'},
+  {tipo:'fill-blank', micro:'Environmental Problem', instruccion:'Excessive cutting down of trees is called ___ and harms the environment.', correcta:'deforestation', audioTexto:'deforestation'},
+  {tipo:'true-false', micro:'Environmental Alternatives', instruccion:'Is the use of solar energy an alternative to protect the environment?', correcta:true, audioTexto:'solar energy protects the environment'},
+  {tipo:'drag-drop', micro:'Compare Landscapes', instruccion:'Classify the elements: drag the ones that belong to the urban landscape:', piezas:['Traffic lights','Pastures','Skyscrapers','Corn crops'], correcta:['Traffic lights','Skyscrapers'], audioTexto:'traffic lights and skyscrapers belong to the urban landscape'},
   {tipo:'drag-drop', micro:'Importance of Resources', instruccion:'Drag to match: why are natural resources important?', piezas:['Water','Trees','We drink it','Give us clean air'], correcta:['Water','We drink it','Trees','Give us clean air'], audioTexto:'water we drink, trees give clean air'},
   {tipo:'multiple-choice', micro:'School Workers', instruccion:'Who is the person in charge of the whole school, makes important decisions and takes care of everyone?', opciones:['The librarian','The principal','The janitor'], correcta:'The principal', audioTexto:'the principal is in charge of the whole school'}
 ],
 'soc-9': [
-  {tipo:'multiple-choice', micro:'Puntos cardinales', instruccion:'¿Cuáles son los cuatro puntos cardinales?', opciones:['Arriba, abajo, derecha, izquierda','Norte, Sur, Este, Oeste','Rojo, azul, verde, amarillo'], correcta:'Norte, Sur, Este, Oeste', audioTexto:'norte, sur, este, oeste'},
-  {tipo:'fill-blank', micro:'Orientación', instruccion:'El instrumento que usamos para encontrar el Norte se llama ___', correcta:'brújula', audioTexto:'brújula'},
-  {tipo:'true-false', micro:'Localización', instruccion:'¿Se puede usar un mapa para ubicar y localizar diferentes lugares?', correcta:true, audioTexto:'mapa para localizar lugares'},
-  {tipo:'drag-drop', micro:'Puntos cardinales', instruccion:'Ordena los puntos cardinales empezando por el Norte y siguiendo las manecillas del reloj:', piezas:['Sur','Norte','Oeste','Este'], correcta:['Norte','Este','Sur','Oeste'], audioTexto:'norte, este, sur, oeste'},
+  {tipo:'multiple-choice', micro:'Cardinal Points', instruccion:'What are the four cardinal points?', opciones:['Up, down, right, left','North, South, East, West','Red, blue, green, yellow'], correcta:'North, South, East, West', audioTexto:'North, South, East, West'},
+  {tipo:'fill-blank', micro:'Orientation', instruccion:'The instrument we use to find the North is called a ___', correcta:'compass', audioTexto:'compass'},
+  {tipo:'true-false', micro:'Location', instruccion:'Can you use a map to locate and find different places?', correcta:true, audioTexto:'a map helps locate places'},
+  {tipo:'drag-drop', micro:'Cardinal Points', instruccion:'Order the cardinal points starting from North and going clockwise:', piezas:['South','North','West','East'], correcta:['North','East','South','West'], audioTexto:'North, East, South, West'},
   {tipo:'true-false', micro:'Save Resources', instruccion:'Turning off the water while brushing your teeth helps to save a natural resource. True or False?', correcta:true, audioTexto:'turning off water saves a natural resource'},
   {tipo:'multiple-choice', micro:'School Workers', instruccion:'Which sentence BEST describes the school janitor?', opciones:['She teaches math every day','He keeps the school clean and fixes things that are broken','She helps students choose books'], correcta:'He keeps the school clean and fixes things that are broken', audioTexto:'the janitor keeps the school clean and fixes things'}
 ],
-// ──────────────── STEAM · CODING ────────────────
+
+// ──────────────── ART & EXPRESSION (ART) - English ────────────────
+'art-1': [
+  {tipo:'multiple-choice', micro:'Colors', instruccion:'Which of these are the primary colors?', opciones:['Green, Orange, Purple','Red, Blue, Yellow','Black and White'], correcta:'Red, Blue, Yellow', audioTexto:'red, blue, and yellow are primary colors'},
+  {tipo:'fill-blank', micro:'Art Elements', instruccion:'A free composition uses shapes, lines, and ___ (like red or blue).', correcta:'colors', audioTexto:'colors'},
+  {tipo:'true-false', micro:'Observing Art', instruccion:'When we look at a painting, can we describe the lines and colors we see?', correcta:true, audioTexto:'describe lines and colors in art'},
+  {tipo:'drag-drop', micro:'Primary Colors', instruccion:'Drag only the primary colors:', piezas:['Red','Green','Blue','Yellow'], correcta:['Red','Blue','Yellow'], audioTexto:'red, blue, yellow'}
+],
+'art-2': [
+  {tipo:'multiple-choice', micro:'Secondary Colors', instruccion:'How do you create the color green?', opciones:['Mixing red and blue','Mixing blue and yellow','Mixing black and white'], correcta:'Mixing blue and yellow', audioTexto:'blue and yellow make green'},
+  {tipo:'fill-blank', micro:'Color Mixing', instruccion:'When you mix red and yellow, you get the secondary color ___', correcta:'orange', audioTexto:'red and yellow make orange'},
+  {tipo:'true-false', micro:'Painting', instruccion:'Can you paint a whole landscape using only primary and secondary colors?', correcta:true, audioTexto:'paint a landscape with primary and secondary colors'},
+  {tipo:'drag-drop', micro:'Mixing Match', instruccion:'Match the mix to the result:', piezas:['Red + Yellow','Blue + Yellow','Orange','Green'], correcta:['Red + Yellow','Orange','Blue + Yellow','Green'], audioTexto:'red and yellow make orange, blue and yellow make green'}
+],
+'art-3': [
+  {tipo:'multiple-choice', micro:'Types of Lines', instruccion:'Which type of line looks like lightning or teeth?', opciones:['Straight','Curved','Zigzag'], correcta:'Zigzag', audioTexto:'zigzag line looks like teeth'},
+  {tipo:'fill-blank', micro:'Expressive Art', instruccion:'An expressive drawing uses different types of ___ to show emotion.', correcta:'lines', audioTexto:'lines'},
+  {tipo:'true-false', micro:'Lines in Nature', instruccion:'Can we find curved and straight lines in nature (like trees or waves)?', correcta:true, audioTexto:'lines in nature'},
+  {tipo:'drag-drop', micro:'Line Types', instruccion:'Match the line type with its description:', piezas:['Straight','Curved','No bends','Like a rainbow'], correcta:['Straight','No bends','Curved','Like a rainbow'], audioTexto:'straight has no bends, curved is like a rainbow'}
+],
+'art-4': [
+  {tipo:'multiple-choice', micro:'Geometric Shapes', instruccion:'Which shape has exactly 3 sides and 3 corners?', opciones:['Circle','Triangle','Square'], correcta:'Triangle', audioTexto:'triangle has three sides'},
+  {tipo:'fill-blank', micro:'Art Composition', instruccion:'When we put shapes together to make art, it is called an artistic ___', correcta:'composition', audioTexto:'artistic composition'},
+  {tipo:'true-false', micro:'Shapes in Art', instruccion:'Are basic geometric shapes used by artists to build more complex drawings?', correcta:true, audioTexto:'shapes build complex drawings'},
+  {tipo:'drag-drop', micro:'Identify Shapes', instruccion:'Match the shape to its feature:', piezas:['Circle','Square','Round','4 equal sides'], correcta:['Circle','Round','Square','4 equal sides'], audioTexto:'circle is round, square has 4 equal sides'}
+],
+'art-5': [
+  {tipo:'multiple-choice', micro:'Textures', instruccion:'What does tactile texture mean?', opciones:['How something sounds','How something feels when you touch it','What color it is'], correcta:'How something feels when you touch it', audioTexto:'tactile texture is how it feels'},
+  {tipo:'fill-blank', micro:'Collage', instruccion:'A work of art made by gluing different materials to a surface is called a ___', correcta:'collage', audioTexto:'collage'},
+  {tipo:'true-false', micro:'Visual Texture', instruccion:'Can a painting LOOK like it is rough, even if the paper is flat?', correcta:true, audioTexto:'visual texture looks rough'},
+  {tipo:'drag-drop', micro:'Texture Match', instruccion:'Match the material to its texture:', piezas:['Sandpaper','Cotton','Rough','Soft'], correcta:['Sandpaper','Rough','Cotton','Soft'], audioTexto:'sandpaper is rough, cotton is soft'}
+],
+'art-6': [
+  {tipo:'multiple-choice', micro:'Rhythm and Pattern', instruccion:'What is a pattern in art?', opciones:['A mistake in the drawing','Shapes and colors that repeat in order','Only using the color black'], correcta:'Shapes and colors that repeat in order', audioTexto:'pattern is shapes and colors that repeat'},
+  {tipo:'fill-blank', micro:'Repetition', instruccion:'When we use a circle, then a square, then a circle, then a square... we are making a ___', correcta:'pattern', audioTexto:'pattern'},
+  {tipo:'true-false', micro:'Designs', instruccion:'Can patterns be used to decorate clothes and rugs?', correcta:true, audioTexto:'patterns decorate clothes'},
+  {tipo:'drag-drop', micro:'Create Pattern', instruccion:'Order the colors to make a repeating pattern:', piezas:['Red','Red','Blue','Blue'], correcta:['Red','Blue','Red','Blue'], audioTexto:'red, blue, red, blue'},
+  {tipo:'drag-drop', micro:'Antonio\'s Mission 🚀', instruccion:'Antonio, arrange the shapes to complete the pattern (Circle, Star, Circle, ___):', piezas:['Circle','Star','Star','Circle'], correcta:['Circle','Star','Circle','Star'], audioTexto:'circle, star, circle, star'}
+],
+'art-7': [
+  {tipo:'multiple-choice', micro:'Human Figure', instruccion:'When drawing the human body, what do we draw first to help with proportions?', opciones:['The shoes','The basic shapes (head, torso)','The fingers'], correcta:'The basic shapes (head, torso)', audioTexto:'basic shapes like head and torso'},
+  {tipo:'fill-blank', micro:'Action', instruccion:'When a drawn figure looks like it is running or jumping, it shows ___', correcta:'movement', audioTexto:'movement'},
+  {tipo:'true-false', micro:'Proportions', instruccion:'Are proportions important so the arms and legs look like the right size?', correcta:true, audioTexto:'proportions are important'},
+  {tipo:'drag-drop', micro:'Body Parts', instruccion:'Order the parts of the human figure from top to bottom:', piezas:['Head','Legs','Torso'], correcta:['Head','Torso','Legs'], audioTexto:'head, torso, legs'}
+],
+'art-8': [
+  {tipo:'multiple-choice', micro:'3D Art', instruccion:'What is an artwork that you can look at from all sides (front, back, sides)?', opciones:['A flat painting','A sculpture','A photograph'], correcta:'A sculpture', audioTexto:'a sculpture is 3D'},
+  {tipo:'fill-blank', micro:'Materials', instruccion:'A soft, natural material from the earth used to make sculptures is called ___', correcta:'clay', audioTexto:'clay'},
+  {tipo:'true-false', micro:'Tridimensional', instruccion:'Does 3D (tridimensional) mean an object has height, width, and depth?', correcta:true, audioTexto:'3D has height, width, and depth'},
+  {tipo:'drag-drop', micro:'Sculpture Materials', instruccion:'Drag the materials you can use to build a 3D sculpture:', piezas:['Clay','Paper and pencil','Recycled boxes','Watercolor paint'], correcta:['Clay','Recycled boxes'], audioTexto:'clay and recycled boxes for sculpture'}
+],
+'art-9': [
+  {tipo:'multiple-choice', micro:'Art Exhibition', instruccion:'What happens at an art exhibition?', opciones:['We hide our artwork','We present and show our artwork to others','We throw away our art'], correcta:'We present and show our artwork to others', audioTexto:'we present artwork at an exhibition'},
+  {tipo:'fill-blank', micro:'Favorite Art', instruccion:'When you show your favorite artwork, you should ___ why you like it.', correcta:'explain', audioTexto:'explain why you like it'},
+  {tipo:'true-false', micro:'Art Presentation', instruccion:'Is it important to organize the space nicely before a mini-exhibition?', correcta:true, audioTexto:'organize space for an exhibition'},
+  {tipo:'drag-drop', micro:'Exhibition Steps', instruccion:'Order the steps for an art exhibition:', piezas:['Invite guests','Explain your art','Choose your best artwork','Organize the space'], correcta:['Choose your best artwork','Organize the space','Invite guests','Explain your art'], audioTexto:'choose art, organize, invite, explain'}
+],
+
+// ──────────────── STEAM · CODING (STM) - English ────────────────
 'stm-1': [
-  {tipo:'multiple-choice', micro:'Algoritmo', instruccion:'¿Qué es un algoritmo?', opciones:['Un tipo de videojuego','Una serie de pasos ordenados para resolver un problema','Un lenguaje extranjero'], correcta:'Una serie de pasos ordenados para resolver un problema', audioTexto:'algoritmo es una serie de pasos ordenados'},
-  {tipo:'fill-blank', micro:'Pasos ordenados', instruccion:'Un algoritmo para lavarse los dientes tiene pasos en ___ (no pueden estar desordenados).', correcta:'orden', audioTexto:'pasos en orden'},
-  {tipo:'true-false', micro:'Algoritmos cotidianos', instruccion:'¿Una receta de cocina es un ejemplo de algoritmo porque tiene pasos ordenados?', correcta:true, audioTexto:'receta de cocina es un algoritmo'},
-  {tipo:'drag-drop', micro:'Algoritmo dientes', instruccion:'Ordena el algoritmo para lavarse los dientes:', piezas:['Enjuagarse','Poner pasta en el cepillo','Cepillar los dientes','Escupir el agua'], correcta:['Poner pasta en el cepillo','Cepillar los dientes','Escupir el agua','Enjuagarse'], audioTexto:'pasta, cepillar, escupir, enjuagar'}
+  {tipo:'multiple-choice', micro:'Algorithm', instruccion:'What is an algorithm?', opciones:['A type of video game','A series of ordered steps to solve a problem','A foreign language'], correcta:'A series of ordered steps to solve a problem', audioTexto:'algorithm is a series of ordered steps'},
+  {tipo:'fill-blank', micro:'Ordered Steps', instruccion:'An algorithm to brush your teeth has steps in a specific ___ (they cannot be mixed up).', correcta:'order', audioTexto:'steps in order'},
+  {tipo:'true-false', micro:'Daily Algorithms', instruccion:'Is a cooking recipe an example of an algorithm because it has ordered steps?', correcta:true, audioTexto:'recipe is an algorithm'},
+  {tipo:'drag-drop', micro:'Toothbrush Algorithm', instruccion:'Order the algorithm to brush your teeth:', piezas:['Rinse your mouth','Put paste on brush','Brush your teeth','Spit out the water'], correcta:['Put paste on brush','Brush your teeth','Spit out the water','Rinse your mouth'], audioTexto:'paste, brush, spit, rinse'}
 ],
 'stm-2': [
-  {tipo:'multiple-choice', micro:'Secuencia', instruccion:'¿Qué pasa si en un programa los pasos están en el orden incorrecto?', opciones:['Nada, funciona igual','El programa no funciona correctamente','Funciona más rápido'], correcta:'El programa no funciona correctamente', audioTexto:'el orden importa en la secuencia'},
-  {tipo:'fill-blank', micro:'Debugging', instruccion:'Encontrar y corregir errores en un programa se llama ___', correcta:'debugging', audioTexto:'debugging o depuración'},
-  {tipo:'true-false', micro:'Errores en código', instruccion:'¿Un "bug" en programación es un error que impide que el programa funcione bien?', correcta:true, audioTexto:'bug es un error en el programa'},
-  {tipo:'drag-drop', micro:'Secuencia robot', instruccion:'Ordena los pasos para que el robot llegue a la meta:', piezas:['Girar a la derecha','Avanzar 3 pasos','Avanzar 2 pasos','Recoger el objeto'], correcta:['Avanzar 3 pasos','Girar a la derecha','Avanzar 2 pasos','Recoger el objeto'], audioTexto:'avanzar tres, girar, avanzar dos, recoger'}
+  {tipo:'multiple-choice', micro:'Sequence', instruccion:'What happens if the steps in a program are in the wrong order?', opciones:['Nothing, it works fine','The program does not work correctly','It works faster'], correcta:'The program does not work correctly', audioTexto:'wrong order means program fails'},
+  {tipo:'fill-blank', micro:'Debugging', instruccion:'Finding and fixing errors in a program is called ___', correcta:'debugging', audioTexto:'debugging'},
+  {tipo:'true-false', micro:'Code Errors', instruccion:'Is a "bug" in programming an error that stops the program from working right?', correcta:true, audioTexto:'bug is an error'},
+  {tipo:'drag-drop', micro:'Robot Sequence', instruccion:'Order the steps for the robot to reach the finish line:', piezas:['Turn right','Move forward 3 steps','Move forward 2 steps','Pick up object'], correcta:['Move forward 3 steps','Turn right','Move forward 2 steps','Pick up object'], audioTexto:'move 3, turn, move 2, pick up'}
 ],
 'stm-3': [
-  {tipo:'multiple-choice', micro:'Bucle (Loop)', instruccion:'¿Para qué sirve un bucle (loop) en programación?', opciones:['Para borrar el programa','Para repetir una acción varias veces','Para cambiar el color de la pantalla'], correcta:'Para repetir una acción varias veces', audioTexto:'un bucle repite una acción varias veces'},
-  {tipo:'fill-blank', micro:'Repetición', instruccion:'En ScratchJr, si quiero que un gato dé 10 saltos, uso un ___ que repita el salto 10 veces.', correcta:'bucle', audioTexto:'bucle o loop'},
-  {tipo:'true-false', micro:'Patrones repetitivos', instruccion:'¿El patrón "rojo, azul, rojo, azul" es un ejemplo de repetición similar a un bucle?', correcta:true, audioTexto:'patrón rojo azul es como un bucle'},
-  {tipo:'drag-drop', micro:'Loop en acción', instruccion:'Ordena cómo funciona un bucle que se repite 3 veces:', piezas:['Repetición 3','Repetición 1','Fin del bucle','Repetición 2'], correcta:['Repetición 1','Repetición 2','Repetición 3','Fin del bucle'], audioTexto:'repetición uno, dos, tres, fin del bucle'}
+  {tipo:'multiple-choice', micro:'Loop', instruccion:'What is a loop used for in programming?', opciones:['To delete the program','To repeat an action several times','To change the screen color'], correcta:'To repeat an action several times', audioTexto:'loop repeats an action'},
+  {tipo:'fill-blank', micro:'Repetition', instruccion:'In ScratchJr, if I want a cat to jump 10 times, I use a ___ that repeats the jump 10 times.', correcta:'loop', audioTexto:'loop'},
+  {tipo:'true-false', micro:'Repetitive Patterns', instruccion:'Is the pattern "red, blue, red, blue" an example of repetition similar to a loop?', correcta:true, audioTexto:'pattern is like a loop'},
+  {tipo:'drag-drop', micro:'Loop in Action', instruccion:'Order how a loop works that repeats 3 times:', piezas:['Repetition 3','Repetition 1','End of loop','Repetition 2'], correcta:['Repetition 1','Repetition 2','Repetition 3','End of loop'], audioTexto:'repetition 1, 2, 3, end loop'}
 ],
 'stm-4': [
-  {tipo:'multiple-choice', micro:'Condicional', instruccion:'¿Qué hace una condición "Si... entonces..." en programación?', opciones:['Repite una acción','Ejecuta una acción solo si se cumple una condición','Borra todo el programa'], correcta:'Ejecuta una acción solo si se cumple una condición', audioTexto:'si se cumple la condición, entonces hace la acción'},
-  {tipo:'fill-blank', micro:'Si... entonces...', instruccion:'Completa: "Si el semáforo está en rojo, entonces ___"', correcta:'para', audioTexto:'si rojo entonces para'},
-  {tipo:'true-false', micro:'Condicionales diarios', instruccion:'¿"Si tengo hambre, entonces como" es un ejemplo de condicional en la vida diaria?', correcta:true, audioTexto:'si tengo hambre entonces como'},
-  {tipo:'drag-drop', micro:'Crear condicional', instruccion:'Ordena las partes del condicional:', piezas:['entonces salta','Si toca la estrella','Fin de la condición','el personaje'], correcta:['Si toca la estrella','el personaje','entonces salta','Fin de la condición'], audioTexto:'si toca la estrella, el personaje entonces salta'}
+  {tipo:'multiple-choice', micro:'Conditional', instruccion:'What does an "If... then..." condition do in programming?', opciones:['Repeats an action','Runs an action ONLY if a condition is met','Deletes the whole program'], correcta:'Runs an action ONLY if a condition is met', audioTexto:'runs action if condition is met'},
+  {tipo:'fill-blank', micro:'If... then...', instruccion:'Complete: "If the traffic light is red, then ___"', correcta:'stop', audioTexto:'if red then stop'},
+  {tipo:'true-false', micro:'Daily Conditionals', instruccion:'Is "If I am hungry, then I eat" an example of a conditional in daily life?', correcta:true, audioTexto:'if hungry then eat'},
+  {tipo:'drag-drop', micro:'Create Conditional', instruccion:'Order the parts of the conditional statement:', piezas:['then jumps','If touches the star','End of condition','the character'], correcta:['If touches the star','the character','then jumps','End of condition'], audioTexto:'if touches star, character then jumps'}
 ],
 'stm-5': [
-  {tipo:'multiple-choice', micro:'Eventos', instruccion:'¿Qué es un evento en programación?', opciones:['Un festival de música','Algo que ocurre y hace que el programa reaccione','Un error del programa'], correcta:'Algo que ocurre y hace que el programa reaccione', audioTexto:'evento es algo que hace reaccionar al programa'},
-  {tipo:'fill-blank', micro:'Evento en juego', instruccion:'En un videojuego, cuando presionas el botón de saltar, eso es un ___ que activa la acción.', correcta:'evento', audioTexto:'evento activa la acción'},
-  {tipo:'true-false', micro:'Eventos en ScratchJr', instruccion:'¿En ScratchJr, tocar la pantalla puede ser un evento que inicia una animación?', correcta:true, audioTexto:'tocar la pantalla es un evento'},
-  {tipo:'drag-drop', micro:'Evento y respuesta', instruccion:'Empareja el evento con la respuesta del programa:', piezas:['Presionar la bandera verde','Tocar un personaje','El programa inicia','El personaje habla'], correcta:['Presionar la bandera verde','El programa inicia','Tocar un personaje','El personaje habla'], audioTexto:'presionar bandera inicia el programa, tocar personaje hace que hable'}
+  {tipo:'multiple-choice', micro:'Events', instruccion:'What is an event in programming?', opciones:['A music festival','Something that happens and makes the program react','A program error'], correcta:'Something that happens and makes the program react', audioTexto:'event makes program react'},
+  {tipo:'fill-blank', micro:'Game Event', instruccion:'In a video game, when you press the jump button, that is an ___ that starts the action.', correcta:'event', audioTexto:'event'},
+  {tipo:'true-false', micro:'ScratchJr Events', instruccion:'In ScratchJr, can touching the screen be an event that starts an animation?', correcta:true, audioTexto:'touching screen is an event'},
+  {tipo:'drag-drop', micro:'Event and Response', instruccion:'Match the event with the program\'s response:', piezas:['Press green flag','Touch a character','Program starts','Character speaks'], correcta:['Press green flag','Program starts','Touch a character','Character speaks'], audioTexto:'green flag starts program, touch character speaks'}
 ],
 'stm-6': [
-  {tipo:'multiple-choice', micro:'Variables', instruccion:'¿Qué es una variable en programación?', opciones:['Un tipo de pantalla','Un espacio que guarda información que puede cambiar','Un color especial'], correcta:'Un espacio que guarda información que puede cambiar', audioTexto:'variable guarda información que puede cambiar'},
-  {tipo:'fill-blank', micro:'Variables en juegos', instruccion:'En un videojuego, el número de ___ que llevas acumulados es una variable.', correcta:'puntos', audioTexto:'puntos acumulados es una variable'},
-  {tipo:'true-false', micro:'Variable contador', instruccion:'¿Una variable que empieza en 0 y suma 1 cada vez que pasa algo se llama contador?', correcta:true, audioTexto:'contador suma uno cada vez'},
-  {tipo:'drag-drop', micro:'Ejemplo variable', instruccion:'Ordena cómo funciona una variable de puntos en un juego:', piezas:['Mostrar los puntos','Puntos = 0 al inicio','Sumar 10 puntos al atrapar estrella','Actualizar el marcador'], correcta:['Puntos = 0 al inicio','Sumar 10 puntos al atrapar estrella','Actualizar el marcador','Mostrar los puntos'], audioTexto:'iniciar en cero, sumar puntos, actualizar, mostrar'}
+  {tipo:'multiple-choice', micro:'Variables', instruccion:'What is a variable in programming?', opciones:['A type of screen','A space that saves information that can change','A special color'], correcta:'A space that saves information that can change', audioTexto:'variable saves information that can change'},
+  {tipo:'fill-blank', micro:'Variables in Games', instruccion:'In a video game, the number of ___ you have collected is a variable.', correcta:'points', audioTexto:'points collected is a variable'},
+  {tipo:'true-false', micro:'Counter Variable', instruccion:'Is a variable that starts at 0 and adds 1 every time something happens called a counter?', correcta:true, audioTexto:'counter adds one each time'},
+  {tipo:'drag-drop', micro:'Variable Example', instruccion:'Order how a points variable works in a game:', piezas:['Show the points','Points = 0 at start','Add 10 points when catching star','Update the score'], correcta:['Points = 0 at start','Add 10 points when catching star','Update the score','Show the points'], audioTexto:'start at zero, add points, update, show'},
+  {tipo:'fill-blank', micro:'Antonio\'s Mission 🚀', instruccion:'Super Antonio, if your variable "Lives" is 3 and you lose 1, how many lives do you have left? (Type the number)', correcta:'2', audioTexto:'two lives'}
 ],
 'stm-7': [
-  {tipo:'multiple-choice', micro:'Entrada-Proceso-Salida', instruccion:'En un programa que suma dos números, ¿cuál es la SALIDA?', opciones:['Los dos números que ingresas','La suma de los dos números','La pantalla donde los escribes'], correcta:'La suma de los dos números', audioTexto:'la salida es el resultado de la suma'},
-  {tipo:'fill-blank', micro:'Proceso', instruccion:'La parte del programa que transforma los datos de entrada en un resultado se llama ___', correcta:'proceso', audioTexto:'proceso'},
-  {tipo:'true-false', micro:'Entrada', instruccion:'¿Cuando escribes tu nombre en un programa, eso es la entrada (input)?', correcta:true, audioTexto:'escribir el nombre es la entrada'},
-  {tipo:'drag-drop', micro:'Flujo del programa', instruccion:'Ordena el flujo de un programa sencillo:', piezas:['Mostrar el resultado (Salida)','Ingresar los datos (Entrada)','Calcular o transformar (Proceso)'], correcta:['Ingresar los datos (Entrada)','Calcular o transformar (Proceso)','Mostrar el resultado (Salida)'], audioTexto:'entrada, proceso, salida'}
+  {tipo:'multiple-choice', micro:'Input-Process-Output', instruccion:'In a program that adds two numbers, what is the OUTPUT?', opciones:['The two numbers you type','The sum of the two numbers','The screen where you type'], correcta:'The sum of the two numbers', audioTexto:'output is the sum of the numbers'},
+  {tipo:'fill-blank', micro:'Process', instruccion:'The part of the program that transforms the input data into a result is called the ___', correcta:'process', audioTexto:'process'},
+  {tipo:'true-false', micro:'Input', instruccion:'When you type your name in a program, is that the input?', correcta:true, audioTexto:'typing your name is input'},
+  {tipo:'drag-drop', micro:'Program Flow', instruccion:'Order the flow of a simple program:', piezas:['Show result (Output)','Enter data (Input)','Calculate (Process)'], correcta:['Enter data (Input)','Calculate (Process)','Show result (Output)'], audioTexto:'input, process, output'}
 ],
 'stm-8': [
-  {tipo:'multiple-choice', micro:'Depuración', instruccion:'Si tu programa no hace lo que esperas, ¿qué debes hacer?', opciones:['Borrar todo y empezar de cero','Depurar: buscar y corregir el error','Ignorarlo y seguir'], correcta:'Depurar: buscar y corregir el error', audioTexto:'depurar es buscar y corregir errores'},
-  {tipo:'fill-blank', micro:'Probar programa', instruccion:'Después de corregir un error, debes ___ el programa para verificar que funciona bien.', correcta:'probar', audioTexto:'probar el programa'},
-  {tipo:'true-false', micro:'Mejora continua', instruccion:'¿Los programadores mejoran sus programas probándolos muchas veces y corrigiendo errores?', correcta:true, audioTexto:'probar y mejorar el programa'},
-  {tipo:'drag-drop', micro:'Proceso de depuración', instruccion:'Ordena los pasos para depurar un programa:', piezas:['Corregir el error','Probar de nuevo','Identificar el error','Ejecutar el programa'], correcta:['Ejecutar el programa','Identificar el error','Corregir el error','Probar de nuevo'], audioTexto:'ejecutar, identificar, corregir, probar de nuevo'}
+  {tipo:'multiple-choice', micro:'Debugging', instruccion:'If your program does not do what you expect, what should you do?', opciones:['Delete everything and restart','Debug: find and fix the error','Ignore it and keep going'], correcta:'Debug: find and fix the error', audioTexto:'debug is find and fix errors'},
+  {tipo:'fill-blank', micro:'Test Program', instruccion:'After fixing an error, you must ___ the program to verify it works well.', correcta:'test', audioTexto:'test the program'},
+  {tipo:'true-false', micro:'Continuous Improvement', instruccion:'Do programmers improve their programs by testing them many times and fixing errors?', correcta:true, audioTexto:'test and improve programs'},
+  {tipo:'drag-drop', micro:'Debugging Process', instruccion:'Order the steps to debug a program:', piezas:['Fix the error','Test again','Identify the error','Run the program'], correcta:['Run the program','Identify the error','Fix the error','Test again'], audioTexto:'run, identify, fix, test'}
 ],
 'stm-9': [
-  {tipo:'multiple-choice', micro:'Pensamiento computacional', instruccion:'¿Qué significa "pensamiento computacional"?', opciones:['Pensar igual que una computadora','Resolver problemas de forma ordenada, usando pasos lógicos','Saber mucho de matemáticas'], correcta:'Resolver problemas de forma ordenada, usando pasos lógicos', audioTexto:'pensamiento computacional es resolver problemas con pasos lógicos'},
-  {tipo:'fill-blank', micro:'Presentar proyecto', instruccion:'Cuando explicas tu programa a los demás, estás ___ tu proyecto.', correcta:'presentando', audioTexto:'presentar el proyecto'},
-  {tipo:'true-false', micro:'Reflexión', instruccion:'¿El pensamiento computacional nos ayuda a resolver problemas de la vida real, no solo en computación?', correcta:true, audioTexto:'el pensamiento computacional sirve en la vida real'},
-  {tipo:'drag-drop', micro:'Mi proyecto', instruccion:'Ordena qué debes explicar al presentar tu proyecto de programación:', piezas:['Qué aprendiste','Qué hace tu programa','Cómo lo construiste','Qué mejorarías'], correcta:['Qué hace tu programa','Cómo lo construiste','Qué aprendiste','Qué mejorarías'], audioTexto:'qué hace, cómo lo hice, qué aprendí, qué mejoraría'}
+  {tipo:'multiple-choice', micro:'Computational Thinking', instruccion:'What does "computational thinking" mean?', opciones:['Thinking exactly like a computer','Solving problems in an ordered way using logical steps','Knowing a lot of math'], correcta:'Solving problems in an ordered way using logical steps', audioTexto:'computational thinking is solving problems with logical steps'},
+  {tipo:'fill-blank', micro:'Present Project', instruccion:'When you explain your program to others, you are ___ your project.', correcta:'presenting', audioTexto:'presenting your project'},
+  {tipo:'true-false', micro:'Reflection', instruccion:'Does computational thinking help us solve real-life problems, not just in computing?', correcta:true, audioTexto:'computational thinking helps in real life'},
+  {tipo:'drag-drop', micro:'My Project', instruccion:'Order what you must explain when presenting your programming project:', piezas:['What I learned','What my program does','How I built it','What I would improve'], correcta:['What my program does','How I built it','What I learned','What I would improve'], audioTexto:'what it does, how I built it, what I learned, what to improve'}
 ]
 
 };
 
 // ═══════════════════════════════════════════════════════
-// LOOKUP LOCAL — sin API, sin costo, sin internet
+// LOOKUP LOCAL 
 // ═══════════════════════════════════════════════════════
 async function generateExercises(materia, week) {
   const key = `${materia}-${week}`;
   const exercises = EXERCISES[key];
   if (!exercises) {
-    // Fallback genérico si falta alguna combinación
     return [
-      {tipo:'multiple-choice', micro:'Repaso', instruccion:`Semana ${week}: ¿Cuál es la respuesta correcta?`, opciones:['Opción A','Opción B','Opción C'], correcta:'Opción A', audioTexto:'Repaso'},
-      {tipo:'fill-blank', micro:'Repaso', instruccion:'Completa con la palabra correcta: "Aprender es ___"', correcta:'importante', audioTexto:'importante'},
-      {tipo:'true-false', micro:'Repaso', instruccion:'¿Estudiar y practicar ayuda a aprender mejor?', correcta:true, audioTexto:'estudiar y practicar'},
-      {tipo:'drag-drop', micro:'Repaso', instruccion:'Ordena los pasos del aprendizaje:', piezas:['Practicar','Aprender','Mejorar'], correcta:['Aprender','Practicar','Mejorar'], audioTexto:'aprender, practicar, mejorar'}
+      {tipo:'multiple-choice', micro:'Review', instruccion:`Week ${week}: Which is the correct answer?`, opciones:['Option A','Option B','Option C'], correcta:'Option A', audioTexto:'Review'},
+      {tipo:'fill-blank', micro:'Review', instruccion:'Complete with the correct word: "Learning is ___"', correcta:'important', audioTexto:'important'},
+      {tipo:'true-false', micro:'Review', instruccion:'Does studying and practicing help you learn better?', correcta:true, audioTexto:'study and practice'},
+      {tipo:'drag-drop', micro:'Review', instruccion:'Order the steps of learning:', piezas:['Practice','Learn','Improve'], correcta:['Learn','Practice','Improve'], audioTexto:'learn, practice, improve'}
     ];
   }
   return exercises;
@@ -962,8 +793,8 @@ async function renderExercises() {
   const grid = document.getElementById('ex-grid');
   const mat  = MATERIAS.find(m => m.id === S.materia);
 
-  // Show loading cards (6 for soc weeks 6-9, else 4)
-  const previewCount = (S.materia === 'soc' && S.week >= 6) ? 6 : 4;
+  // Render skeletons
+  const previewCount = 4;
   grid.innerHTML = Array(previewCount).fill(0).map(() => `
     <div class="loading-card">
       <div class="spinner"></div>
@@ -974,6 +805,8 @@ async function renderExercises() {
   let exercises;
   try {
     exercises = await generateExercises(S.materia, S.week);
+    // Dinámico: actualizamos el sub-título de la UI según el número real de ejercicios
+    document.getElementById('main-sub').textContent   = `Semana ${S.week} · ${exercises.length} Misiones`;
   } catch(e) {
     grid.innerHTML = `<div class="error-card" style="grid-column:1/-1">
       ⚠️ No se pudo cargar este ejercicio. Intenta recargar la página.<br>
@@ -1005,12 +838,10 @@ async function renderExercises() {
       </div>
     `;
 
-    // Store ex data on card for drag-drop state
     card._ex = ex;
     card._dropped = [];
     grid.appendChild(card);
 
-    // Restore completed state if this exercise was already done
     const key = `${S.materia}-${S.week}-${i}`;
     if (S.completed[key]) {
       restoreCompletedCard(card, S.completed[key]);
@@ -1026,15 +857,17 @@ function buildActionZone(ex, cardId) {
   }
   if (ex.tipo === 'fill-blank') {
     return `<div class="fill-row">
-      <input id="inp-${cardId}" type="text" class="fill-input" placeholder="Escribe aquí..." autocomplete="off" autocorrect="off" spellcheck="false"
+      <input id="inp-${cardId}" type="text" class="fill-input" placeholder="Escribe / Type..." autocomplete="off" autocorrect="off" spellcheck="false"
         onkeydown="if(event.key==='Enter')checkFill('${cardId}','${esc(ex.correcta)}')" />
       <button class="ok-btn" onclick="checkFill('${cardId}','${esc(ex.correcta)}')">OK ✓</button>
     </div>`;
   }
   if (ex.tipo === 'true-false') {
+    const mat = MATERIAS.find(m => m.id === S.materia);
+    const isEn = mat.lang === 'en-US';
     return `<div class="tf-row">
-      <button class="tf-btn tf-true"  onclick="checkTF('${cardId}',true,${ex.correcta})">✅ Verdadero</button>
-      <button class="tf-btn tf-false" onclick="checkTF('${cardId}',false,${ex.correcta})">❌ Falso</button>
+      <button class="tf-btn tf-true"  onclick="checkTF('${cardId}',true,${ex.correcta})">✅ ${isEn ? 'True' : 'Verdadero'}</button>
+      <button class="tf-btn tf-false" onclick="checkTF('${cardId}',false,${ex.correcta})">❌ ${isEn ? 'False' : 'Falso'}</button>
     </div>`;
   }
   if (ex.tipo === 'drag-drop') {
@@ -1046,13 +879,15 @@ function buildActionZone(ex, cardId) {
       </div>`
     ).join('');
     const correctaJSON = JSON.stringify(ex.correcta||[]).replace(/"/g,'&quot;');
+    const mat = MATERIAS.find(m => m.id === S.materia);
+    const isEn = mat.lang === 'en-US';
     return `
       <div class="pieces" id="pieces-${cardId}">${piezasHTML}</div>
       <div class="dropzone" id="drop-${cardId}"
         ondragover="event.preventDefault();this.classList.add('dragover')"
         ondragleave="this.classList.remove('dragover')"
         ondrop="dDrop(event,'${cardId}',${correctaJSON})">
-        <span class="dropzone-hint">👆 Arrastra las piezas aquí</span>
+        <span class="dropzone-hint">👆 ${isEn ? 'Drag the pieces here' : 'Arrastra las piezas aquí'}</span>
       </div>
     `;
   }
@@ -1101,7 +936,6 @@ function retryCard(card) {
   const az = card.querySelector('.action-zone');
   if (az) az.innerHTML = buildActionZone(ex, card.id);
   card._dropped = [];
-  // Start attempt count from where it left off (no bonus for retries)
   S.attempts[card.id] = S.completed[exKey(card.id)]?.attempts || 0;
 }
 
@@ -1158,17 +992,11 @@ function checkTF(cardId, val, correct) {
   }
 }
 
-// Drag & drop
 let _dragVal = null;
 function dStart(ev) { _dragVal = ev.target.dataset.val; }
-
 function dClick(ev, cardId) {
-  // Mobile fallback: tap piece → move to dropzone
   const val = ev.currentTarget.dataset.val;
-  const fakeEv = { preventDefault:()=>{} };
   const zone = document.getElementById(`drop-${cardId}`);
-  const card = document.getElementById(cardId);
-  const correctArr = card._ex?.correcta || [];
   _dragVal = val;
   zone.dispatchEvent(Object.assign(new Event('drop'), { preventDefault:()=>{}, dataTransfer:{ getData: ()=>val } }));
 }
@@ -1183,11 +1011,9 @@ function dDrop(ev, cardId, correctArr) {
   const val  = ev.dataTransfer?.getData('text') || _dragVal;
   if (!val) return;
 
-  // Mark piece as used
   const pieces = document.querySelectorAll(`#pieces-${cardId} .piece`);
   pieces.forEach(p => { if (p.dataset.val === val && !p.classList.contains('used')) { p.classList.add('used'); } });
 
-  // Remove hint
   const hint = zone.querySelector('.dropzone-hint');
   if (hint) hint.remove();
 
@@ -1205,13 +1031,14 @@ function dDrop(ev, cardId, correctArr) {
       markCorrect(card);
     } else {
       S.attempts[cardId] = (S.attempts[cardId] || 0) + 1;
-      zone.innerHTML = '<span class="dropzone-hint">👆 Arrastra las piezas aquí</span>';
+      const mat = MATERIAS.find(m => m.id === S.materia);
+      const isEn = mat.lang === 'en-US';
+      zone.innerHTML = `<span class="dropzone-hint">👆 ${isEn ? 'Drag the pieces here' : 'Arrastra las piezas aquí'}</span>`;
       card._dropped = [];
       pieces.forEach(p => p.classList.remove('used'));
       card.classList.add('incorrect-flash');
       setTimeout(() => card.classList.remove('incorrect-flash'), 400);
-      const mat = MATERIAS.find(m => m.id === S.materia);
-      speak(mat.lang === 'en-US' ? 'Try again! Check the order.' : '¡Revisa el orden e inténtalo de nuevo!', mat.lang);
+      speak(isEn ? 'Try again! Check the order.' : '¡Revisa el orden e inténtalo de nuevo!', mat.lang);
     }
   }
 }
@@ -1220,9 +1047,8 @@ function dDrop(ev, cardId, correctArr) {
 // SUCCESS
 // ═══════════════════════════════════════════════════════
 function exKey(cardId) {
-  // cardId: "card-week-materia-idx"
   const p = cardId.replace('card-','').split('-');
-  return `${p[1]}-${p[0]}-${p[2]}`;   // "materia-week-idx"
+  return `${p[1]}-${p[0]}-${p[2]}`;
 }
 
 function markCorrect(card) {
@@ -1230,11 +1056,9 @@ function markCorrect(card) {
   const key      = exKey(cardId);
   const alreadyDone = !!S.completed[key];
 
-  // Increment attempt count (this correct attempt counts too)
   S.attempts[cardId] = (S.attempts[cardId] || 0) + 1;
   const attempts = S.attempts[cardId];
 
-  // Save completion record
   const ex = card._ex || {};
   S.completed[key] = { attempts, correcta: ex.correcta || '', tipo: ex.tipo || '' };
 
@@ -1248,7 +1072,6 @@ function markCorrect(card) {
     az.innerHTML = `<div class="check-overlay">✅ ¡Correcto! · <span style="font-size:11px;font-weight:700;opacity:.8;">${attemptTxt}</span></div>`;
   }
 
-  // Only add points & update counters if first time
   if (!alreadyDone) {
     S.score += 10;
     S.done  += 1;
@@ -1261,7 +1084,6 @@ function markCorrect(card) {
 
   saveProgress();
 
-  // Only show celebration modal on first completion
   if (!alreadyDone) {
     const msgs = ['¡Increíble! 🌟','¡Lo lograste! 🏆','¡Fantástico! 🦄','¡Eres un genio! 🧠','¡Bravo! 🎊','¡Perfecto! ⭐'];
     const icons = ['🌟','🏆','🦄','🎉','🧠','🚀','⭐'];
@@ -1283,7 +1105,6 @@ function closeModal() {
 // NAV
 // ═══════════════════════════════════════════════════════
 function initNav() {
-  // Week buttons
   const wn = document.getElementById('week-nav');
   for (let i = 1; i <= 9; i++) {
     const wrap = document.createElement('div');
@@ -1301,7 +1122,6 @@ function initNav() {
     wn.appendChild(wrap);
   }
 
-  // Subject buttons
   const sn = document.getElementById('subject-nav');
   MATERIAS.forEach(m => {
     const b = document.createElement('button');
@@ -1313,28 +1133,20 @@ function initNav() {
 }
 
 function updateUI() {
-  // Week buttons
   document.querySelectorAll('.week-btn').forEach((b,i) => {
     b.classList.toggle('active', S.week === i+1);
   });
-  // Subject buttons
   document.querySelectorAll('.sub-btn').forEach((b,i) => {
     b.classList.toggle('active', S.materia === MATERIAS[i].id);
   });
 
   const mat = MATERIAS.find(m => m.id === S.materia);
   document.getElementById('main-title').textContent = `${mat.ico} ${mat.nombre}`;
-  const misionCount = (S.materia === 'soc' && S.week >= 6) ? 6 : 4;
-  document.getElementById('main-sub').textContent   = `Semana ${S.week} · ${misionCount} Misiones`;
-
   renderExercises();
 }
 
 // ═══════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════
-// ═══════════════════════════════════════════════════════
-// STUDENT PROFILE — localStorage per name
+// STUDENT PROFILE
 // ═══════════════════════════════════════════════════════
 function lsKey(name) { return `mh2026_${name.trim().toLowerCase().replace(/\s+/g,'_')}`; }
 
@@ -1374,7 +1186,6 @@ function updateWeekBadge(w) {
 }
 
 function showNameModal() {
-  // Inject styles once
   if (!document.getElementById('nm-style')) {
     const st = document.createElement('style');
     st.id = 'nm-style';
@@ -1395,7 +1206,6 @@ function showNameModal() {
     document.head.appendChild(st);
   }
 
-  // Find saved profiles
   const profiles = [];
   for (let k in localStorage) {
     if (k.startsWith('mh2026_')) profiles.push(k.replace('mh2026_','').replace(/_/g,' '));
@@ -1425,7 +1235,6 @@ function startSession() {
   const name = (inp.value || '').trim();
   if (!name) { inp.style.borderColor='#ef4444'; inp.focus(); return; }
   S.studentName = name;
-  // Update greeting in header
   const p = document.querySelector('.logo-text p');
   if (p) p.textContent = `Hola, ${name} · I Trimestre 2026`;
   document.getElementById('nm-overlay').remove();
