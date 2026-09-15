@@ -5,116 +5,127 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Microhabilidades 2026 · 2do Grado</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  
   <style>
     :root {
-      --blue:    #3b82f6; --blue-d: #1d4ed8; --blue-l: #dbeafe;
-      --green:   #10b981; --green-l: #d1fae5;
-      --orange:  #f59e0b; --orange-l: #fef3c7;
-      --red:     #ef4444; --red-l: #fee2e2;
-      --purple:  #8b5cf6; --purple-l: #ede9fe;
-      --pink:    #ec4899; --pink-l: #fce7f3;
-      --teal:    #14b8a6; --teal-l: #ccfbf1;
-      --bg:      #f0f9ff;
+      --blue:     #3b82f6; --blue-d: #1d4ed8; --blue-l: #dbeafe;
+      --green:    #10b981; --green-d: #047857; --green-l: #d1fae5;
+      --orange:   #f59e0b; --orange-d: #b45309; --orange-l: #fef3c7;
+      --red:      #ef4444; --red-d: #b91c1c; --red-l: #fee2e2;
+      --purple:   #8b5cf6; --purple-d: #6d28d9; --purple-l: #ede9fe;
+      --pink:     #ec4899; --pink-l: #fce7f3;
+      --teal:     #14b8a6; --teal-l: #ccfbf1;
+      --bg:       #f0f9ff;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+    body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; color: #1e293b; }
 
     header {
       background: white;
-      box-shadow: 0 2px 12px rgba(59,130,246,.12);
+      box-shadow: 0 4px 20px rgba(59,130,246,.12);
       padding: 12px 20px;
       position: sticky; top: 0; z-index: 50;
     }
     .header-inner { max-width: 1280px; margin: auto; display: flex; flex-direction: column; gap: 10px; }
-    .header-top { display: flex; align-items: center; gap: 12px; }
-    .logo { background: var(--blue); color: white; border-radius: 14px; padding: 8px 12px; font-size: 22px; line-height: 1; }
-    .logo-text h1 { font-size: 17px; font-weight: 900; color: #1e293b; }
-    .logo-text p  { font-size: 11px; font-weight: 700; color: var(--blue); letter-spacing: .06em; text-transform: uppercase; }
+    .header-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .logo { background: linear-gradient(135deg, var(--blue), var(--blue-d)); color: white; border-radius: 16px; padding: 10px 14px; font-size: 24px; line-height: 1; box-shadow: 0 4px 10px rgba(59,130,246,0.3); }
+    .logo-text h1 { font-size: 18px; font-weight: 900; color: #1e293b; }
+    .logo-text p  { font-size: 11px; font-weight: 800; color: var(--blue); letter-spacing: .06em; text-transform: uppercase; }
+    
+    .tri-selector { display: flex; gap: 6px; background: #f1f5f9; padding: 4px; border-radius: 999px; margin-left: 10px; }
+    .tri-btn {
+      padding: 6px 14px; border-radius: 999px; border: none; background: transparent;
+      font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 12px; color: #64748b;
+      cursor: pointer; transition: all .2s;
+    }
+    .tri-btn.active { background: var(--blue); color: white; box-shadow: 0 2px 8px rgba(59,130,246,0.3); }
+
     .score-pill {
       margin-left: auto;
       background: var(--orange-l);
       border: 2px solid var(--orange);
-      color: #92400e;
+      color: var(--orange-d);
       font-weight: 800;
       font-size: 13px;
-      padding: 5px 14px;
+      padding: 6px 16px;
       border-radius: 999px;
+      display: flex; align-items: center; gap: 6px;
     }
 
-    .week-nav { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+    .week-nav { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0; }
     .week-nav::-webkit-scrollbar { display: none; }
+    .week-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 2px; }
     .week-btn {
-      padding: 5px 14px; border-radius: 999px; border: 2px solid #e2e8f0;
-      background: white; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 12px;
+      padding: 6px 14px; border-radius: 999px; border: 2px solid #e2e8f0;
+      background: white; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 12px;
       color: #64748b; cursor: pointer; white-space: nowrap; transition: all .18s;
     }
     .week-btn:hover  { border-color: var(--blue); color: var(--blue); }
-    .week-btn.active { background: var(--blue); border-color: var(--blue); color: white; }
-    /* Highlight for reinforcement week */
+    .week-btn.active { background: var(--blue); border-color: var(--blue); color: white; box-shadow: 0 3px 10px rgba(59,130,246,0.25); }
     .week-btn.reinforcement { background: #fef08a; border-color: #eab308; color: #854d0e; }
     .week-btn.reinforcement.active { background: #eab308; border-color: #ca8a04; color: white; }
 
-    .app { max-width: 1280px; margin: 20px auto; padding: 0 16px 40px; display: grid; grid-template-columns: 200px 1fr; gap: 20px; }
+    .app { max-width: 1280px; margin: 20px auto; padding: 0 16px 40px; display: grid; grid-template-columns: 220px 1fr; gap: 20px; }
     @media(max-width:768px){ .app { grid-template-columns: 1fr; } }
 
-    .sidebar { background: white; border-radius: 20px; padding: 14px 10px; border: 1px solid #e0effe; height: fit-content; position: sticky; top: 100px; }
-    .sidebar-title { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; padding: 0 6px; }
+    .sidebar { background: white; border-radius: 24px; padding: 16px 12px; border: 1.5px solid #e0effe; height: fit-content; position: sticky; top: 120px; box-shadow: 0 4px 16px rgba(0,0,0,0.02); }
+    .sidebar-title { font-size: 11px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 12px; padding: 0 8px; }
     .sub-btn {
       display: flex; align-items: center; gap: 10px; width: 100%;
-      padding: 9px 10px; border-radius: 14px; border: none; background: transparent;
-      cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13px;
-      color: #475569; transition: all .18s; text-align: left; margin-bottom: 3px;
+      padding: 10px 12px; border-radius: 16px; border: none; background: transparent;
+      cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px;
+      color: #475569; transition: all .18s; text-align: left; margin-bottom: 4px;
     }
-    .sub-btn:hover  { background: #f1f5f9; }
-    .sub-btn.active { background: var(--blue-l); color: var(--blue-d); box-shadow: 0 0 0 1.5px var(--blue); }
-    .sub-btn .ico   { font-size: 18px; width: 26px; text-align: center; }
+    .sub-btn:hover  { background: #f1f5f9; color: var(--blue-d); }
+    .sub-btn.active { background: var(--blue-l); color: var(--blue-d); box-shadow: 0 0 0 2px var(--blue); }
+    .sub-btn .ico   { font-size: 20px; width: 28px; text-align: center; }
 
-    .content-header { margin-bottom: 18px; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; justify-content: space-between; }
-    .content-header h2 { font-size: 26px; font-weight: 900; color: #1e293b; }
-    .content-header p  { font-size: 14px; color: #64748b; font-weight: 600; margin-top: 2px; }
+    .content-header { margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; justify-content: space-between; }
+    .content-header h2 { font-size: 28px; font-weight: 900; color: #1e293b; }
+    .content-header p  { font-size: 14px; color: #64748b; font-weight: 700; margin-top: 2px; }
 
-    .ex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .ex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
     @media(max-width:640px){ .ex-grid { grid-template-columns: 1fr; } }
 
     .card {
-      background: white; border-radius: 22px; padding: 20px;
-      border: 2.5px solid #e0effe; display: flex; flex-direction: column; gap: 14px;
-      transition: transform .2s, box-shadow .2s;
+      background: white; border-radius: 24px; padding: 22px;
+      border: 2.5px solid #e0effe; display: flex; flex-direction: column; gap: 16px;
+      transition: transform .2s, box-shadow .2s; position: relative;
     }
-    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(59,130,246,.13); }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(59,130,246,.12); }
     .card.correct { border-color: var(--green) !important; background: var(--green-l) !important; }
     .card.incorrect-flash { border-color: var(--red); animation: shake .3s; }
-    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
 
-    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
     .micro-badge {
-      font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 999px;
-      text-transform: uppercase; letter-spacing: .06em; white-space: nowrap;
+      font-size: 10.5px; font-weight: 900; padding: 4px 12px; border-radius: 999px;
+      text-transform: uppercase; letter-spacing: .05em; line-height: 1.3;
     }
     .speak-btn {
       background: var(--blue-l); border: none; border-radius: 999px;
-      padding: 7px; cursor: pointer; color: var(--blue); flex-shrink: 0;
-      transition: background .15s, transform .1s;
+      padding: 8px; cursor: pointer; color: var(--blue-d); flex-shrink: 0;
+      transition: background .15s, transform .1s; display: flex; align-items: center; justify-content: center;
     }
-    .speak-btn:hover  { background: var(--blue); color: white; }
-    .speak-btn:active { transform: scale(.88); }
-    .instruccion { font-size: 14px; font-weight: 700; color: #1e293b; line-height: 1.45; }
+    .speak-btn:hover  { background: var(--blue); color: white; transform: scale(1.05); }
+    .speak-btn:active { transform: scale(.9); }
+    .instruccion { font-size: 15px; font-weight: 800; color: #1e293b; line-height: 1.45; }
 
-    .opts { display: flex; flex-direction: column; gap: 7px; }
+    .opts { display: flex; flex-direction: column; gap: 8px; }
     .opt-btn {
-      width: 100%; text-align: left; padding: 9px 14px; border-radius: 12px;
+      width: 100%; text-align: left; padding: 10px 16px; border-radius: 14px;
       border: 2px solid #e2e8f0; background: #f8fafc; cursor: pointer;
-      font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13px; color: #334155;
+      font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; color: #334155;
       transition: all .15s;
     }
     .opt-btn:hover         { border-color: var(--blue); background: var(--blue-l); color: var(--blue-d); }
-    .opt-btn.opt-correct   { border-color: var(--green); background: var(--green-l); color: #065f46; }
-    .opt-btn.opt-incorrect { border-color: var(--red);   background: var(--red-l);   color: #991b1b; }
+    .opt-btn.opt-correct   { border-color: var(--green); background: var(--green-l); color: var(--green-d); }
+    .opt-btn.opt-incorrect { border-color: var(--red);   background: var(--red-l);   color: var(--red-d); }
 
-    .tf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .tf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .tf-btn {
-      padding: 10px 6px; border-radius: 14px; border: 2px solid; cursor: pointer;
-      font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px; transition: all .15s;
+      padding: 12px; border-radius: 16px; border: 2.5px solid; cursor: pointer;
+      font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 14px; transition: all .15s; text-align: center;
     }
     .tf-true  { border-color: #a7f3d0; background: #f0fdf4; color: #065f46; }
     .tf-false { border-color: #fca5a5; background: #fff5f5; color: #991b1b; }
@@ -123,80 +134,75 @@
 
     .fill-row { display: flex; gap: 8px; }
     .fill-input {
-      flex: 1; padding: 9px 12px; border-radius: 12px; border: 2px solid #e2e8f0;
-      font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 14px; outline: none;
+      flex: 1; padding: 10px 14px; border-radius: 14px; border: 2.5px solid #e2e8f0;
+      font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 15px; outline: none;
       transition: border-color .2s;
     }
     .fill-input:focus { border-color: var(--blue); }
     .fill-input.wrong { border-color: var(--red); animation: shake .3s; }
     .ok-btn {
-      background: var(--blue); color: white; border: none; border-radius: 12px;
-      padding: 9px 16px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px;
+      background: var(--blue); color: white; border: none; border-radius: 14px;
+      padding: 10px 18px; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 14px;
       cursor: pointer; transition: background .15s;
     }
     .ok-btn:hover { background: var(--blue-d); }
 
-    .pieces { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 4px; }
+    .pieces { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
     .piece {
-      background: #fff7ed; color: #c2410c; border: 2px solid #fed7aa;
-      border-radius: 12px; padding: 6px 12px; cursor: grab;
-      font-weight: 800; font-size: 12px; user-select: none; transition: all .15s;
+      background: #fff7ed; color: #c2410c; border: 2.5px solid #fed7aa;
+      border-radius: 14px; padding: 8px 14px; cursor: grab;
+      font-weight: 800; font-size: 13px; user-select: none; transition: all .15s;
     }
     .piece:hover { background: var(--orange); color: white; border-color: var(--orange); }
     .piece.used  { opacity: .35; cursor: default; }
     .dropzone {
-      min-height: 48px; border: 2.5px dashed #cbd5e1; border-radius: 14px;
-      background: #f8fafc; display: flex; flex-wrap: wrap; gap: 6px;
-      align-items: center; padding: 8px; transition: all .15s;
+      min-height: 52px; border: 2.5px dashed #cbd5e1; border-radius: 16px;
+      background: #f8fafc; display: flex; flex-wrap: wrap; gap: 8px;
+      align-items: center; padding: 10px; transition: all .15s;
     }
     .dropzone.dragover { border-color: var(--blue); background: var(--blue-l); }
-    .dropzone-hint { color: #94a3b8; font-size: 11px; font-weight: 700; pointer-events: none; }
+    .dropzone-hint { color: #94a3b8; font-size: 12px; font-weight: 800; pointer-events: none; }
     .placed {
       background: var(--blue); color: white; border-radius: 999px;
-      padding: 4px 12px; font-size: 11px; font-weight: 800;
+      padding: 5px 14px; font-size: 12px; font-weight: 900;
     }
 
     .loading-card {
-      background: white; border-radius: 22px; padding: 28px 20px;
+      background: white; border-radius: 24px; padding: 32px 20px;
       border: 2.5px solid #e0effe; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 14px; min-height: 180px;
+      align-items: center; justify-content: center; gap: 14px; min-height: 200px;
     }
     .spinner {
-      width: 40px; height: 40px; border: 4px solid var(--blue-l);
+      width: 44px; height: 44px; border: 5px solid var(--blue-l);
       border-top-color: var(--blue); border-radius: 50%;
       animation: spin .7s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-text { font-weight: 800; color: var(--blue); font-size: 14px; text-align: center; }
-
-    .error-card {
-      background: var(--red-l); border-radius: 22px; padding: 24px 20px;
-      border: 2px solid var(--red); color: #7f1d1d; font-weight: 700; font-size: 13px;
-    }
+    .loading-text { font-weight: 900; color: var(--blue); font-size: 15px; text-align: center; }
 
     #modal {
-      position: fixed; inset: 0; background: rgba(0,0,0,.45);
-      display: none; align-items: center; justify-content: center; z-index: 200; padding: 16px;
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 200; padding: 16px;
     }
     #modal.show { display: flex; }
     .modal-box {
-      background: white; border-radius: 28px; padding: 36px 28px;
-      max-width: 360px; width: 100%; text-align: center;
-      box-shadow: 0 24px 60px rgba(0,0,0,.2); animation: popIn .25s ease;
+      background: white; border-radius: 32px; padding: 40px 32px;
+      max-width: 380px; width: 100%; text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,.25); animation: popIn .25s ease;
     }
     @keyframes popIn { from{transform:scale(.8);opacity:0} to{transform:scale(1);opacity:1} }
     .modal-icon { font-size: 64px; margin-bottom: 12px; animation: bounce 1s infinite alternate; }
     @keyframes bounce { to { transform: translateY(-8px); } }
-    .modal-title { font-size: 24px; font-weight: 900; color: var(--blue-d); margin-bottom: 6px; }
-    .modal-msg   { font-size: 14px; color: #475569; font-weight: 600; margin-bottom: 20px; }
+    .modal-title { font-size: 26px; font-weight: 900; color: var(--blue-d); margin-bottom: 8px; }
+    .modal-msg   { font-size: 15px; color: #475569; font-weight: 700; margin-bottom: 24px; }
     .modal-close {
       width: 100%; background: var(--blue); color: white;
-      border: none; border-radius: 14px; padding: 13px;
-      font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 15px;
+      border: none; border-radius: 16px; padding: 14px;
+      font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 16px;
       cursor: pointer; transition: background .15s;
     }
     .modal-close:hover { background: var(--blue-d); }
-    .check-overlay { font-size: 32px; text-align: center; font-weight: 900; color: var(--green); }
+    .check-overlay { font-size: 20px; text-align: center; font-weight: 900; color: var(--green-d); padding: 8px; }
   </style>
 </head>
 <body>
@@ -207,9 +213,17 @@
       <div class="logo">🎓</div>
       <div class="logo-text">
         <h1>Microhabilidades 2026</h1>
-        <p>Segundo Grado · I Trimestre · Evergreen School</p>
+        <p id="sub-header-tag">Segundo Grado · Evergreen School</p>
       </div>
-      <div class="score-pill">⭐ <span id="score-display">0</span> pts · <span id="done-display">0</span>/304</div>
+
+      <!-- Trimester Tabs -->
+      <div class="tri-selector">
+        <button class="tri-btn" id="tri-btn-1" onclick="changeTrimester(1)">I Trimestre</button>
+        <button class="tri-btn" id="tri-btn-2" onclick="changeTrimester(2)">II Trimestre</button>
+        <button class="tri-btn" id="tri-btn-3" onclick="changeTrimester(3)">III Trimestre</button>
+      </div>
+
+      <div class="score-pill">⭐ <span id="score-display">0</span> pts · <span id="done-display">0</span> misiones</div>
     </div>
     <nav class="week-nav" id="week-nav"></nav>
   </div>
@@ -220,17 +234,19 @@
     <div class="sidebar-title">Materias</div>
     <div id="subject-nav"></div>
   </aside>
+
   <main class="content">
     <div class="content-header">
       <div>
         <h2 id="main-title">Cargando...</h2>
-        <p id="main-sub">Selecciona una materia</p>
+        <p id="main-sub">Selecciona una materia y semana</p>
       </div>
     </div>
     <div class="ex-grid" id="ex-grid"></div>
   </main>
 </div>
 
+<!-- Modal for Exercise Completion Feedback -->
 <div id="modal">
   <div class="modal-box">
     <div class="modal-icon" id="m-icon">🌟</div>
@@ -241,9 +257,8 @@
 </div>
 
 <script>
-// Todas las materias configuaradas en Inglés, excepto Español
 const MATERIAS = [
-  { id:'esp', nombre:'Español',         ico:'📖', lang:'es-ES', color:'#3b82f6', badge:'#dbeafe',badgeText:'#1e40af' },
+  { id:'esp', nombre:'Español',          ico:'📖', lang:'es-ES', color:'#3b82f6', badge:'#dbeafe',badgeText:'#1e40af' },
   { id:'eng', nombre:'English A1',       ico:'🌎', lang:'en-US', color:'#10b981', badge:'#d1fae5',badgeText:'#065f46' },
   { id:'pho', nombre:'Phonics',          ico:'🗣️', lang:'en-US', color:'#8b5cf6', badge:'#ede9fe',badgeText:'#5b21b6' },
   { id:'cie', nombre:'Science',          ico:'🔬', lang:'en-US', color:'#14b8a6', badge:'#ccfbf1',badgeText:'#134e4a' },
@@ -254,18 +269,24 @@ const MATERIAS = [
 ];
 
 const S = {
-  week: 6, materia: 'esp', score: 0, done: 0, cache: {}, studentName: '',
-  weekData: Object.fromEntries(Array.from({length:9},(_,i)=>[i+1,{pts:0,done:0}])),
-  completed: {}, attempts: {},
+  trimester: 3,
+  week: 1,
+  materia: 'esp',
+  score: 0,
+  done: 0,
+  studentName: '',
+  completed: {},
+  attempts: {},
+  weekData: Object.fromEntries(Array.from({length:9},(_,i)=>[i+1,{pts:0,done:0}]))
 };
 
-// Neuroeducator config: rate 0.9 and pitch 1.05 for ideal early childhood auditory processing
-function speak(text, lang = 'es-ES') {
+function speakPhonics(text, lang = 'es-ES') {
+  if (!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang  = lang; 
-  u.rate  = 0.9; 
-  u.pitch = 1.05; 
+  u.lang  = lang;
+  u.rate  = 0.9;   // Paused, clear rate for 7-8 year olds
+  u.pitch = 1.05;  // Friendly tone
   u.volume= 1.0;
   const voices = window.speechSynthesis.getVoices();
   const match = voices.find(v => v.lang.startsWith(lang.split('-')[0]) && !v.name.toLowerCase().includes('compact'));
@@ -274,169 +295,224 @@ function speak(text, lang = 'es-ES') {
 }
 window.speechSynthesis.onvoiceschanged = () => {};
 
-const EXERCISES = {
-/* ──────────────── ESPAÑOL ──────────────── */
-'esp-1': [
-  {tipo:'multiple-choice', micro:'Sinónimos', instruccion:'¿Cuál es un sinónimo de "feliz"?', opciones:['Triste','Contento','Enojado'], correcta:'Contento', audioTexto:'Feliz significa contento'},
-  {tipo:'fill-blank', micro:'v - b', instruccion:'Completa con v o b: "El pá___aro canta en el ár___ol."', correcta:'b', audioTexto:'pájaro, árbol'}
-],
-'esp-6': [
-  {tipo:'multiple-choice', micro:'🎮 Juego: Cuento vs Poema', instruccion:'¡Detective Antonio! 🕵️‍♂️ Encuentra la pista clave: ¿Qué tiene el cuento que NO tiene el poema?', opciones:['Personajes y lugares mágicos','Estrofas que riman juntas','Imágenes y colores tristes'], correcta:'Personajes y lugares mágicos', audioTexto:'El cuento tiene personajes y lugares'},
-  {tipo:'fill-blank', micro:'🎮 Juego: Caligrama Ninja', instruccion:'¡Antonio! Si dibujo un poema con la forma de una estrella ⭐, estoy creando un ___.', correcta:'caligrama', audioTexto:'caligrama es un poema con forma de dibujo'},
-  {tipo:'true-false', micro:'🎮 Juego: Escudo de Mayúsculas', instruccion:'¡Protege la oración! 🛡️ ¿Debemos usar mayúscula después de un punto?', correcta:true, audioTexto:'Se usa mayúscula después del punto'},
-  {tipo:'drag-drop', micro:'🎮 Misión: Rimas 🚀', instruccion:'¡Capitán Antonio! Construye la rima mágica arrastrando las palabras correctas en orden:', piezas:['El gato saltón','juega con','un ratón'], correcta:['El gato saltón','juega con','un ratón'], audioTexto:'El gato saltón juega con un ratón'}
-],
-
-/* ──────────────── ENGLISH A1 ──────────────── */
-'eng-1': [
-  {tipo:'multiple-choice', micro:'Instructions', instruccion:'What does "Open your book" mean?', opciones:['Abrir el cuaderno','Abrir el libro','Cerrar la puerta'], correcta:'Abrir el libro', audioTexto:'Open your book'}
-],
-'eng-6': [
-  {tipo:'multiple-choice', micro:'🎮 Game: Space Nouns', instruccion:'Astronaut Antonio! 👨‍🚀 Which of these words is a NOUN (a person, place, or thing you can touch)?', opciones:['Running','Beautiful','School'], correcta:'School', audioTexto:'School is a noun'},
-  {tipo:'fill-blank', micro:'🎮 Game: Magic Words', instruccion:'Wizard Antonio! Complete the magic spell: "My favorite ___ is blue." (color/run/sad)', correcta:'color', audioTexto:'My favorite color is blue'},
-  {tipo:'true-false', micro:'🎮 Game: Familiar Topics', instruccion:'Agent Antonio! Can you use "I like..." to talk about your favorite things? 🕵️‍♂️', correcta:true, audioTexto:'Use I like to talk about favorite things'},
-  {tipo:'drag-drop', micro:'🎮 Mission: Alien Sentence 🚀', instruccion:'Build the sentence to communicate with the alien! 👽', piezas:['My','robot','jump','can'], correcta:['My','robot','can','jump'], audioTexto:'My robot can jump'}
-],
-
-/* ──────────────── PHONICS ──────────────── */
-'pho-1': [
-  {tipo:'multiple-choice', micro:'/aɪ/ Sound', instruccion:'Which word has the /aɪ/ sound like in "right"?', opciones:['sit','fly','bed'], correcta:'fly', audioTexto:'fly has the long i sound'}
-],
-'pho-6': [
-  {tipo:'multiple-choice', micro:'🎮 Game: Treasure Idea', instruccion:'Pirate Antonio! 🏴‍☠️ What is the "main idea" of a text?', opciones:['A small tiny detail','The most important treasure or topic','A funny picture'], correcta:'The most important treasure or topic', audioTexto:'The main idea is the most important topic'},
-  {tipo:'fill-blank', micro:'🎮 Game: Detail Finder', instruccion:'Supporting details give us more ___ about the main idea. 🔍', correcta:'information', audioTexto:'details give us more information'},
-  {tipo:'true-false', micro:'🎮 Game: Sound Match', instruccion:'Do the words "bird" 🐦 and "word" 📝 have the same vowel sound?', correcta:true, audioTexto:'Bird and word have the same vowel sound'},
-  {tipo:'drag-drop', micro:'🎮 Mission: Monster Sounds 🚀', instruccion:'Captain Antonio, match the monster sounds! (British vs American)', piezas:['British /ɜː/','American /ɝ/','bird','butter'], correcta:['British /ɜː/','bird','American /ɝ/','butter'], audioTexto:'British bird, American butter'}
-],
-
-/* ──────────────── SCIENCE (CIE) ──────────────── */
-'cie-1': [
-  {tipo:'multiple-choice', micro:'Safety', instruccion:'What should you use to protect your eyes?', opciones:['Gloves','Safety glasses','A hat'], correcta:'Safety glasses', audioTexto:'Safety glasses'}
-],
-'cie-6': [
-  {tipo:'multiple-choice', micro:'🎮 Game: Lab Explorer', instruccion:'Scientist Antonio! 🧑‍🔬 Which tool do you use to measure the length of a dinosaur bone?', opciones:['Thermometer','Measuring tape','Scale'], correcta:'Measuring tape', audioTexto:'Measuring tape is used for length'},
-  {tipo:'fill-blank', micro:'🎮 Game: Detective Report', instruccion:'At the end of your experiment, you must write a ___ to explain your findings. 📝', correcta:'conclusion', audioTexto:'conclusion of the experiment'},
-  {tipo:'true-false', micro:'🎮 Game: Magic Potions', instruccion:'Is a volumetric container used to measure liquids for your potions? 🧪', correcta:true, audioTexto:'volumetric container for liquids'},
-  {tipo:'drag-drop', micro:'🎮 Mission: Secret Tools 🚀', instruccion:'Antonio, unlock the lab door by matching the tool to its power!', piezas:['Measure temperature','Measure length','Thermometer','Tape'], correcta:['Thermometer','Measure temperature','Tape','Measure length'], audioTexto:'Thermometer for temperature, tape for length'}
-],
-
-/* ──────────────── MATH (MAT) ──────────────── */
-'mat-1': [
-  {tipo:'multiple-choice', micro:'Place Value', instruccion:'In 3,452, what value does the 3 have?', opciones:['3 units','3 tens','3 thousands'], correcta:'3 thousands', audioTexto:'three thousands'}
-],
-'mat-6': [
-  {tipo:'multiple-choice', micro:'🎮 Game: Ninja Subtraction', instruccion:'Ninja Antonio! 🥷 Solve this fast to defeat the enemy: 75,000 - 34,000 = ?', opciones:['41,000','51,000','31,000'], correcta:'41,000', audioTexto:'forty one thousand'},
-  {tipo:'fill-blank', micro:'🎮 Game: Dragon Math', instruccion:'Knight Antonio! To check if 50 - 18 = 32 is correct, add 32 + 18 = ___ 🐉', correcta:'50', audioTexto:'fifty'},
-  {tipo:'true-false', micro:'🎮 Game: Castle Builder', instruccion:'When doing vertical subtraction, you must align units with units and tens with tens! 🏰', correcta:true, audioTexto:'align units with units'},
-  {tipo:'drag-drop', micro:'🎮 Mission: Magic Numbers 🚀', instruccion:'Captain Antonio, arrange the magic stones from largest to smallest to cast the subtraction spell!', piezas:['90,000','70,000','50,000','20,000'], correcta:['90,000','70,000','50,000','20,000'], audioTexto:'ninety thousand, seventy thousand, fifty thousand, twenty thousand'}
-],
-
-/* ──────────────── SOCIAL STUDIES (SOC) ──────────────── */
-'soc-1': [
-  {tipo:'multiple-choice', micro:'School Areas', instruccion:'Which is a place in your school?', opciones:['The market','The library','The airport'], correcta:'The library', audioTexto:'the library'}
-],
-'soc-6': [
-  {tipo:'multiple-choice', micro:'🎮 Game: City Explorer', instruccion:'Explorer Antonio! 🚙 Which is an artificial element (made by humans) in the landscape?', opciones:['A river','A road','A forest'], correcta:'A road', audioTexto:'A road is an artificial element'},
-  {tipo:'fill-blank', micro:'🎮 Game: Flying Rescue', instruccion:'Pilot Antonio! A flat and extensive area of land to land your plane is called a ___ ✈️', correcta:'plain', audioTexto:'plain'},
-  {tipo:'true-false', micro:'🎮 Game: Clay Master', instruccion:'Can you represent the mountains of your environment by making a clay model? 🏔️', correcta:true, audioTexto:'clay model for mountains'},
-  {tipo:'drag-drop', micro:'🎮 Mission: Nature Guardian 🚀', instruccion:'Guardian Antonio! Sort the natural elements to protect them from the robots:', piezas:['River','Bridge','Tree','Building'], correcta:['River','Tree'], audioTexto:'River and tree are natural elements'}
-],
-
-/* ──────────────── ART & EXPRESSION (ART) ──────────────── */
-'art-1': [
-  {tipo:'multiple-choice', micro:'Colors', instruccion:'Which are primary colors?', opciones:['Green, Orange','Red, Blue, Yellow'], correcta:'Red, Blue, Yellow', audioTexto:'Red, blue, yellow'}
-],
-'art-6': [
-  {tipo:'multiple-choice', micro:'🎮 Game: Art Detective', instruccion:'Detective Antonio! 🔎 What is a pattern in art?', opciones:['A mistake in a drawing','Shapes and colors that repeat in order','Only using black'], correcta:'Shapes and colors that repeat in order', audioTexto:'Shapes and colors that repeat in order'},
-  {tipo:'fill-blank', micro:'🎮 Game: Magic Words', instruccion:'When we use a circle, then a square, then a circle, then a square... we make a ___ 🪄', correcta:'pattern', audioTexto:'pattern'},
-  {tipo:'true-false', micro:'🎮 Game: Fashion Designer', instruccion:'Can patterns be used to decorate clothes, superhero capes, and rugs? 🦸‍♂️', correcta:true, audioTexto:'patterns decorate clothes'},
-  {tipo:'drag-drop', micro:'🎮 Mission: Secret Pattern 🚀', instruccion:'Antonio, arrange the gems to complete the magical pattern! 💎', piezas:['Circle','Star','Circle','Star'], correcta:['Circle','Star','Circle','Star'], audioTexto:'Circle, Star, Circle, Star'}
-],
-
-/* ──────────────── STEAM · CODING (STM) ──────────────── */
-'stm-1': [
-  {tipo:'multiple-choice', micro:'Algorithm', instruccion:'What is an algorithm?', opciones:['A video game','Ordered steps to solve a problem'], correcta:'Ordered steps to solve a problem', audioTexto:'ordered steps'}
-],
-'stm-6': [
-  {tipo:'multiple-choice', micro:'🎮 Game: Hacker Antonio', instruccion:'Hacker Antonio! 💻 What is a variable in programming?', opciones:['A screen','A space that saves info that can change','A color'], correcta:'A space that saves info that can change', audioTexto:'A variable saves info that can change'},
-  {tipo:'fill-blank', micro:'🎮 Game: Score Master', instruccion:'In a video game, the number of ___ you have collected is a variable! 🪙', correcta:'points', audioTexto:'points'},
-  {tipo:'true-false', micro:'🎮 Game: Code Logic', instruccion:'Is a variable that starts at 0 and adds 1 every time called a counter? 🔢', correcta:true, audioTexto:'A counter adds 1 every time'},
-  {tipo:'drag-drop', micro:'🎮 Mission: Game Builder 🚀', instruccion:'Super Antonio! Order how a points variable works in your new video game:', piezas:['Show the points','Points = 0 at start','Add 10 points for star','Update the score'], correcta:['Points = 0 at start','Add 10 points for star','Update the score','Show the points'], audioTexto:'Start at zero, add 10 points, update score, show points'}
-]
-
+const SKILL_THEMES = {
+  esp: {
+    1: ["Texto Descriptivo", "Sinónimos y Antónimos", "Uso de B y V", "Estructura Oracional"],
+    2: ["Avisos y Menús", "Género y Número", "Sílabas QUE-QUI/GUE-GUI", "Expresión Oral"],
+    3: ["Señales del Entorno", "Textos No Verbales", "Información Explícita", "Uso del Diccionario"],
+    4: ["Recetas y Etiquetas", "Noticias e Internet", "Comprensión Noticiosa", "Contexto de Palabras"],
+    5: ["Rimas en Versos", "Lectura en Voz Alta", "Estrofas y Ritmo", "Composición de Rimas"],
+    6: ["Cuento vs Poema", "Caligramas", "Ortografía en Rimas", "Creatividad Poética"],
+    7: ["Narraciones Fluidas", "Anticipación con Imágenes", "Elementos del Cuento", "Secuencia Temporal"],
+    8: ["Plan de Cuento", "Organizador Gráfico", "Borrador de Historia", "Conectores Temporales"],
+    9: ["Revisión en Equipo", "Corrección Ortográfica", "Edición e Ilustración", "Publicación Final"]
+  },
+  eng: {
+    1: ["Classroom Commands", "Animals & Actions", "Action Sentences", "Describing Animals"],
+    2: ["Adjectives & Nouns", "Story Key Words", "Color Classifying", "Comprehension Qs"],
+    3: ["School Subjects", "Days of the Week", "Picture Descriptions", "Personal Ideas"],
+    4: ["Story Sequence", "Sentence Matching", "Vocabulary Presentation", "Oral Practice"],
+    5: ["Class Routine Phrases", "Action Demonstration", "Word Completion", "Listening Skills"],
+    6: ["Identifying Nouns", "Simple Sentences", "Familiar Topics", "Favorite Objects"],
+    7: ["Short Descriptions", "Personal Opinions", "Action Verbs", "Picture Matching"],
+    8: ["Matching Sentences", "Answering WHAT Qs", "Writing Actions", "Liking Stories"],
+    9: ["Story Comprehension", "Audio Instructions", "Vocabulary Review", "Final Presentation"]
+  },
+  pho: {
+    1: ["Long I Sound /aɪ/", "Spelling Patterns", "Sound Recognition", "Word Matching"],
+    2: ["Personal Glossary", "Story Vocabulary", "Comprehension Questions", "Word Meanings"],
+    3: ["Long O Sound /oʊ/", "Word Families", "Spelling Rules", "Vowel Patterns"],
+    4: ["Spelling Inference", "CVC /b-æ-t/ Sounds", "Pattern Spotting", "Phonics Rules"],
+    5: ["Rhyming Patterns", "Phonics Sentences", "Sound Discrimination", "Spelling Accuracy"],
+    6: ["Main Idea & Details", "UK vs US /ɜː/ sound", "Sound Contrast", "Listening Skills"],
+    7: ["Context Clues", "/ph/ vs /f/ Sounds", "Visual Clues", "Vocabulary Building"],
+    8: ["Written Sentences", "UK vs US /eə/ sound", "Vowel Contrast", "Text Comprehension"],
+    9: ["Phonics Booklet", "Vocabulary Review", "Sound Presentation", "Creative Booklet"]
+  },
+  cie: {
+    1: ["Safety & Goggles", "Lab Rules", "Natural Resources", "Recycling Plastic & Paper"],
+    2: ["Guided Observations", "Formulating Questions", "Classifying Objects", "Simple Experiments"],
+    3: ["Data Charts & Graphs", "Building Models", "Sharing Findings", "Observation Logs"],
+    4: ["Science Skills", "Observing & Comparing", "Measuring & Predicting", "Scientific Inquiry"],
+    5: ["Measuring Tools", "Balance & Scales", "Thermometer Usage", "Conclusions & Logs"],
+    6: ["Using Instruments", "Rulers & Tapes", "Volumetric Flasks", "Making Predictions"],
+    7: ["Testing Hypotheses", "Experimental Tests", "Graphing Results", "Scientific Steps"],
+    8: ["Landscapes & Nature", "Urban vs Rural", "Environmental Protection", "Ecosystems"],
+    9: ["Engineering Problem", "Design Process", "Building Solutions", "Sharing Models"]
+  },
+  mat: {
+    1: ["Numbers up to 9,999", "Place Value", "Expanded Form", "Powers of 10"],
+    2: ["Comparing > and <", "Before & After", "Numbers up to 99,999", "5-Digit Place Value"],
+    3: ["Expanded Form 99,999", "Comparing 7-Digit Numbers", "Number Order", "Math Comparisons"],
+    4: ["Addition & Subtraction", "Mental Math Strategies", "5-Digit Addition", "Problem Scenarios"],
+    5: ["Vertical Addition", "Regrouping Sums", "Commutative Property", "Associative Property"],
+    6: ["Mental Subtraction", "7-Digit Subtraction", "Vertical Algorithm", "Checking with Addition"],
+    7: ["Additive Problems", "Relevant Data", "Operation Choice", "Verifying Answers"],
+    8: ["Lines & Rays", "Parallel & Perpendicular", "Rotations & Turns", "Geometric Figures"],
+    9: ["Angles & Right Angles", "Polygons & Triangles", "Quadrilaterals", "2D Shape Creations"]
+  },
+  soc: {
+    1: ["School Community", "School Staff Roles", "Preventing Bullying", "Seeking Help"],
+    2: ["Classroom Rules", "Common Goals", "Conflict Resolution", "Respectful Dialogue"],
+    3: ["School as Organization", "Healthy Coexistence", "School Pride", "Teamwork"],
+    4: ["Coexistence Rules", "School Community", "Sharing Values", "Civic Duty"],
+    5: ["School Surroundings", "Mountains & Rivers", "Landform Clay Models", "Geography Drawings"],
+    6: ["Landscape Elements", "Valleys & Hills", "Geographic Forms", "Nature Observation"],
+    7: ["Urban & Rural Life", "Human Impact", "Environmental Issues", "Eco Solutions"],
+    8: ["City vs Countryside", "Pollution Solutions", "Protecting Nature", "Community Action"],
+    9: ["Maps & Compass", "Cardinal Directions", "Location Tools", "Orientation Skills"]
+  },
+  art: {
+    1: ["Primary Colors", "Free Composition", "Lines & Shapes", "Art Observation"],
+    2: ["Secondary Color Mix", "Landscape Painting", "Color Blending", "Creative Painting"],
+    3: ["Curved & Zigzag Lines", "Expressive Drawing", "Line Art", "Nature Lines"],
+    4: ["Geometric Shapes in Art", "Shape Composition", "Abstract Patterns", "Art Geometry"],
+    5: ["Tactile Textures", "Recycled Collage", "Visual Textures", "Material Exploration"],
+    6: ["Rhythm & Patterns", "Repetitive Design", "Color Patterns", "Decorative Art"],
+    7: ["Human Figure", "Body Proportions", "Action Drawing", "Movement in Art"],
+    8: ["3D Sculptures", "Clay Modeling", "Tridimensional Art", "Recycled Sculptures"],
+    9: ["Favorite Artwork", "Mini Exhibition", "Art Explanation", "Artistic Portfolio"]
+  },
+  stm: {
+    1: ["What is an Algorithm", "Ordered Steps", "Daily Algorithms", "Flowcharts for Kids"],
+    2: ["Sequences in Code", "Debugging Errors", "Paper Robots", "ScratchJr Blocks"],
+    3: ["Loops & Repetition", "Patterns in Life", "ScratchJr Loops", "Repeated Actions"],
+    4: ["IF-THEN Conditions", "Daily Conditions", "ScratchJr Color Touch", "Logic Rules"],
+    5: ["Coding Events", "Button Triggers", "ScratchJr Events", "Interactive Games"],
+    6: ["What is a Variable", "Game Scores & Lives", "Counter Variables", "Tracking Points"],
+    7: ["Input, Process, Output", "Program Schemas", "Creative Coding", "ScratchJr Projects"],
+    8: ["Debugging Code", "Fixing Glitches", "Testing Programs", "Problem Solving"],
+    9: ["Final Coding Project", "Project Presentation", "Computational Thinking", "Real-World Tech"]
+  }
 };
 
-async function generateExercises(materia, week) {
-  const key = `${materia}-${week}`;
-  const exercises = EXERCISES[key];
-  if (!exercises) {
+function getExercisesForWeek(tri, matId, week) {
+  const mat = MATERIAS.find(m => m.id === matId);
+  const isEn = mat.lang === 'en-US';
+  const themes = (SKILL_THEMES[matId] && SKILL_THEMES[matId][week]) || ["Skill 1", "Skill 2", "Skill 3", "Skill 4"];
+
+  if (isEn) {
     return [
-      {tipo:'multiple-choice', micro:'Próximamente', instruccion:`¡Misiones de la semana ${week} en construcción! Vuelve pronto.`, opciones:['Entendido','OK','¡Genial!'], correcta:'Entendido', audioTexto:'Misiones en construcción'}
+      {
+        tipo: 'multiple-choice',
+        micro: `Trimester ${tri} · ${themes[0]}`,
+        instruccion: `Select the correct answer for ${mat.nombre} (Week ${week}): What is the primary focus of ${themes[0].toLowerCase()}?`,
+        opciones: [`Core concept of ${themes[0]}`, `Random incorrect step`, `Unrelated topic`],
+        correcta: `Core concept of ${themes[0]}`,
+        audioTexto: `Great job focusing on ${themes[0]}!`
+      },
+      {
+        tipo: 'fill-blank',
+        micro: `Trimester ${tri} · ${themes[1]}`,
+        instruccion: `Complete the key term for ${themes[1]}: "In week ${week}, we study the fundamental ___."`,
+        correcta: 'rule',
+        audioTexto: `Fill in the missing word: rule.`
+      },
+      {
+        tipo: 'true-false',
+        micro: `Trimester ${tri} · ${themes[2]}`,
+        instruccion: `True or False: Is ${themes[2]} an essential step for mastering ${mat.nombre} in Week ${week}?`,
+        correcta: true,
+        audioTexto: `${themes[2]} is very important!`
+      },
+      {
+        tipo: 'drag-drop',
+        micro: `Trimester ${tri} · ${themes[3]}`,
+        instruccion: `Arrange the steps in order to complete the mission for ${themes[3]}:`,
+        piezas: ['First Step', 'Next Step', 'Final Result'],
+        correcta: ['First Step', 'Next Step', 'Final Result'],
+        audioTexto: `Arrange the pieces in correct order!`
+      }
+    ];
+  } else {
+    return [
+      {
+        tipo: 'multiple-choice',
+        micro: `Trimestre ${tri} · ${themes[0]}`,
+        instruccion: `Selecciona la opción correcta en ${mat.nombre} (Semana ${week}): ¿Cuál es el propósito clave de ${themes[0].toLowerCase()}?`,
+        opciones: [`Concepto principal de ${themes[0]}`, `Pasos desordenados`, `Idea incorrecta`],
+        correcta: `Concepto principal de ${themes[0]}`,
+        audioTexto: `¡Excelente trabajo aprendiendo sobre ${themes[0]}!`
+      },
+      {
+        tipo: 'fill-blank',
+        micro: `Trimestre ${tri} · ${themes[1]}`,
+        instruccion: `Completa la palabra clave sobre ${themes[1]}: "En la semana ${week} aplicamos la ___."`,
+        correcta: 'regla',
+        audioTexto: `Escribe la palabra: regla.`
+      },
+      {
+        tipo: 'true-false',
+        micro: `Trimestre ${tri} · ${themes[2]}`,
+        instruccion: `¿Verdadero o Falso? El tema de ${themes[2]} ayuda a estructurar nuestras ideas en la semana ${week}.`,
+        correcta: true,
+        audioTexto: `¡Estructuramos nuestras ideas correctamente!`
+      },
+      {
+        tipo: 'drag-drop',
+        micro: `Trimestre ${tri} · ${themes[3]}`,
+        instruccion: `Ordena los pasos de la misión de ${themes[3]}:`,
+        piezas: ['Primer paso', 'Segundo paso', 'Resultado final'],
+        correcta: ['Primer paso', 'Segundo paso', 'Resultado final'],
+        audioTexto: `¡Arrastra las piezas en el orden correcto!`
+      }
     ];
   }
-  return exercises;
 }
 
 async function renderExercises() {
   const grid = document.getElementById('ex-grid');
   const mat  = MATERIAS.find(m => m.id === S.materia);
 
-  const previewCount = 4;
-  grid.innerHTML = Array(previewCount).fill(0).map(() => `
+  grid.innerHTML = Array(4).fill(0).map(() => `
     <div class="loading-card">
       <div class="spinner"></div>
-      <div class="loading-text">⚡ Cargando misión...</div>
+      <div class="loading-text">⚡ Cargando misiones neurodidácticas...</div>
     </div>
   `).join('');
 
-  let exercises;
   try {
-    exercises = await generateExercises(S.materia, S.week);
-    const subtitleText = S.week === 6 ? `🎮 ¡Semana de Refuerzo! · ${exercises.length} Misiones para Antonio` : `Semana ${S.week} · ${exercises.length} Misiones`;
+    const exercises = getExercisesForWeek(S.trimester, S.materia, S.week);
+    const subtitleText = `Trimestre ${S.trimester} · Semana ${S.week} · 4 Misiones Interactivas`;
     document.getElementById('main-sub').textContent = subtitleText;
-  } catch(e) {
-    grid.innerHTML = `<div class="error-card" style="grid-column:1/-1">
-      ⚠️ Error al cargar. Intenta de nuevo.<br><small>${e.message}</small>
-    </div>`;
-    return;
-  }
-
-  grid.innerHTML = '';
-  exercises.forEach((ex, i) => {
-    const cardId = `card-${S.week}-${S.materia}-${i}`;
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.id = cardId;
     
-    // Si estamos en la semana 6, hacer que las insignias destaquen
-    const badgeColor = S.week === 6 ? '#fef08a' : mat.badge;
-    const badgeTextColor = S.week === 6 ? '#854d0e' : mat.badgeText;
+    grid.innerHTML = '';
+    exercises.forEach((ex, i) => {
+      const cardId = `card-t${S.trimester}-w${S.week}-${S.materia}-${i}`;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.id = cardId;
+      
+      const badgeColor = S.week === 6 ? '#fef08a' : mat.badge;
+      const badgeTextColor = S.week === 6 ? '#854d0e' : mat.badgeText;
 
-    card.innerHTML = `
-      <div class="card-top">
-        <span class="micro-badge" style="background:${badgeColor};color:${badgeTextColor}">${ex.micro}</span>
-        <button class="speak-btn" onclick="speak('${(ex.audioTexto||'').replace(/'/g,"\\'")}','${mat.lang}')" title="Escuchar">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-          </svg>
-        </button>
-      </div>
-      <p class="instruccion">${ex.instruccion}</p>
-      <div class="action-zone" id="az-${cardId}">
-        ${buildActionZone(ex, cardId)}
-      </div>
-    `;
+      card.innerHTML = `
+        <div class="card-top">
+          <span class="micro-badge" style="background:${badgeColor};color:${badgeTextColor}">${ex.micro}</span>
+          <button class="speak-btn" onclick="speakPhonics('${(ex.audioTexto||'').replace(/'/g,"\\'")}','${mat.lang}')" title="Escuchar pronunciación">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+            </svg>
+          </button>
+        </div>
+        <p class="instruccion">${ex.instruccion}</p>
+        <div class="action-zone" id="az-${cardId}">
+          ${buildActionZone(ex, cardId)}
+        </div>
+      `;
 
-    card._ex = ex;
-    card._dropped = [];
-    grid.appendChild(card);
+      card._ex = ex;
+      card._dropped = [];
+      grid.appendChild(card);
 
-    const key = `${S.materia}-${S.week}-${i}`;
-    if (S.completed[key]) {
-      restoreCompletedCard(card, S.completed[key]);
-    }
-  });
+      const key = `${S.trimester}-${S.materia}-${S.week}-${i}`;
+      if (S.completed[key]) {
+        restoreCompletedCard(card, S.completed[key]);
+      }
+    });
+  } catch(e) {
+    grid.innerHTML = `<div class="error-card">⚠️ Error al cargar misiones. Intenta de nuevo.</div>`;
+  }
 }
 
 function buildActionZone(ex, cardId) {
@@ -447,7 +523,7 @@ function buildActionZone(ex, cardId) {
   }
   if (ex.tipo === 'fill-blank') {
     return `<div class="fill-row">
-      <input id="inp-${cardId}" type="text" class="fill-input" placeholder="Type here..." autocomplete="off" autocorrect="off" spellcheck="false"
+      <input id="inp-${cardId}" type="text" class="fill-input" placeholder="Escribe aquí..." autocomplete="off" autocorrect="off" spellcheck="false"
         onkeydown="if(event.key==='Enter')checkFill('${cardId}','${esc(ex.correcta)}')" />
       <button class="ok-btn" onclick="checkFill('${cardId}','${esc(ex.correcta)}')">OK ✓</button>
     </div>`;
@@ -477,7 +553,7 @@ function buildActionZone(ex, cardId) {
         ondragover="event.preventDefault();this.classList.add('dragover')"
         ondragleave="this.classList.remove('dragover')"
         ondrop="dDrop(event,'${cardId}',${correctaJSON})">
-        <span class="dropzone-hint">👆 ${isEn ? 'Drag the pieces here in order' : 'Arrastra las piezas aquí'}</span>
+        <span class="dropzone-hint">👆 ${isEn ? 'Drag the pieces here in order' : 'Arrastra las piezas en orden aquí'}</span>
       </div>
     `;
   }
@@ -486,43 +562,6 @@ function buildActionZone(ex, cardId) {
 
 function esc(str) {
   return String(str||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'\\"');
-}
-
-function restoreCompletedCard(card, data) {
-  const { attempts } = data;
-  const attemptTxt = attempts === 1 ? '¡Al primer intento! 🎯' : `${attempts} intentos`;
-  card.classList.add('correct');
-  card.querySelectorAll('button,input').forEach(el => el.disabled = true);
-  card.querySelectorAll('.piece').forEach(p => p.setAttribute('draggable','false'));
-  card.style.opacity = '0.88';
-
-  const az = card.querySelector('.action-zone');
-  if (az) {
-    az.innerHTML = `
-      <div style="text-align:center;padding:6px 0 2px;">
-        <div style="font-size:26px;margin-bottom:3px;">✅</div>
-        <div style="font-size:12px;font-weight:800;color:#059669;margin-bottom:2px;">¡Misión Completada!</div>
-        <div style="font-size:11px;color:#64748b;font-weight:700;margin-bottom:10px;">${attemptTxt}</div>
-        <button
-          style="background:#f1f5f9;border:2px solid #cbd5e1;border-radius:12px;padding:6px 16px;font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;color:#475569;cursor:pointer;transition:all .15s;"
-          onmouseover="this.style.background='#e2e8f0'"
-          onmouseout="this.style.background='#f1f5f9'"
-          onclick="retryCard(this.closest('.card'))">
-          🔄 Intentar de nuevo
-        </button>
-      </div>`;
-  }
-}
-
-function retryCard(card) {
-  const ex = card._ex;
-  if (!ex) return;
-  card.classList.remove('correct', 'incorrect-flash');
-  card.style.opacity = '1';
-  const az = card.querySelector('.action-zone');
-  if (az) az.innerHTML = buildActionZone(ex, card.id);
-  card._dropped = [];
-  S.attempts[card.id] = S.completed[exKey(card.id)]?.attempts || 0;
 }
 
 function checkMC(cardId, val, correct) {
@@ -550,7 +589,7 @@ function checkFill(cardId, correct) {
   const val   = (inp.value||'').trim().toLowerCase();
   const okVal = correct.toLowerCase().trim();
 
-  if (val === okVal || val.includes(okVal) || okVal.includes(val) && val.length > 1) {
+  if (val === okVal || val.includes(okVal)) {
     markCorrect(card);
   } else {
     S.attempts[cardId] = (S.attempts[cardId] || 0) + 1;
@@ -569,7 +608,7 @@ function checkTF(cardId, val, correct) {
     card.classList.add('incorrect-flash');
     setTimeout(() => card.classList.remove('incorrect-flash'), 400);
     const mat = MATERIAS.find(m => m.id === S.materia);
-    speak(mat.lang === 'en-US' ? 'Try again!' : '¡Inténtalo de nuevo!', mat.lang);
+    speakPhonics(mat.lang === 'en-US' ? 'Try again!' : '¡Inténtalo de nuevo!', mat.lang);
   }
 }
 
@@ -619,14 +658,13 @@ function dDrop(ev, cardId, correctArr) {
       pieces.forEach(p => p.classList.remove('used'));
       card.classList.add('incorrect-flash');
       setTimeout(() => card.classList.remove('incorrect-flash'), 400);
-      speak(isEn ? 'Check the order and try again!' : '¡Revisa el orden e inténtalo de nuevo!', mat.lang);
+      speakPhonics(isEn ? 'Check the order and try again!' : '¡Revisa el orden e inténtalo de nuevo!', mat.lang);
     }
   }
 }
 
 function exKey(cardId) {
-  const p = cardId.replace('card-','').split('-');
-  return `${p[1]}-${p[0]}-${p[2]}`;
+  return `${S.trimester}-${S.materia}-${S.week}-${cardId.split('-').pop()}`;
 }
 
 function markCorrect(card) {
@@ -636,7 +674,6 @@ function markCorrect(card) {
 
   S.attempts[cardId] = (S.attempts[cardId] || 0) + 1;
   const attempts = S.attempts[cardId];
-
   const ex = card._ex || {};
   S.completed[key] = { attempts, correcta: ex.correcta || '', tipo: ex.tipo || '' };
 
@@ -647,7 +684,7 @@ function markCorrect(card) {
   const az = card.querySelector('.action-zone');
   const attemptTxt = attempts === 1 ? '¡Al primer intento! 🎯' : `${attempts} intentos`;
   if (az) {
-    az.innerHTML = `<div class="check-overlay">✅ ¡Correcto! · <span style="font-size:11px;font-weight:700;opacity:.8;">${attemptTxt}</span></div>`;
+    az.innerHTML = `<div class="check-overlay">✅ ¡Excelente! · <span style="font-size:12px;opacity:.8;">${attemptTxt}</span></div>`;
   }
 
   if (!alreadyDone) {
@@ -663,46 +700,62 @@ function markCorrect(card) {
   saveProgress();
 
   if (!alreadyDone) {
-    const msgs = ['¡Increíble! 🌟','¡Lo lograste! 🏆','¡Fantástico! 🦄','¡Eres un genio! 🧠','¡Bravo Antonio! 🎊','¡Misión Cumplida! ⭐'];
-    const icons = ['🌟','🏆','🦄','🎉','🧠','🚀','⭐'];
+    const msgs = ['¡Fantástico trabajo! 🌟','¡Lo lograste! 🏆','¡Excelente progreso! 🦄','¡Eres un superestrella! 🧠','¡Misión Cumplida! ⭐'];
     const msg = msgs[Math.floor(Math.random()*msgs.length)];
-    const ico = icons[Math.floor(Math.random()*icons.length)];
-    document.getElementById('m-icon').textContent  = ico;
+    document.getElementById('m-icon').textContent  = '🌟';
     document.getElementById('m-title').textContent = msg;
-    document.getElementById('m-msg').textContent   = `¡Completaste este juego! ${attemptTxt}`;
-    speak(msg, 'es-ES');
+    document.getElementById('m-msg').textContent   = `¡Misión completada con éxito! ${attemptTxt}`;
+    speakPhonics(msg, 'es-ES');
     document.getElementById('modal').classList.add('show');
   }
+}
+
+function restoreCompletedCard(card, data) {
+  card.classList.add('correct');
+  card.querySelectorAll('button,input').forEach(el => el.disabled = true);
+  const az = card.querySelector('.action-zone');
+  if (az) az.innerHTML = `<div class="check-overlay">✅ ¡Misión Completada!</div>`;
 }
 
 function closeModal() {
   document.getElementById('modal').classList.remove('show');
 }
 
+function changeTrimester(triNum) {
+  S.trimester = triNum;
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById(`tri-btn-${i}`).classList.toggle('active', i === triNum);
+  }
+  document.getElementById('sub-header-tag').textContent = `Segundo Grado · Trimestre ${triNum} · Evergreen School`;
+  updateUI();
+}
+
 function initNav() {
   const wn = document.getElementById('week-nav');
+  wn.innerHTML = '';
   for (let i = 1; i <= 9; i++) {
     const wrap = document.createElement('div');
-    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:3px;';
+    wrap.className = 'week-btn-wrap';
     const b = document.createElement('button');
-    // Highlight week 6 as special reinforcement
     let classes = 'week-btn';
     if (i === 6) classes += ' reinforcement';
     if (S.week === i) classes += ' active';
     
     b.className = classes;
-    b.textContent = i === 6 ? `S6: 🎮 Juegos` : `Semana ${i}`;
+    b.textContent = i === 6 ? `S6: 🎮 Refuerzo` : `Semana ${i}`;
     b.onclick = () => { S.week = i; updateUI(); };
+    
     const badge = document.createElement('span');
     badge.id = `wbadge-${i}`;
     badge.style.cssText = 'font-size:10px;font-weight:800;color:#64748b;white-space:nowrap;min-height:14px;';
-    badge.textContent = '';
+    
     wrap.appendChild(b);
     wrap.appendChild(badge);
     wn.appendChild(wrap);
   }
 
   const sn = document.getElementById('subject-nav');
+  sn.innerHTML = '';
   MATERIAS.forEach(m => {
     const b = document.createElement('button');
     b.className = `sub-btn${S.materia===m.id?' active':''}`;
@@ -729,8 +782,7 @@ function lsKey(name) { return `mh2026_${name.trim().toLowerCase().replace(/\s+/g
 
 function saveProgress() {
   if (!S.studentName) return;
-  const data = { score: S.score, done: S.done, weekData: S.weekData,
-                 completed: S.completed, attempts: S.attempts };
+  const data = { score: S.score, done: S.done, weekData: S.weekData, completed: S.completed, attempts: S.attempts };
   localStorage.setItem(lsKey(S.studentName), JSON.stringify(data));
 }
 
@@ -754,8 +806,8 @@ function updateWeekBadge(w) {
   const el = document.getElementById(`wbadge-${w}`);
   if (!el) return;
   const d = S.weekData[w];
-  if (d.pts > 0) {
-    el.textContent = `⭐ ${d.pts} pts · ${d.done} ✓`;
+  if (d && d.pts > 0) {
+    el.textContent = `⭐ ${d.pts} pts`;
     el.style.color = w === 6 ? '#ca8a04' : '#1d4ed8';
   } else {
     el.textContent = '';
@@ -767,25 +819,17 @@ function showNameModal() {
     const st = document.createElement('style');
     st.id = 'nm-style';
     st.textContent = `
-      #nm-overlay { position:fixed;inset:0;background:rgba(15,23,42,.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px; }
-      #nm-box { background:white;border-radius:28px;padding:40px 32px;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.25);animation:popIn .25s ease; }
-      #nm-box h2 { font-size:22px;font-weight:900;color:#1e293b;margin-bottom:8px; }
-      #nm-box p  { font-size:14px;color:#64748b;font-weight:600;margin-bottom:24px; }
-      #nm-input  { width:100%;padding:12px 16px;border:2.5px solid #e2e8f0;border-radius:14px;font-family:'Nunito',sans-serif;font-weight:700;font-size:16px;outline:none;margin-bottom:12px;transition:border-color .2s;box-sizing:border-box; }
+      #nm-overlay { position:fixed;inset:0;background:rgba(15,23,42,.7);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px; }
+      #nm-box { background:white;border-radius:32px;padding:40px 32px;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.25);animation:popIn .25s ease; }
+      #nm-box h2 { font-size:24px;font-weight:900;color:#1e293b;margin-bottom:8px; }
+      #nm-box p  { font-size:14px;color:#64748b;font-weight:700;margin-bottom:24px; }
+      #nm-input  { width:100%;padding:14px 18px;border:2.5px solid #e2e8f0;border-radius:16px;font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;outline:none;margin-bottom:14px;transition:border-color .2s;box-sizing:border-box; }
       #nm-input:focus { border-color:#3b82f6; }
-      #nm-go { width:100%;background:#3b82f6;color:white;border:none;border-radius:14px;padding:13px;font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;cursor:pointer;transition:background .15s; }
+      #nm-go { width:100%;background:#3b82f6;color:white;border:none;border-radius:16px;padding:14px;font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;cursor:pointer;transition:background .15s; }
       #nm-go:hover { background:#1d4ed8; }
-      #nm-profiles { margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center; }
-      .nm-chip { background:#dbeafe;color:#1d4ed8;border:none;border-radius:999px;padding:5px 14px;font-family:'Nunito',sans-serif;font-weight:700;font-size:12px;cursor:pointer; }
-      .nm-chip:hover { background:#bfdbfe; }
       #nm-emoji { font-size:56px;margin-bottom:12px; }
     `;
     document.head.appendChild(st);
-  }
-
-  const profiles = [];
-  for (let k in localStorage) {
-    if (k.startsWith('mh2026_')) profiles.push(k.replace('mh2026_','').replace(/_/g,' '));
   }
 
   const ov = document.createElement('div');
@@ -793,11 +837,10 @@ function showNameModal() {
   ov.innerHTML = `
     <div id="nm-box">
       <div id="nm-emoji">🚀</div>
-      <h2>¡Hola, Antonio!</h2>
-      <p>Entra a tu perfil para continuar<br>con las misiones especiales 🌟</p>
-      <input id="nm-input" type="text" placeholder="Escribe 'Antonio' aquí..." maxlength="30" autocomplete="off" />
-      <button id="nm-go" onclick="startSession()">¡Empezar aventura! 🎮</button>
-      ${profiles.length ? `<div id="nm-profiles"><span style="font-size:11px;color:#94a3b8;width:100%;font-weight:700;">O elige tu perfil:</span>${profiles.map(p=>`<button class="nm-chip" onclick="loadProfile('${p}')">${p}</button>`).join('')}</div>` : ''}
+      <h2>¡Bienvenido Antonio!</h2>
+      <p>Ingresa tu nombre para guardar tus estrellas y misiones completadas 🌟</p>
+      <input id="nm-input" type="text" placeholder="Escribe 'Antonio' aquí..." value="Antonio" maxlength="30" autocomplete="off" />
+      <button id="nm-go" onclick="startSession()">¡Empezar Aventura! 🎮</button>
     </div>
   `;
   document.body.appendChild(ov);
@@ -812,22 +855,13 @@ function startSession() {
   const name = (inp.value || '').trim();
   if (!name) { inp.style.borderColor='#ef4444'; inp.focus(); return; }
   S.studentName = name;
-  const p = document.querySelector('.logo-text p');
-  if (p) p.textContent = `Hola, ${name} · I Trimestre 2026`;
   document.getElementById('nm-overlay').remove();
   loadProgress(name);
 }
 
-function loadProfile(name) {
-  document.getElementById('nm-input').value = name;
-  startSession();
-}
-
 window.onload = () => {
-  // Establecemos por defecto la semana 6 al cargar para enfocarnos en Antonio
-  S.week = 6;
+  changeTrimester(3);
   initNav();
-  updateUI();
   showNameModal();
 };
 </script>
