@@ -203,6 +203,47 @@
     }
     .modal-close:hover { background: var(--blue-d); }
     .check-overlay { font-size: 20px; text-align: center; font-weight: 900; color: var(--green-d); padding: 8px; }
+
+    /* Clasificar en columnas */
+    .classify-wrap { display: flex; flex-direction: column; gap: 12px; }
+    .classify-pool { display: flex; flex-wrap: wrap; gap: 8px; }
+    .classify-piece {
+      background: #fff7ed; color: #c2410c; border: 2.5px solid #fed7aa;
+      border-radius: 14px; padding: 8px 14px; cursor: pointer;
+      font-weight: 800; font-size: 13px; user-select: none; transition: all .15s;
+    }
+    .classify-piece:hover { background: var(--orange); color: white; border-color: var(--orange); }
+    .classify-piece.selected { background: var(--orange); color: white; border-color: var(--orange); transform: scale(1.05); box-shadow: 0 0 0 3px var(--orange-l); }
+    .classify-piece.wrong-piece { border-color: var(--red); background: var(--red-l); color: var(--red-d); }
+    .classify-piece.placed-hidden { display: none; }
+    .classify-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .classify-col {
+      min-height: 100px; border: 2.5px dashed #cbd5e1; border-radius: 16px;
+      background: #f8fafc; padding: 10px; display: flex; flex-direction: column; gap: 6px;
+      transition: all .15s; cursor: pointer;
+    }
+    .classify-col.dragover { border-color: var(--blue); background: var(--blue-l); }
+    .classify-col-title {
+      font-size: 11.5px; font-weight: 900; text-align: center; padding: 6px 8px;
+      border-radius: 10px; margin-bottom: 2px; background: var(--blue-l); color: var(--blue-d);
+    }
+    .classify-item-placed {
+      background: var(--blue); color: white; border-radius: 999px;
+      padding: 5px 12px; font-size: 12px; font-weight: 900; align-self: flex-start;
+    }
+
+    /* Emparejar (matching) */
+    .match-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .match-col { display: flex; flex-direction: column; gap: 8px; }
+    .match-item {
+      padding: 10px 12px; border-radius: 14px; border: 2.5px solid #e2e8f0;
+      background: #f8fafc; cursor: pointer; font-weight: 800; font-size: 13px;
+      text-align: center; transition: all .15s;
+    }
+    .match-item:hover { border-color: var(--blue); }
+    .match-item.selected { border-color: var(--blue); background: var(--blue-l); color: var(--blue-d); }
+    .match-item.matched { border-color: var(--green); background: var(--green-l); color: var(--green-d); cursor: default; opacity: .9; }
+    .match-item.wrong-flash { animation: shake .3s; border-color: var(--red); background: var(--red-l); }
   </style>
 </head>
 <body>
@@ -386,78 +427,470 @@ const SKILL_THEMES = {
   }
 };
 
+// ============================================================
+// BANCO DE EJERCICIOS REALES — cada ejercicio practica el tema
+// exacto de esa semana (no son preguntas genéricas/meta).
+// Tipos: 'multiple-choice' | 'fill-blank' | 'true-false' |
+//        'drag-drop' (ordenar) | 'classify' (2 columnas) | 'match' (emparejar)
+// ============================================================
+const EXERCISES_DATA = {
+  esp: {
+    1: [
+      { tipo: 'multiple-choice', instruccion: "Lee: 'Mi perro es pequeño, peludo y muy juguetón.' ¿Qué tipo de texto es este?", opciones: ["Descriptivo", "Narrativo", "Instructivo"], correcta: "Descriptivo", audioTexto: "Los textos descriptivos cuentan cómo son las cosas." },
+      { tipo: 'classify', colA: "Sinónimo de FELIZ", colB: "Antónimo de FELIZ", instruccion: "Arrastra cada palabra a la columna correcta según su relación con FELIZ.", items: [{text:"Contento",col:"A"},{text:"Alegre",col:"A"},{text:"Triste",col:"B"},{text:"Enojado",col:"B"}], audioTexto: "Clasifica las palabras en sinónimos o antónimos." },
+      { tipo: 'fill-blank', instruccion: "¿Con qué letra se escribe el animal que da leche? Escribe la palabra completa: _aca", correcta: "vaca", audioTexto: "La palabra vaca se escribe con V." },
+      { tipo: 'drag-drop', instruccion: "Ordena las palabras para formar una oración completa:", piezas: ["El niño","corre","en el parque"], correcta: ["El niño","corre","en el parque"], audioTexto: "Ordena las palabras para crear una oración." }
+    ],
+    2: [
+      { tipo: 'multiple-choice', instruccion: "Ves un cartel que dice 'PROHIBIDO ENTRAR'. ¿Qué tipo de texto es?", opciones: ["Aviso","Menú","Cuento"], correcta: "Aviso", audioTexto: "Los avisos nos dan instrucciones importantes." },
+      { tipo: 'classify', colA: "Singular", colB: "Plural", instruccion: "Arrastra cada palabra a Singular o Plural.", items: [{text:"Gato",col:"A"},{text:"Flor",col:"A"},{text:"Gatos",col:"B"},{text:"Flores",col:"B"}], audioTexto: "Clasifica en singular o plural." },
+      { tipo: 'fill-blank', instruccion: "Completa: 'Me gusta comer que__.' Escribe la palabra completa (usa QUE):", correcta: "queso", audioTexto: "La palabra queso lleva QUE." },
+      { tipo: 'drag-drop', instruccion: "Ordena los pasos para presentarte frente a tus compañeros:", piezas: ["Saludo a todos","Digo mi nombre","Cuento algo sobre mí"], correcta: ["Saludo a todos","Digo mi nombre","Cuento algo sobre mí"], audioTexto: "Ordena los pasos para presentarte." }
+    ],
+    3: [
+      { tipo: 'multiple-choice', instruccion: "Una señal roja y redonda con una mano significa...", opciones: ["Alto / No pasar","Puedes pasar","Silencio"], correcta: "Alto / No pasar", audioTexto: "Las señales nos ayudan a estar seguros." },
+      { tipo: 'classify', colA: "Significa PELIGRO", colB: "Significa SEGURO", instruccion: "Clasifica cada símbolo según su significado.", items: [{text:"Calavera ☠️",col:"A"},{text:"Rayo ⚡",col:"A"},{text:"Semáforo verde 🟢",col:"B"},{text:"Salida de emergencia 🚪",col:"B"}], audioTexto: "Clasifica los símbolos." },
+      { tipo: 'fill-blank', instruccion: "Lee: 'Ana tiene 8 años y vive en Bogotá.' ¿Cuántos años tiene Ana? Escribe el número:", correcta: "8", audioTexto: "Busca la información directamente en el texto." },
+      { tipo: 'drag-drop', instruccion: "Ordena estas palabras como aparecerían en el diccionario (orden alfabético):", piezas: ["árbol","gato","perro"], correcta: ["árbol","gato","perro"], audioTexto: "Ordena las palabras alfabéticamente." }
+    ],
+    4: [
+      { tipo: 'multiple-choice', instruccion: "En una receta de cocina, ¿qué encontramos primero?", opciones: ["La lista de ingredientes","El final de la historia","Una rima"], correcta: "La lista de ingredientes", audioTexto: "Las recetas empiezan con los ingredientes." },
+      { tipo: 'true-false', instruccion: "Verdadero o Falso: Todo lo que aparece en internet es siempre verdadero.", correcta: false, audioTexto: "Debemos verificar la información." },
+      { tipo: 'fill-blank', instruccion: "Lee: 'Ayer llovió mucho en la ciudad.' ¿Qué pasó ayer? Escribe la palabra clave:", correcta: "llovió", audioTexto: "La palabra clave es llovió." },
+      { tipo: 'multiple-choice', instruccion: "Lee: 'El perro ladraba muy fuerte.' ¿Qué significa 'ladraba'?", opciones: ["El sonido que hace el perro","El sonido que hace el gato","Una comida"], correcta: "El sonido que hace el perro", audioTexto: "Usa el contexto de la oración para entender la palabra." }
+    ],
+    5: [
+      { tipo: 'multiple-choice', instruccion: "¿Cuál palabra rima con 'flor'?", opciones: ["Amor","Mesa","Gato"], correcta: "Amor", audioTexto: "Amor y flor riman." },
+      { tipo: 'true-false', instruccion: "Verdadero o Falso: Cuando leemos en voz alta un poema, debemos hacer pausas en las comas y puntos.", correcta: true, audioTexto: "Las pausas ayudan a que se entienda mejor." },
+      { tipo: 'fill-blank', instruccion: "Un grupo de versos que forman una parte de un poema se llama: es___a", correcta: "estrofa", audioTexto: "Se llama estrofa." },
+      { tipo: 'match', instruccion: "Une cada palabra con la que rima.", pairs: [{left:"Sol",right:"Caracol"},{left:"Pez",right:"Vez"},{left:"Luna",right:"Cuna"}], audioTexto: "Empareja las palabras que riman." }
+    ],
+    6: [
+      { tipo: 'classify', colA: "Cuento", colB: "Poema", instruccion: "Clasifica cada característica según sea de Cuento o Poema.", items: [{text:"Tiene personajes y trama",col:"A"},{text:"Tiene versos y estrofas",col:"B"},{text:"Se escribe en párrafos",col:"A"},{text:"Puede tener rima",col:"B"}], audioTexto: "Clasifica las características." },
+      { tipo: 'multiple-choice', instruccion: "Un caligrama es un poema donde...", opciones: ["Las palabras forman un dibujo relacionado con el tema","Las palabras están en desorden","No tiene palabras"], correcta: "Las palabras forman un dibujo relacionado con el tema", audioTexto: "El caligrama forma una imagen con las palabras." },
+      { tipo: 'fill-blank', instruccion: "Completa la rima: 'El gato usa som___ro para el sol.'", correcta: "sombrero", audioTexto: "La palabra es sombrero." },
+      { tipo: 'drag-drop', instruccion: "Ordena los pasos para crear tu propio poema:", piezas: ["Elijo un tema","Busco palabras que rimen","Escribo mis versos"], correcta: ["Elijo un tema","Busco palabras que rimen","Escribo mis versos"], audioTexto: "Ordena los pasos para escribir un poema." }
+    ],
+    7: [
+      { tipo: 'true-false', instruccion: "Verdadero o Falso: Al contar una historia, usar conectores como 'luego' y 'después' ayuda a que se entienda mejor.", correcta: true, audioTexto: "Los conectores ayudan a la narración." },
+      { tipo: 'multiple-choice', instruccion: "Ves la portada de un libro con un dragón y un castillo. ¿De qué tipo de historia podría tratarse?", opciones: ["Una aventura de fantasía","Una receta de cocina","Un libro de matemáticas"], correcta: "Una aventura de fantasía", audioTexto: "Las imágenes nos ayudan a predecir la historia." },
+      { tipo: 'classify', colA: "Es un elemento del cuento", colB: "NO es un elemento del cuento", instruccion: "Clasifica cada palabra según si es o no un elemento del cuento.", items: [{text:"Personajes",col:"A"},{text:"Lugar",col:"A"},{text:"Receta de cocina",col:"B"},{text:"Problema",col:"A"}], audioTexto: "Clasifica los elementos." },
+      { tipo: 'drag-drop', instruccion: "Ordena la historia según lo que pasa primero, después y al final:", piezas: ["La niña se despertó","Desayunó cereal","Fue al colegio"], correcta: ["La niña se despertó","Desayunó cereal","Fue al colegio"], audioTexto: "Ordena los eventos de la historia." }
+    ],
+    8: [
+      { tipo: 'multiple-choice', instruccion: "Antes de escribir un cuento, ¿qué debemos planear primero?", opciones: ["Los personajes y el lugar","El título en inglés","Los dibujos finales"], correcta: "Los personajes y el lugar", audioTexto: "Primero planeamos personajes y lugar." },
+      { tipo: 'classify', colA: "Inicio", colB: "Final", instruccion: "Clasifica cada frase según si ocurre al Inicio o al Final del cuento.", items: [{text:"Los personajes se presentan",col:"A"},{text:"El problema se resuelve",col:"B"},{text:"Empieza la aventura",col:"A"},{text:"Todos quedan felices",col:"B"}], audioTexto: "Clasifica según el inicio o el final." },
+      { tipo: 'fill-blank', instruccion: "El primer intento de escribir un cuento, antes de corregirlo, se llama: bo___dor", correcta: "borrador", audioTexto: "Se llama borrador." },
+      { tipo: 'drag-drop', instruccion: "Ordena la oración usando los conectores en el orden correcto:", piezas: ["Primero","me lavé las manos,","luego comí"], correcta: ["Primero","me lavé las manos,","luego comí"], audioTexto: "Ordena usando los conectores temporales." }
+    ],
+    9: [
+      { tipo: 'true-false', instruccion: "Verdadero o Falso: Cuando un compañero revisa mi cuento, debo escuchar sus ideas con respeto.", correcta: true, audioTexto: "Escuchar con respeto nos ayuda a mejorar." },
+      { tipo: 'fill-blank', instruccion: "Corrige la palabra: 'aVion' se escribe correctamente como: a___ón", correcta: "avión", audioTexto: "Se escribe avión." },
+      { tipo: 'multiple-choice', instruccion: "¿Para qué sirven las ilustraciones en un cuento?", opciones: ["Ayudan a entender e imaginar la historia","Reemplazan todas las palabras","No sirven para nada"], correcta: "Ayudan a entender e imaginar la historia", audioTexto: "Las ilustraciones ayudan a imaginar la historia." },
+      { tipo: 'drag-drop', instruccion: "Ordena los pasos finales para publicar tu cuento:", piezas: ["Reviso la ortografía","Agrego los dibujos","Comparto mi cuento"], correcta: ["Reviso la ortografía","Agrego los dibujos","Comparto mi cuento"], audioTexto: "Ordena los pasos para publicar." }
+    ]
+  },
+  eng: {
+    1: [
+      { tipo: 'multiple-choice', instruccion: "Which command means you should stop talking?", opciones: ["Be quiet","Stand up","Open your book"], correcta: "Be quiet", audioTexto: "Be quiet means stop talking." },
+      { tipo: 'match', instruccion: "Match each animal with what it does.", pairs: [{left:"Bird",right:"Flies"},{left:"Fish",right:"Swims"},{left:"Dog",right:"Runs"}], audioTexto: "Match the animal with its action." },
+      { tipo: 'drag-drop', instruccion: "Put the words in order to make a sentence:", piezas: ["The dog","runs","fast"], correcta: ["The dog","runs","fast"], audioTexto: "Order the words to make a sentence." },
+      { tipo: 'classify', colA: "Has feathers", colB: "Has fur", instruccion: "Drag each animal to the correct group.", items: [{text:"Bird",col:"A"},{text:"Parrot",col:"A"},{text:"Dog",col:"B"},{text:"Cat",col:"B"}], audioTexto: "Classify the animals by their body covering." }
+    ],
+    2: [
+      { tipo: 'classify', colA: "Adjective (describes)", colB: "Noun (person/thing)", instruccion: "Drag each word to Adjective or Noun.", items: [{text:"Big",col:"A"},{text:"Happy",col:"A"},{text:"Dog",col:"B"},{text:"Ball",col:"B"}], audioTexto: "Classify adjectives and nouns." },
+      { tipo: 'multiple-choice', instruccion: "In the sentence 'The brave boy saved the cat,' what describes the boy's feeling?", opciones: ["Brave","Sad","Sleepy"], correcta: "Brave", audioTexto: "Brave describes the boy." },
+      { tipo: 'classify', colA: "Warm color", colB: "Cool color", instruccion: "Drag each color to the correct group.", items: [{text:"Red",col:"A"},{text:"Orange",col:"A"},{text:"Blue",col:"B"},{text:"Green",col:"B"}], audioTexto: "Classify warm and cool colors." },
+      { tipo: 'fill-blank', instruccion: "Read: 'Sam has a red ball.' What color is the ball? Write the word:", correcta: "red", audioTexto: "The ball is red." }
+    ],
+    3: [
+      { tipo: 'multiple-choice', instruccion: "Which subject do we use numbers and counting for?", opciones: ["Math","Art","Music"], correcta: "Math", audioTexto: "Math uses numbers." },
+      { tipo: 'drag-drop', instruccion: "Put the days in the correct order:", piezas: ["Monday","Tuesday","Wednesday"], correcta: ["Monday","Tuesday","Wednesday"], audioTexto: "Order the days of the week." },
+      { tipo: 'fill-blank', instruccion: "A picture shows a yellow sun. Complete: 'The sun is ___.'", correcta: "yellow", audioTexto: "The sun is yellow." },
+      { tipo: 'true-false', instruccion: "True or False: Everyone has the same favorite school subject.", correcta: false, audioTexto: "People can like different subjects." }
+    ],
+    4: [
+      { tipo: 'drag-drop', instruccion: "Order the story events:", piezas: ["The girl woke up","She ate breakfast","She went to school"], correcta: ["The girl woke up","She ate breakfast","She went to school"], audioTexto: "Order the events of the story." },
+      { tipo: 'match', instruccion: "Match each sentence starter with the correct ending.", pairs: [{left:"I am",right:"happy"},{left:"She is",right:"tired"},{left:"They are",right:"playing"}], audioTexto: "Match the sentence parts." },
+      { tipo: 'multiple-choice', instruccion: "Which word means 'a place where you learn'?", opciones: ["School","Kitchen","Park"], correcta: "School", audioTexto: "School is a place to learn." },
+      { tipo: 'fill-blank', instruccion: "Complete: 'Good morning, how are ___?'", correcta: "you", audioTexto: "How are you?" }
+    ],
+    5: [
+      { tipo: 'multiple-choice', instruccion: "What do you politely say when you want to go to the bathroom?", opciones: ["May I go to the bathroom, please?","I like pizza","Good night"], correcta: "May I go to the bathroom, please?", audioTexto: "That's a polite classroom phrase." },
+      { tipo: 'classify', colA: "Things we do with our hands", colB: "Things we do with our feet", instruccion: "Drag each action to the correct group.", items: [{text:"Clap",col:"A"},{text:"Write",col:"A"},{text:"Jump",col:"B"},{text:"Kick",col:"B"}], audioTexto: "Classify the actions." },
+      { tipo: 'fill-blank', instruccion: "Complete the word: 'p_nc_l' (you write with it)", correcta: "pencil", audioTexto: "The word is pencil." },
+      { tipo: 'true-false', instruccion: "True or False: When someone is talking, it's polite to listen quietly.", correcta: true, audioTexto: "Listening quietly is polite." }
+    ],
+    6: [
+      { tipo: 'classify', colA: "Noun", colB: "Not a noun", instruccion: "Drag each word into the correct group.", items: [{text:"Table",col:"A"},{text:"Teacher",col:"A"},{text:"Run",col:"B"},{text:"Happy",col:"B"}], audioTexto: "Classify nouns and non-nouns." },
+      { tipo: 'drag-drop', instruccion: "Put the words in order to make a sentence:", piezas: ["I","like","apples"], correcta: ["I","like","apples"], audioTexto: "Order the words to make a sentence." },
+      { tipo: 'multiple-choice', instruccion: "Which one is a family member?", opciones: ["Mother","Chair","Monday"], correcta: "Mother", audioTexto: "Mother is a family member." },
+      { tipo: 'fill-blank', instruccion: "Complete: 'I like to play with my ___.' (a toy that bounces)", correcta: "ball", audioTexto: "A ball bounces and rolls." }
+    ],
+    7: [
+      { tipo: 'multiple-choice', instruccion: "Which sentence describes a cat?", opciones: ["It has whiskers and says meow","It has wings and flies","It lives in water"], correcta: "It has whiskers and says meow", audioTexto: "Cats have whiskers." },
+      { tipo: 'true-false', instruccion: "True or False: 'I think ice cream is delicious' is an opinion.", correcta: true, audioTexto: "That is an opinion." },
+      { tipo: 'classify', colA: "Action verb", colB: "Not a verb", instruccion: "Drag each word to the correct group.", items: [{text:"Jump",col:"A"},{text:"Swim",col:"A"},{text:"Table",col:"B"},{text:"Red",col:"B"}], audioTexto: "Classify the action verbs." },
+      { tipo: 'match', instruccion: "Match each word with how it feels.", pairs: [{left:"Sun",right:"Hot"},{left:"Ice",right:"Cold"},{left:"Rain",right:"Wet"}], audioTexto: "Match the words with their feeling." }
+    ],
+    8: [
+      { tipo: 'match', instruccion: "Match each animal with its sound.", pairs: [{left:"The dog",right:"barks"},{left:"The cat",right:"meows"},{left:"The bird",right:"sings"}], audioTexto: "Match the animal to its sound." },
+      { tipo: 'fill-blank', instruccion: "Read: 'Tom has a blue kite.' What does Tom have? Write the word:", correcta: "kite", audioTexto: "Tom has a kite." },
+      { tipo: 'multiple-choice', instruccion: "Which word is an action (something you do)?", opciones: ["Dance","Chair","Blue"], correcta: "Dance", audioTexto: "Dance is an action." },
+      { tipo: 'true-false', instruccion: "True or False: You must like every story you read.", correcta: false, audioTexto: "You can have different opinions about stories." }
+    ],
+    9: [
+      { tipo: 'multiple-choice', instruccion: "Read: 'Mia found a lost puppy and took it home.' What did Mia find?", opciones: ["A puppy","A ball","A book"], correcta: "A puppy", audioTexto: "Mia found a puppy." },
+      { tipo: 'drag-drop', instruccion: "Put the instructions in order: 'Stand up, raise your hand, then speak.'", piezas: ["Stand up","Raise your hand","Speak"], correcta: ["Stand up","Raise your hand","Speak"], audioTexto: "Order the instructions." },
+      { tipo: 'classify', colA: "Animal", colB: "Food", instruccion: "Drag each word to Animal or Food.", items: [{text:"Dog",col:"A"},{text:"Bird",col:"A"},{text:"Apple",col:"B"},{text:"Bread",col:"B"}], audioTexto: "Classify the words." },
+      { tipo: 'fill-blank', instruccion: "Complete the closing phrase of a presentation: 'Thank you for ___.' (listening)", correcta: "listening", audioTexto: "Thank you for listening." }
+    ]
+  },
+  pho: {
+    1: [
+      { tipo: 'classify', colA: "Long I sound (like 'kite')", colB: "No long I sound", instruccion: "Drag each word to the correct group based on its vowel sound.", items: [{text:"Kite",col:"A"},{text:"Bike",col:"A"},{text:"Cat",col:"B"},{text:"Sun",col:"B"}], audioTexto: "Listen for the long I sound." },
+      { tipo: 'fill-blank', instruccion: "Complete the word using the pattern 'i_e': 'k_te' (a toy that flies)", correcta: "kite", audioTexto: "The word is kite." },
+      { tipo: 'multiple-choice', instruccion: "Which word has the long I sound like in 'five'?", opciones: ["Time","Fish","Sit"], correcta: "Time", audioTexto: "Time has the long I sound." },
+      { tipo: 'match', instruccion: "Match each word with its meaning.", pairs: [{left:"Kite",right:"Flies in the sky"},{left:"Bike",right:"Has two wheels"},{left:"Fire",right:"Is hot"}], audioTexto: "Match the words with their meanings." }
+    ],
+    2: [
+      { tipo: 'multiple-choice', instruccion: "A list of words and their meanings that you keep for yourself is called a...", opciones: ["Glossary","Story","Song"], correcta: "Glossary", audioTexto: "That is called a glossary." },
+      { tipo: 'fill-blank', instruccion: "Read: 'The tiny mouse hid in a hole.' Complete: 'Tiny means very ___.'", correcta: "small", audioTexto: "Tiny means very small." },
+      { tipo: 'multiple-choice', instruccion: "Read: 'The sun set and the sky turned orange.' When does this happen?", opciones: ["Evening","Morning","Midnight"], correcta: "Evening", audioTexto: "The sunset happens in the evening." },
+      { tipo: 'match', instruccion: "Match each word with its meaning.", pairs: [{left:"Huge",right:"Very big"},{left:"Tiny",right:"Very small"},{left:"Swift",right:"Very fast"}], audioTexto: "Match the words with their meanings." }
+    ],
+    3: [
+      { tipo: 'classify', colA: "Long O sound (like 'boat')", colB: "No long O sound", instruccion: "Drag each word to the correct group.", items: [{text:"Boat",col:"A"},{text:"Snow",col:"A"},{text:"Cup",col:"B"},{text:"Hat",col:"B"}], audioTexto: "Listen for the long O sound." },
+      { tipo: 'multiple-choice', instruccion: "Which word belongs to the '-at' family, like 'cat' and 'hat'?", opciones: ["Bat","Dog","Sun"], correcta: "Bat", audioTexto: "Bat belongs to the -at family." },
+      { tipo: 'fill-blank', instruccion: "Complete using 'oa': 'b_at' (something that floats on water)", correcta: "boat", audioTexto: "The word is boat." },
+      { tipo: 'drag-drop', instruccion: "Arrange the letter chunks to spell a long O word (a floating vehicle):", piezas: ["b","oa","t"], correcta: ["b","oa","t"], audioTexto: "Arrange the letters to spell boat." }
+    ],
+    4: [
+      { tipo: 'fill-blank', instruccion: "If 'cat' rhymes with 'hat', complete: 'A cat wears a ___.'", correcta: "hat", audioTexto: "Cat rhymes with hat." },
+      { tipo: 'multiple-choice', instruccion: "Which word has the same middle sound as 'bat' (short a)?", opciones: ["Map","Boot","Bee"], correcta: "Map", audioTexto: "Map has the short a sound." },
+      { tipo: 'classify', colA: "CVC word (like bat)", colB: "NOT a CVC word", instruccion: "Drag each word to the correct group.", items: [{text:"Sun",col:"A"},{text:"Pig",col:"A"},{text:"Snake",col:"B"},{text:"Elephant",col:"B"}], audioTexto: "Classify the CVC words." },
+      { tipo: 'true-false', instruccion: "True or False: In a CVC word, the middle letter is always a vowel.", correcta: true, audioTexto: "CVC means consonant-vowel-consonant." }
+    ],
+    5: [
+      { tipo: 'match', instruccion: "Match each word with its rhyme.", pairs: [{left:"Cat",right:"Hat"},{left:"Dog",right:"Log"},{left:"Sun",right:"Fun"}], audioTexto: "Match the rhyming words." },
+      { tipo: 'fill-blank', instruccion: "Complete the rhyme: 'The cat sat on the ___.'", correcta: "mat", audioTexto: "Cat rhymes with mat." },
+      { tipo: 'multiple-choice', instruccion: "Which word does NOT rhyme with 'star'?", opciones: ["Milk","Car","Far"], correcta: "Milk", audioTexto: "Milk doesn't rhyme with star." },
+      { tipo: 'true-false', instruccion: "True or False: 'Nite' is the correct spelling of the word that means when it's dark outside.", correcta: false, audioTexto: "The correct spelling is night." }
+    ],
+    6: [
+      { tipo: 'multiple-choice', instruccion: "Read: 'Dogs are loyal pets. They protect their families and love to play.' What is this mostly about?", opciones: ["Dogs as pets","Cooking food","The weather"], correcta: "Dogs as pets", audioTexto: "The main idea is about dogs as pets." },
+      { tipo: 'classify', colA: "Has the /er/ sound (like 'bird')", colB: "No /er/ sound", instruccion: "Drag each word to the correct group.", items: [{text:"Bird",col:"A"},{text:"Girl",col:"A"},{text:"Cat",col:"B"},{text:"Sun",col:"B"}], audioTexto: "Listen for the /er/ sound like in bird." },
+      { tipo: 'multiple-choice', instruccion: "Which word has a different vowel sound than the other two?", opciones: ["Sit","Bit","Boat"], correcta: "Boat", audioTexto: "Boat has a different sound." },
+      { tipo: 'true-false', instruccion: "True or False: Closing your eyes always helps you listen better.", correcta: false, audioTexto: "You can listen well with your eyes open too." }
+    ],
+    7: [
+      { tipo: 'multiple-choice', instruccion: "Read: 'The soup was scalding, so I waited before eating it.' What does 'scalding' mean?", opciones: ["Very hot","Very cold","Very sweet"], correcta: "Very hot", audioTexto: "Scalding means very hot." },
+      { tipo: 'classify', colA: "Spelled with PH", colB: "Spelled with F", instruccion: "Drag each word to the correct spelling group.", items: [{text:"Phone",col:"A"},{text:"Elephant",col:"A"},{text:"Fish",col:"B"},{text:"Frog",col:"B"}], audioTexto: "Both PH and F make the F sound." },
+      { tipo: 'multiple-choice', instruccion: "A picture shows a cloudy sky and an umbrella. What is the story probably about?", opciones: ["Rainy weather","A birthday party","A soccer game"], correcta: "Rainy weather", audioTexto: "The picture shows rainy weather." },
+      { tipo: 'fill-blank', instruccion: "Complete: 'A word that means the opposite of big is ___.'", correcta: "small", audioTexto: "The opposite of big is small." }
+    ],
+    8: [
+      { tipo: 'multiple-choice', instruccion: "Which sentence is written correctly?", opciones: ["The dog is happy.","the dog is happy","The Dog is happy"], correcta: "The dog is happy.", audioTexto: "Sentences start with a capital letter." },
+      { tipo: 'classify', colA: "Has the /air/ sound (like 'chair')", colB: "No /air/ sound", instruccion: "Drag each word to the correct group.", items: [{text:"Chair",col:"A"},{text:"Bear",col:"A"},{text:"Cup",col:"B"},{text:"Dog",col:"B"}], audioTexto: "Listen for the /air/ sound like in chair." },
+      { tipo: 'multiple-choice', instruccion: "Which word has a short vowel sound, like 'hat'?", opciones: ["Cap","Cape","Cake"], correcta: "Cap", audioTexto: "Cap has a short vowel sound." },
+      { tipo: 'fill-blank', instruccion: "Read: 'Leo ran fast to catch the bus.' Complete: 'Leo ran to catch the ___.'", correcta: "bus", audioTexto: "Leo ran to catch the bus." }
+    ],
+    9: [
+      { tipo: 'drag-drop', instruccion: "Order the steps to make your phonics booklet:", piezas: ["Choose your sounds","Draw pictures for each word","Write the words"], correcta: ["Choose your sounds","Draw pictures for each word","Write the words"], audioTexto: "Order the steps to make your booklet." },
+      { tipo: 'classify', colA: "Long vowel sound", colB: "Short vowel sound", instruccion: "Drag each word to the correct group.", items: [{text:"Kite",col:"A"},{text:"Boat",col:"A"},{text:"Cat",col:"B"},{text:"Sun",col:"B"}], audioTexto: "Review long and short vowel sounds." },
+      { tipo: 'multiple-choice', instruccion: "When presenting your booklet, what should you do?", opciones: ["Speak clearly and show your pictures","Whisper quietly","Hide your booklet"], correcta: "Speak clearly and show your pictures", audioTexto: "Speak clearly when you present." },
+      { tipo: 'true-false', instruccion: "True or False: A creative booklet should include pictures that match the words.", correcta: true, audioTexto: "Pictures help show the meaning of words." }
+    ]
+  },
+  cie: {
+    1: [
+      { tipo: 'multiple-choice', instruccion: "Why do scientists wear safety goggles in the lab?", opciones: ["To protect their eyes","To see better colors","To look cool"], correcta: "To protect their eyes", audioTexto: "Goggles protect our eyes." },
+      { tipo: 'true-false', instruccion: "True or False: It is safe to taste materials during a science experiment.", correcta: false, audioTexto: "Never taste lab materials." },
+      { tipo: 'classify', colA: "Natural resource", colB: "Man-made object", instruccion: "Drag each item to the correct group.", items: [{text:"Water",col:"A"},{text:"Sunlight",col:"A"},{text:"Plastic bottle",col:"B"},{text:"Chair",col:"B"}], audioTexto: "Classify natural resources and man-made objects." },
+      { tipo: 'classify', colA: "Plastic recycling", colB: "Paper recycling", instruccion: "Drag each item to the correct recycling bin.", items: [{text:"Water bottle",col:"A"},{text:"Plastic bag",col:"A"},{text:"Newspaper",col:"B"},{text:"Cardboard box",col:"B"}], audioTexto: "Sort the items for recycling." }
+    ],
+    2: [
+      { tipo: 'multiple-choice', instruccion: "When observing a plant, what should a scientist use first?", opciones: ["Their eyes to look carefully","A microwave","A phone game"], correcta: "Their eyes to look carefully", audioTexto: "Scientists observe carefully with their eyes." },
+      { tipo: 'multiple-choice', instruccion: "Which is a good science question?", opciones: ["Why do plants need sunlight?","What is your favorite color?","What time is it?"], correcta: "Why do plants need sunlight?", audioTexto: "Science questions ask why or how things work." },
+      { tipo: 'classify', colA: "Living thing", colB: "Non-living thing", instruccion: "Drag each object to the correct group.", items: [{text:"Tree",col:"A"},{text:"Butterfly",col:"A"},{text:"Rock",col:"B"},{text:"Pencil",col:"B"}], audioTexto: "Classify living and non-living things." },
+      { tipo: 'drag-drop', instruccion: "Order the steps of a simple experiment:", piezas: ["Ask a question","Make a prediction","Test it and observe"], correcta: ["Ask a question","Make a prediction","Test it and observe"], audioTexto: "Order the steps of an experiment." }
+    ],
+    3: [
+      { tipo: 'multiple-choice', instruccion: "A bar graph is used to...", opciones: ["Compare amounts of things","Tell a story","Draw a picture"], correcta: "Compare amounts of things", audioTexto: "Bar graphs compare amounts." },
+      { tipo: 'true-false', instruccion: "True or False: A model can help us understand something that is very big or very small.", correcta: true, audioTexto: "Models help us understand things better." },
+      { tipo: 'drag-drop', instruccion: "Order the steps to share your science findings:", piezas: ["Organize your data","Make a chart","Present to the class"], correcta: ["Organize your data","Make a chart","Present to the class"], audioTexto: "Order the steps to share findings." },
+      { tipo: 'fill-blank', instruccion: "A notebook where scientists write what they see every day is called an observation ___.", correcta: "log", audioTexto: "It's called an observation log." }
+    ],
+    4: [
+      { tipo: 'classify', colA: "Science skill", colB: "Not a science skill", instruccion: "Drag each word into the correct group.", items: [{text:"Observing",col:"A"},{text:"Measuring",col:"A"},{text:"Sleeping",col:"B"},{text:"Coloring for fun",col:"B"}], audioTexto: "Classify the science skills." },
+      { tipo: 'multiple-choice', instruccion: "When you compare two rocks, you look at their...", opciones: ["Size, color and shape","Favorite food","Birthday"], correcta: "Size, color and shape", audioTexto: "We compare size, color and shape." },
+      { tipo: 'true-false', instruccion: "True or False: A prediction is a guess based on what we already know.", correcta: true, audioTexto: "Predictions are educated guesses." },
+      { tipo: 'drag-drop', instruccion: "Order the steps of scientific inquiry:", piezas: ["Ask a question","Investigate","Share what you learned"], correcta: ["Ask a question","Investigate","Share what you learned"], audioTexto: "Order the steps of inquiry." }
+    ],
+    5: [
+      { tipo: 'match', instruccion: "Match each tool with what it measures.", pairs: [{left:"Ruler",right:"Measures length"},{left:"Thermometer",right:"Measures temperature"},{left:"Scale",right:"Measures weight"}], audioTexto: "Match the tools with what they measure." },
+      { tipo: 'multiple-choice', instruccion: "A balance scale is used to find out...", opciones: ["Which object is heavier","What color an object is","What sound an object makes"], correcta: "Which object is heavier", audioTexto: "Balance scales compare weight." },
+      { tipo: 'true-false', instruccion: "True or False: A thermometer tells us how hot or cold something is.", correcta: true, audioTexto: "Thermometers measure temperature." },
+      { tipo: 'fill-blank', instruccion: "After an experiment, scientists write what they learned. This is called the ___.", correcta: "conclusion", audioTexto: "It's called the conclusion." }
+    ],
+    6: [
+      { tipo: 'classify', colA: "Measures length", colB: "Measures liquid volume", instruccion: "Drag each instrument to the correct group.", items: [{text:"Ruler",col:"A"},{text:"Tape measure",col:"A"},{text:"Measuring cup",col:"B"},{text:"Flask",col:"B"}], audioTexto: "Classify the instruments." },
+      { tipo: 'multiple-choice', instruccion: "Which tool would you use to measure the length of your desk?", opciones: ["Ruler","Thermometer","Scale"], correcta: "Ruler", audioTexto: "A ruler measures length." },
+      { tipo: 'true-false', instruccion: "True or False: A flask with markings can help us measure how much liquid it holds.", correcta: true, audioTexto: "The markings show liquid volume." },
+      { tipo: 'fill-blank', instruccion: "Complete: 'I ___ that the ice will melt in the sun.' (a word that means to guess based on evidence)", correcta: "predict", audioTexto: "The word is predict." }
+    ],
+    7: [
+      { tipo: 'multiple-choice', instruccion: "A hypothesis is...", opciones: ["A prediction we can test","A finished experiment","A type of tool"], correcta: "A prediction we can test", audioTexto: "A hypothesis is a testable prediction." },
+      { tipo: 'true-false', instruccion: "True or False: We should only change one thing at a time during an experiment.", correcta: true, audioTexto: "That keeps the test fair." },
+      { tipo: 'multiple-choice', instruccion: "After collecting data, what helps us see patterns easily?", opciones: ["A graph","A song","A nap"], correcta: "A graph", audioTexto: "Graphs help us see patterns." },
+      { tipo: 'drag-drop', instruccion: "Order the scientific method steps:", piezas: ["Question","Hypothesis","Test","Conclusion"], correcta: ["Question","Hypothesis","Test","Conclusion"], audioTexto: "Order the scientific method." }
+    ],
+    8: [
+      { tipo: 'classify', colA: "Found in nature", colB: "Made by people", instruccion: "Drag each item to the correct group.", items: [{text:"Mountain",col:"A"},{text:"River",col:"A"},{text:"Building",col:"B"},{text:"Road",col:"B"}], audioTexto: "Classify natural and man-made landscapes." },
+      { tipo: 'multiple-choice', instruccion: "A place with tall buildings and lots of traffic is called...", opciones: ["Urban","Rural","Underwater"], correcta: "Urban", audioTexto: "That's an urban area." },
+      { tipo: 'true-false', instruccion: "True or False: Turning off the lights when you leave a room helps protect the environment.", correcta: true, audioTexto: "Saving energy helps the environment." },
+      { tipo: 'fill-blank', instruccion: "A community of living things and their environment is called an ___.", correcta: "ecosystem", audioTexto: "It's called an ecosystem." }
+    ],
+    9: [
+      { tipo: 'multiple-choice', instruccion: "An engineer's job usually starts with...", opciones: ["Identifying a problem to solve","Eating lunch","Watching TV"], correcta: "Identifying a problem to solve", audioTexto: "Engineers start by identifying a problem." },
+      { tipo: 'drag-drop', instruccion: "Order the steps of the design process:", piezas: ["Plan your idea","Build a model","Test and improve it"], correcta: ["Plan your idea","Build a model","Test and improve it"], audioTexto: "Order the design process steps." },
+      { tipo: 'true-false', instruccion: "True or False: If your first design doesn't work, you should give up.", correcta: false, audioTexto: "Engineers try again and improve their design." },
+      { tipo: 'multiple-choice', instruccion: "When presenting your model to the class, you should...", opciones: ["Explain how it works and solves the problem","Hide it","Say nothing"], correcta: "Explain how it works and solves the problem", audioTexto: "Explain your model clearly." }
+    ]
+  },
+  mat: {
+    1: [
+      { tipo: 'multiple-choice', instruccion: "Which number is greater: 4,582 or 4,258?", opciones: ["4,582","4,258","They are equal"], correcta: "4,582", audioTexto: "4,582 is greater." },
+      { tipo: 'multiple-choice', instruccion: "In the number 3,456, what digit is in the hundreds place?", opciones: ["4","3","6"], correcta: "4", audioTexto: "4 is in the hundreds place." },
+      { tipo: 'fill-blank', instruccion: "Write 5,000 + 300 + 20 + 1 in standard form. Write the number:", correcta: "5321", audioTexto: "5,321 in expanded form is 5,000 + 300 + 20 + 1." },
+      { tipo: 'multiple-choice', instruccion: "What is 10 x 10?", opciones: ["100","10","1000"], correcta: "100", audioTexto: "10 times 10 equals 100." }
+    ],
+    2: [
+      { tipo: 'classify', colA: "Greater than 500", colB: "Less than 500", instruccion: "Drag each number to the correct group.", items: [{text:"620",col:"A"},{text:"999",col:"A"},{text:"120",col:"B"},{text:"45",col:"B"}], audioTexto: "Classify the numbers." },
+      { tipo: 'fill-blank', instruccion: "What number comes right after 799? Write the number:", correcta: "800", audioTexto: "800 comes after 799." },
+      { tipo: 'multiple-choice', instruccion: "Which number is the greatest?", opciones: ["45,231","9,876","44,999"], correcta: "45,231", audioTexto: "45,231 is the greatest number." },
+      { tipo: 'multiple-choice', instruccion: "In the number 62,345, what digit is in the thousands place?", opciones: ["2","6","3"], correcta: "2", audioTexto: "2 is in the thousands place." }
+    ],
+    3: [
+      { tipo: 'fill-blank', instruccion: "Write 40,000 + 2,000 + 300 + 50 + 6 in standard form:", correcta: "42356", audioTexto: "That equals 42,356." },
+      { tipo: 'multiple-choice', instruccion: "Which number is smaller?", opciones: ["1,200,300","2,100,300","2,999,999"], correcta: "1,200,300", audioTexto: "1,200,300 is the smallest." },
+      { tipo: 'drag-drop', instruccion: "Order these numbers from smallest to largest:", piezas: ["120","450","980"], correcta: ["120","450","980"], audioTexto: "Order the numbers from smallest to largest." },
+      { tipo: 'true-false', instruccion: "True or False: 3,500 is greater than 3,050.", correcta: true, audioTexto: "3,500 is greater than 3,050." }
+    ],
+    4: [
+      { tipo: 'multiple-choice', instruccion: "What is 45 + 30?", opciones: ["75","65","85"], correcta: "75", audioTexto: "45 plus 30 equals 75." },
+      { tipo: 'fill-blank', instruccion: "Use mental math: 100 - 40 = ___", correcta: "60", audioTexto: "100 minus 40 equals 60." },
+      { tipo: 'fill-blank', instruccion: "Add: 12,300 + 1,000 = ___", correcta: "13300", audioTexto: "That equals 13,300." },
+      { tipo: 'multiple-choice', instruccion: "Ana had 25 candies and gave 10 away. How many does she have left?", opciones: ["15","35","10"], correcta: "15", audioTexto: "25 minus 10 equals 15." }
+    ],
+    5: [
+      { tipo: 'fill-blank', instruccion: "Add using the vertical method: 234 + 145 = ___", correcta: "379", audioTexto: "234 plus 145 equals 379." },
+      { tipo: 'multiple-choice', instruccion: "When adding 28 + 15, do we need to regroup?", opciones: ["Yes, because 8+5=13","No, never","Only with big numbers"], correcta: "Yes, because 8+5=13", audioTexto: "We regroup because 8 plus 5 is 13." },
+      { tipo: 'true-false', instruccion: "True or False: 4 + 6 gives the same result as 6 + 4.", correcta: true, audioTexto: "That is the commutative property." },
+      { tipo: 'multiple-choice', instruccion: "Which shows the associative property of addition?", opciones: ["(2+3)+4 = 2+(3+4)","2+3 = 3+2","2+0 = 2"], correcta: "(2+3)+4 = 2+(3+4)", audioTexto: "Grouping numbers differently gives the same sum." }
+    ],
+    6: [
+      { tipo: 'fill-blank', instruccion: "Use mental math: 90 - 30 = ___", correcta: "60", audioTexto: "90 minus 30 equals 60." },
+      { tipo: 'multiple-choice', instruccion: "What is 1,000,000 - 500,000?", opciones: ["500,000","1,500,000","0"], correcta: "500,000", audioTexto: "One million minus five hundred thousand equals five hundred thousand." },
+      { tipo: 'fill-blank', instruccion: "Subtract using the vertical method: 562 - 231 = ___", correcta: "331", audioTexto: "562 minus 231 equals 331." },
+      { tipo: 'true-false', instruccion: "True or False: You can check a subtraction problem by adding the answer to the number you subtracted.", correcta: true, audioTexto: "Addition can check subtraction." }
+    ],
+    7: [
+      { tipo: 'multiple-choice', instruccion: "Luis has 12 marbles and his friend gives him 8 more. How many marbles does he have now?", opciones: ["20","4","16"], correcta: "20", audioTexto: "12 plus 8 equals 20." },
+      { tipo: 'multiple-choice', instruccion: "Problem: 'Maria has 15 apples, 3 oranges, and is 8 years old. How many apples and oranges does she have in total?' Which numbers do we need?", opciones: ["15 and 3","15 and 8","3 and 8"], correcta: "15 and 3", audioTexto: "We need the apples and oranges numbers, not her age." },
+      { tipo: 'multiple-choice', instruccion: "If we need to find the total of two groups, which operation do we use?", opciones: ["Addition","Subtraction","None"], correcta: "Addition", audioTexto: "We use addition to find a total." },
+      { tipo: 'true-false', instruccion: "True or False: After solving a problem, it's a good idea to check if your answer makes sense.", correcta: true, audioTexto: "Checking your answer is important." }
+    ],
+    8: [
+      { tipo: 'classify', colA: "Line (extends both ways forever)", colB: "Ray (one endpoint, one direction)", instruccion: "Drag each description to Line or Ray.", items: [{text:"Has arrows on both ends",col:"A"},{text:"Extends forever in both directions",col:"A"},{text:"Has one endpoint and one arrow",col:"B"},{text:"Starts at a point and goes one way",col:"B"}], audioTexto: "Classify lines and rays." },
+      { tipo: 'multiple-choice', instruccion: "Two lines that cross and form a right angle (90°) are called...", opciones: ["Perpendicular","Parallel","Curved"], correcta: "Perpendicular", audioTexto: "Those lines are perpendicular." },
+      { tipo: 'multiple-choice', instruccion: "A full turn all the way around is how many degrees?", opciones: ["360°","90°","180°"], correcta: "360°", audioTexto: "A full turn is 360 degrees." },
+      { tipo: 'match', instruccion: "Match each shape with its description.", pairs: [{left:"Triangle",right:"3 sides"},{left:"Square",right:"4 equal sides"},{left:"Pentagon",right:"5 sides"}], audioTexto: "Match the shapes with their descriptions." }
+    ],
+    9: [
+      { tipo: 'multiple-choice', instruccion: "A right angle measures...", opciones: ["90°","45°","180°"], correcta: "90°", audioTexto: "A right angle is 90 degrees." },
+      { tipo: 'classify', colA: "Triangle (3 sides)", colB: "Not a triangle", instruccion: "Drag each item to the correct group.", items: [{text:"3-sided shape",col:"A"},{text:"Has 3 angles",col:"A"},{text:"Square",col:"B"},{text:"Circle",col:"B"}], audioTexto: "Classify triangles and non-triangles." },
+      { tipo: 'multiple-choice', instruccion: "Which shape is a quadrilateral (has 4 sides)?", opciones: ["Rectangle","Triangle","Pentagon"], correcta: "Rectangle", audioTexto: "A rectangle has 4 sides." },
+      { tipo: 'drag-drop', instruccion: "Order the steps to draw a square using a ruler:", piezas: ["Draw one straight line","Draw 3 more equal lines","Connect the corners"], correcta: ["Draw one straight line","Draw 3 more equal lines","Connect the corners"], audioTexto: "Order the steps to draw a square." }
+    ]
+  },
+  soc: {
+    1: [
+      { tipo: 'multiple-choice', instruccion: "Who is part of the school community?", opciones: ["Students, teachers, and staff","Only the principal","Only students"], correcta: "Students, teachers, and staff", audioTexto: "Everyone at school is part of the community." },
+      { tipo: 'match', instruccion: "Match each staff member with their role.", pairs: [{left:"Teacher",right:"Teaches lessons"},{left:"Nurse",right:"Helps when you are sick"},{left:"Principal",right:"Leads the school"}], audioTexto: "Match the school staff with their jobs." },
+      { tipo: 'true-false', instruccion: "True or False: If you see someone being bullied, you should tell a trusted adult.", correcta: true, audioTexto: "Telling a trusted adult is the right thing to do." },
+      { tipo: 'multiple-choice', instruccion: "If you feel unsafe at school, who should you talk to?", opciones: ["A trusted adult like a teacher","No one","A stranger"], correcta: "A trusted adult like a teacher", audioTexto: "Talk to a trusted adult." }
+    ],
+    2: [
+      { tipo: 'multiple-choice', instruccion: "Which is a good classroom rule?", opciones: ["Raise your hand before speaking","Yell whenever you want","Ignore the teacher"], correcta: "Raise your hand before speaking", audioTexto: "Raising your hand is a good classroom rule." },
+      { tipo: 'true-false', instruccion: "True or False: Working together helps a class reach a common goal faster.", correcta: true, audioTexto: "Teamwork helps reach goals." },
+      { tipo: 'drag-drop', instruccion: "Order the steps to solve a conflict peacefully:", piezas: ["Calm down","Talk about the problem","Find a fair solution"], correcta: ["Calm down","Talk about the problem","Find a fair solution"], audioTexto: "Order the steps to resolve a conflict." },
+      { tipo: 'multiple-choice', instruccion: "When someone disagrees with you, what should you do?", opciones: ["Listen and speak calmly","Yell at them","Walk away angry"], correcta: "Listen and speak calmly", audioTexto: "Listen and speak calmly during disagreements." }
+    ],
+    3: [
+      { tipo: 'multiple-choice', instruccion: "A school needs rules and roles to...", opciones: ["Work well for everyone","Be boring","Have no order"], correcta: "Work well for everyone", audioTexto: "Rules help the school work well." },
+      { tipo: 'classify', colA: "Helps us get along", colB: "Causes problems", instruccion: "Drag each behavior to the correct group.", items: [{text:"Sharing",col:"A"},{text:"Respect",col:"A"},{text:"Name-calling",col:"B"},{text:"Excluding others",col:"B"}], audioTexto: "Classify behaviors that help or hurt coexistence." },
+      { tipo: 'true-false', instruccion: "True or False: Taking care of your school's materials shows school pride.", correcta: true, audioTexto: "Taking care of materials shows pride." },
+      { tipo: 'multiple-choice', instruccion: "Which is an example of good teamwork?", opciones: ["Everyone helps clean up together","Only one person does all the work","Nobody helps"], correcta: "Everyone helps clean up together", audioTexto: "Teamwork means everyone helps." }
+    ],
+    4: [
+      { tipo: 'multiple-choice', instruccion: "Which rule helps everyone live together peacefully?", opciones: ["Respect each other's differences","Only think about yourself","Ignore others' feelings"], correcta: "Respect each other's differences", audioTexto: "Respecting differences helps coexistence." },
+      { tipo: 'true-false', instruccion: "True or False: Everyone in a community shares responsibility for keeping it clean.", correcta: true, audioTexto: "Everyone shares the responsibility." },
+      { tipo: 'classify', colA: "A positive value", colB: "Not a positive value", instruccion: "Drag each word into the correct group.", items: [{text:"Honesty",col:"A"},{text:"Kindness",col:"A"},{text:"Selfishness",col:"B"},{text:"Dishonesty",col:"B"}], audioTexto: "Classify positive and negative values." },
+      { tipo: 'multiple-choice', instruccion: "Which is an example of civic duty at school?", opciones: ["Picking up trash you see on the floor","Ignoring a mess","Making more trash"], correcta: "Picking up trash you see on the floor", audioTexto: "Helping keep places clean is a civic duty." }
+    ],
+    5: [
+      { tipo: 'multiple-choice', instruccion: "Which of these is part of the natural landscape around a school?", opciones: ["A mountain","A whiteboard","A backpack"], correcta: "A mountain", audioTexto: "Mountains are part of the natural landscape." },
+      { tipo: 'classify', colA: "Landform", colB: "Body of water", instruccion: "Drag each word to the correct group.", items: [{text:"Mountain",col:"A"},{text:"Hill",col:"A"},{text:"River",col:"B"},{text:"Lake",col:"B"}], audioTexto: "Classify landforms and bodies of water." },
+      { tipo: 'true-false', instruccion: "True or False: A clay model can help us understand the shape of a mountain.", correcta: true, audioTexto: "Models help us understand shapes." },
+      { tipo: 'multiple-choice', instruccion: "When drawing a map of your neighborhood, what should you include?", opciones: ["Important places like your school and park","Only colors","Nothing specific"], correcta: "Important places like your school and park", audioTexto: "Include important places in your map." }
+    ],
+    6: [
+      { tipo: 'classify', colA: "Made by nature", colB: "Made by people", instruccion: "Drag each item to the correct group.", items: [{text:"Hill",col:"A"},{text:"Forest",col:"A"},{text:"Bridge",col:"B"},{text:"Building",col:"B"}], audioTexto: "Classify natural and human-made elements." },
+      { tipo: 'multiple-choice', instruccion: "A low area of land between hills or mountains is called a...", opciones: ["Valley","Ocean","Desert"], correcta: "Valley", audioTexto: "That is called a valley." },
+      { tipo: 'match', instruccion: "Match each geographic form with its description.", pairs: [{left:"Mountain",right:"Very tall landform"},{left:"Valley",right:"Low land between hills"},{left:"Plain",right:"Flat land"}], audioTexto: "Match the landforms with their descriptions." },
+      { tipo: 'true-false', instruccion: "True or False: Observing nature carefully helps us learn about our surroundings.", correcta: true, audioTexto: "Careful observation helps us learn." }
+    ],
+    7: [
+      { tipo: 'classify', colA: "Urban (city)", colB: "Rural (countryside)", instruccion: "Drag each item to the correct group.", items: [{text:"Tall buildings",col:"A"},{text:"Lots of traffic",col:"A"},{text:"Farms",col:"B"},{text:"Open fields",col:"B"}], audioTexto: "Classify urban and rural life." },
+      { tipo: 'multiple-choice', instruccion: "Which human activity can harm the environment?", opciones: ["Throwing trash in rivers","Planting trees","Recycling"], correcta: "Throwing trash in rivers", audioTexto: "Throwing trash in rivers harms the environment." },
+      { tipo: 'true-false', instruccion: "True or False: Air pollution can make it harder for people to breathe.", correcta: true, audioTexto: "Pollution affects our health." },
+      { tipo: 'multiple-choice', instruccion: "Which is a good solution to reduce trash?", opciones: ["Reduce, reuse, and recycle","Throw everything away","Buy more plastic"], correcta: "Reduce, reuse, and recycle", audioTexto: "Reduce, reuse and recycle helps our planet." }
+    ],
+    8: [
+      { tipo: 'classify', colA: "City", colB: "Countryside", instruccion: "Drag each item to the correct group.", items: [{text:"Skyscrapers",col:"A"},{text:"Subway",col:"A"},{text:"Cows and farms",col:"B"},{text:"Quiet open land",col:"B"}], audioTexto: "Classify city and countryside features." },
+      { tipo: 'multiple-choice', instruccion: "What can you do to reduce pollution?", opciones: ["Walk or bike instead of using a car","Leave the lights on all day","Waste water"], correcta: "Walk or bike instead of using a car", audioTexto: "Walking or biking reduces pollution." },
+      { tipo: 'true-false', instruccion: "True or False: Planting trees helps protect the environment.", correcta: true, audioTexto: "Trees help clean the air." },
+      { tipo: 'multiple-choice', instruccion: "Which is an example of community action to help the environment?", opciones: ["Organizing a neighborhood clean-up","Littering in the park","Ignoring the problem"], correcta: "Organizing a neighborhood clean-up", audioTexto: "A clean-up is great community action." }
+    ],
+    9: [
+      { tipo: 'multiple-choice', instruccion: "A compass helps us find...", opciones: ["Directions like North and South","The time","The weather"], correcta: "Directions like North and South", audioTexto: "A compass shows directions." },
+      { tipo: 'classify', colA: "Cardinal direction", colB: "Not a cardinal direction", instruccion: "Drag each word to the correct group.", items: [{text:"North",col:"A"},{text:"South",col:"A"},{text:"Up",col:"B"},{text:"Left",col:"B"}], audioTexto: "Classify the cardinal directions." },
+      { tipo: 'match', instruccion: "Match each tool with what it does.", pairs: [{left:"Map",right:"Shows places and routes"},{left:"Compass",right:"Shows direction"},{left:"Globe",right:"Shows the whole Earth"}], audioTexto: "Match the tools with their uses." },
+      { tipo: 'multiple-choice', instruccion: "If you are facing North and turn to face the opposite direction, you are now facing...", opciones: ["South","East","West"], correcta: "South", audioTexto: "The opposite of North is South." }
+    ]
+  },
+  art: {
+    1: [
+      { tipo: 'classify', colA: "Primary color", colB: "Not a primary color", instruccion: "Drag each color to the correct group.", items: [{text:"Red",col:"A"},{text:"Blue",col:"A"},{text:"Green",col:"B"},{text:"Orange",col:"B"}], audioTexto: "Classify the primary colors." },
+      { tipo: 'true-false', instruccion: "True or False: In a free composition, you can choose any colors and shapes you like.", correcta: true, audioTexto: "Free composition lets you be creative." },
+      { tipo: 'multiple-choice', instruccion: "Which shape has 3 sides?", opciones: ["Triangle","Circle","Square"], correcta: "Triangle", audioTexto: "A triangle has 3 sides." },
+      { tipo: 'multiple-choice', instruccion: "When observing a painting, what should you look at first?", opciones: ["The colors and shapes used","Only the frame","The price"], correcta: "The colors and shapes used", audioTexto: "Look at the colors and shapes." }
+    ],
+    2: [
+      { tipo: 'match', instruccion: "Match each color mix with the result.", pairs: [{left:"Blue + Yellow",right:"Green"},{left:"Red + Yellow",right:"Orange"},{left:"Red + Blue",right:"Purple"}], audioTexto: "Match the colors you mix with the result." },
+      { tipo: 'multiple-choice', instruccion: "A landscape painting usually shows...", opciones: ["Nature like mountains and sky","A single person's face","Numbers"], correcta: "Nature like mountains and sky", audioTexto: "Landscapes show nature scenes." },
+      { tipo: 'true-false', instruccion: "True or False: Mixing blue and yellow paint makes green.", correcta: true, audioTexto: "Blue and yellow make green." },
+      { tipo: 'multiple-choice', instruccion: "What makes a painting creative?", opciones: ["Using your own ideas and imagination","Copying exactly what others did","Using only black and white"], correcta: "Using your own ideas and imagination", audioTexto: "Creativity comes from your own ideas." }
+    ],
+    3: [
+      { tipo: 'classify', colA: "Curved line", colB: "Zigzag line", instruccion: "Drag each description to the correct type of line.", items: [{text:"Wavy like the sea",col:"A"},{text:"Round like a circle",col:"A"},{text:"Sharp like a mountain peak",col:"B"},{text:"Sharp like lightning",col:"B"}], audioTexto: "Classify curved and zigzag lines." },
+      { tipo: 'multiple-choice', instruccion: "An expressive drawing shows...", opciones: ["How the artist feels","Only straight lines","No colors at all"], correcta: "How the artist feels", audioTexto: "Expressive drawings show feelings." },
+      { tipo: 'true-false', instruccion: "True or False: A drawing can be made using only lines, without any color.", correcta: true, audioTexto: "Line art uses only lines." },
+      { tipo: 'multiple-choice', instruccion: "Which line would you use to draw a wave in the ocean?", opciones: ["Curved line","Straight line","Dotted line"], correcta: "Curved line", audioTexto: "Waves are drawn with curved lines." }
+    ],
+    4: [
+      { tipo: 'classify', colA: "Geometric shape", colB: "Not geometric", instruccion: "Drag each item to the correct group.", items: [{text:"Square",col:"A"},{text:"Circle",col:"A"},{text:"A splash of paint",col:"B"},{text:"A cloud shape",col:"B"}], audioTexto: "Classify geometric shapes." },
+      { tipo: 'multiple-choice', instruccion: "When you combine different shapes to make a picture, you create a...", opciones: ["Composition","Song","Number"], correcta: "Composition", audioTexto: "Combining shapes creates a composition." },
+      { tipo: 'true-false', instruccion: "True or False: Abstract art does not need to look exactly like real objects.", correcta: true, audioTexto: "Abstract art can be shapes and colors." },
+      { tipo: 'multiple-choice', instruccion: "Which shape could you use to draw the body of a robot?", opciones: ["Square","Triangle","Star"], correcta: "Square", audioTexto: "A square works well for a robot's body." }
+    ],
+    5: [
+      { tipo: 'classify', colA: "Feels rough", colB: "Feels smooth", instruccion: "Drag each material to the correct group.", items: [{text:"Sandpaper",col:"A"},{text:"Tree bark",col:"A"},{text:"Glass",col:"B"},{text:"Silk fabric",col:"B"}], audioTexto: "Classify rough and smooth textures." },
+      { tipo: 'multiple-choice', instruccion: "A collage made from recycled materials can include...", opciones: ["Bottle caps, paper, and fabric scraps","Only new paint","Nothing at all"], correcta: "Bottle caps, paper, and fabric scraps", audioTexto: "Collages can use recycled materials." },
+      { tipo: 'true-false', instruccion: "True or False: A drawing can look like it has texture, even if it feels smooth to touch.", correcta: true, audioTexto: "That's called visual texture." },
+      { tipo: 'multiple-choice', instruccion: "Which material would feel soft to touch?", opciones: ["Cotton","Rock","Metal"], correcta: "Cotton", audioTexto: "Cotton feels soft." }
+    ],
+    6: [
+      { tipo: 'multiple-choice', instruccion: "A pattern that repeats over and over creates...", opciones: ["Rhythm","Silence","Confusion"], correcta: "Rhythm", audioTexto: "Repeating patterns create rhythm." },
+      { tipo: 'multiple-choice', instruccion: "What comes next in this pattern? circle, square, circle, square, circle, ___", opciones: ["square","triangle","star"], correcta: "square", audioTexto: "The pattern repeats circle and square." },
+      { tipo: 'classify', colA: "Warm color", colB: "Cool color", instruccion: "Drag each color to the correct group.", items: [{text:"Red",col:"A"},{text:"Yellow",col:"A"},{text:"Blue",col:"B"},{text:"Purple",col:"B"}], audioTexto: "Classify warm and cool colors." },
+      { tipo: 'true-false', instruccion: "True or False: Decorative art often uses repeated shapes and patterns.", correcta: true, audioTexto: "Decorative art uses patterns." }
+    ],
+    7: [
+      { tipo: 'multiple-choice', instruccion: "When drawing a person, which body part is usually the smallest?", opciones: ["Head","Legs","Arms"], correcta: "Head", audioTexto: "The head is usually smaller than the body." },
+      { tipo: 'true-false', instruccion: "True or False: An adult's legs are usually longer compared to their body than a baby's legs.", correcta: true, audioTexto: "Body proportions change as we grow." },
+      { tipo: 'multiple-choice', instruccion: "To draw a person running, their legs should be...", opciones: ["Bent and spread apart","Straight and together","Invisible"], correcta: "Bent and spread apart", audioTexto: "Running legs are bent and spread apart." },
+      { tipo: 'classify', colA: "Shows movement", colB: "Shows stillness", instruccion: "Drag each description to the correct group.", items: [{text:"A person jumping",col:"A"},{text:"Hair blowing in the wind",col:"A"},{text:"A person sitting still",col:"B"},{text:"A sleeping cat",col:"B"}], audioTexto: "Classify movement and stillness." }
+    ],
+    8: [
+      { tipo: 'multiple-choice', instruccion: "What makes a sculpture different from a painting?", opciones: ["You can see it from all sides","It only uses black paint","It has no shape"], correcta: "You can see it from all sides", audioTexto: "Sculptures are three-dimensional." },
+      { tipo: 'true-false', instruccion: "True or False: Clay can be shaped with your hands to create a sculpture.", correcta: true, audioTexto: "Clay is shaped by hand." },
+      { tipo: 'classify', colA: "3D (tridimensional)", colB: "2D (flat)", instruccion: "Drag each artwork to the correct group.", items: [{text:"Sculpture",col:"A"},{text:"Clay pot",col:"A"},{text:"Drawing",col:"B"},{text:"Painting",col:"B"}], audioTexto: "Classify 3D and 2D art." },
+      { tipo: 'multiple-choice', instruccion: "Which materials could you recycle to build a sculpture?", opciones: ["Cardboard boxes and bottle caps","Fresh food","Water"], correcta: "Cardboard boxes and bottle caps", audioTexto: "Cardboard and bottle caps can be recycled into art." }
+    ],
+    9: [
+      { tipo: 'true-false', instruccion: "True or False: Everyone can have a different favorite artwork, and that's okay.", correcta: true, audioTexto: "Everyone can like different art." },
+      { tipo: 'multiple-choice', instruccion: "In a mini art exhibition, what do students usually do?", opciones: ["Display and share their artwork","Hide their artwork","Throw away their artwork"], correcta: "Display and share their artwork", audioTexto: "Students display their artwork." },
+      { tipo: 'multiple-choice', instruccion: "When explaining your artwork, you should talk about...", opciones: ["Why you made it and what it means","Only the price","Nothing"], correcta: "Why you made it and what it means", audioTexto: "Explain your ideas and meaning." },
+      { tipo: 'drag-drop', instruccion: "Order the steps to build your art portfolio:", piezas: ["Choose your best artworks","Organize them in order","Share your portfolio"], correcta: ["Choose your best artworks","Organize them in order","Share your portfolio"], audioTexto: "Order the steps to build a portfolio." }
+    ]
+  },
+  stm: {
+    1: [
+      { tipo: 'multiple-choice', instruccion: "An algorithm is...", opciones: ["A set of ordered steps to solve a problem","A type of computer","A color"], correcta: "A set of ordered steps to solve a problem", audioTexto: "An algorithm is a set of steps." },
+      { tipo: 'drag-drop', instruccion: "Order the steps to brush your teeth:", piezas: ["Put toothpaste on the brush","Brush your teeth","Rinse your mouth"], correcta: ["Put toothpaste on the brush","Brush your teeth","Rinse your mouth"], audioTexto: "Order the steps to brush your teeth." },
+      { tipo: 'multiple-choice', instruccion: "Which of these is an everyday algorithm?", opciones: ["The steps to make a sandwich","A favorite color","A birthday"], correcta: "The steps to make a sandwich", audioTexto: "Making a sandwich follows steps, like an algorithm." },
+      { tipo: 'true-false', instruccion: "True or False: A flowchart uses shapes and arrows to show steps in order.", correcta: true, audioTexto: "Flowcharts show steps with shapes and arrows." }
+    ],
+    2: [
+      { tipo: 'drag-drop', instruccion: "Order the code blocks to make a robot walk and then wave:", piezas: ["Start","Walk forward","Wave"], correcta: ["Start","Walk forward","Wave"], audioTexto: "Order the code blocks." },
+      { tipo: 'multiple-choice', instruccion: "When your code doesn't work like you expected, you need to...", opciones: ["Find and fix the error (debug)","Delete everything","Give up"], correcta: "Find and fix the error (debug)", audioTexto: "Debugging means finding and fixing errors." },
+      { tipo: 'true-false', instruccion: "True or False: You can give a paper robot instructions using arrow cards, like forward and turn.", correcta: true, audioTexto: "Arrow cards can direct a paper robot." },
+      { tipo: 'match', instruccion: "Match each ScratchJr block with what it does.", pairs: [{left:"Green flag",right:"Starts the program"},{left:"Arrow block",right:"Moves the character"},{left:"Sound block",right:"Plays a sound"}], audioTexto: "Match the blocks with their actions." }
+    ],
+    3: [
+      { tipo: 'multiple-choice', instruccion: "A loop in coding is used to...", opciones: ["Repeat an action many times","Stop the program forever","Change the color"], correcta: "Repeat an action many times", audioTexto: "Loops repeat actions." },
+      { tipo: 'classify', colA: "Repeats in a pattern", colB: "Does not repeat", instruccion: "Drag each item to the correct group.", items: [{text:"Days of the week",col:"A"},{text:"Brushing teeth every morning",col:"A"},{text:"Your birthday",col:"B"},{text:"A surprise party",col:"B"}], audioTexto: "Classify things that repeat and things that don't." },
+      { tipo: 'true-false', instruccion: "True or False: A 'repeat' block in ScratchJr makes the character do an action more than once.", correcta: true, audioTexto: "The repeat block loops an action." },
+      { tipo: 'fill-blank', instruccion: "Complete: 'Clapping your hands 5 times in a row is an example of a ___.' (repeats an action)", correcta: "loop", audioTexto: "That is an example of a loop." }
+    ],
+    4: [
+      { tipo: 'multiple-choice', instruccion: "Complete the rule: 'IF it is raining, THEN...'", opciones: ["I take an umbrella","I eat breakfast","I go to sleep"], correcta: "I take an umbrella", audioTexto: "If it rains, then you take an umbrella." },
+      { tipo: 'classify', colA: "IF true, wear a coat", colB: "IF true, wear shorts", instruccion: "Drag each condition to the correct group.", items: [{text:"It is cold",col:"A"},{text:"It is snowing",col:"A"},{text:"It is hot",col:"B"},{text:"It is sunny and warm",col:"B"}], audioTexto: "Classify the conditions." },
+      { tipo: 'true-false', instruccion: "True or False: A 'when touched' block makes something happen when you tap the character.", correcta: true, audioTexto: "Tapping the character triggers the block." },
+      { tipo: 'fill-blank', instruccion: "Complete: 'IF the light is red, THEN cars must ___.'", correcta: "stop", audioTexto: "Cars must stop at a red light." }
+    ],
+    5: [
+      { tipo: 'multiple-choice', instruccion: "An event in coding is...", opciones: ["Something that triggers an action, like a tap or click","A type of shape","A color"], correcta: "Something that triggers an action, like a tap or click", audioTexto: "An event triggers an action." },
+      { tipo: 'true-false', instruccion: "True or False: Pressing the green flag is an example of an event that starts a program.", correcta: true, audioTexto: "The green flag is a starting event." },
+      { tipo: 'match', instruccion: "Match each event with what happens.", pairs: [{left:"Tap character",right:"Character speaks"},{left:"Green flag",right:"Program starts"},{left:"Bump into object",right:"Character reacts"}], audioTexto: "Match the events with their results." },
+      { tipo: 'multiple-choice', instruccion: "In an interactive game, what usually happens when you press a button?", opciones: ["Something responds or changes","Nothing happens","The game closes"], correcta: "Something responds or changes", audioTexto: "Buttons trigger a response in games." }
+    ],
+    6: [
+      { tipo: 'multiple-choice', instruccion: "A variable in coding is used to...", opciones: ["Store a value that can change, like a score","Draw a picture","Play music only"], correcta: "Store a value that can change, like a score", audioTexto: "A variable stores a value that can change." },
+      { tipo: 'true-false', instruccion: "True or False: A game's score is an example of a variable because it can go up or down.", correcta: true, audioTexto: "Score is a variable because it changes." },
+      { tipo: 'fill-blank', instruccion: "If you start with a score of 0 and get 5 points, your new score is ___.", correcta: "5", audioTexto: "0 plus 5 equals 5." },
+      { tipo: 'multiple-choice', instruccion: "If your score variable is 10 and you earn 3 more points, what is your new score?", opciones: ["13","7","10"], correcta: "13", audioTexto: "10 plus 3 equals 13." }
+    ],
+    7: [
+      { tipo: 'drag-drop', instruccion: "Order the steps of how a program works:", piezas: ["Input (you press a button)","Process (the program thinks)","Output (something happens)"], correcta: ["Input (you press a button)","Process (the program thinks)","Output (something happens)"], audioTexto: "Order the steps: input, process, output." },
+      { tipo: 'multiple-choice', instruccion: "A diagram that shows how a program works step by step is called a...", opciones: ["Flowchart","Painting","Song"], correcta: "Flowchart", audioTexto: "That is called a flowchart." },
+      { tipo: 'true-false', instruccion: "True or False: You can use code to create your own interactive story or game.", correcta: true, audioTexto: "Code can create stories and games." },
+      { tipo: 'multiple-choice', instruccion: "Before starting a ScratchJr project, what should you plan first?", opciones: ["Your story or idea","The final score only","Nothing at all"], correcta: "Your story or idea", audioTexto: "Plan your idea before coding." }
+    ],
+    8: [
+      { tipo: 'multiple-choice', instruccion: "If your character doesn't move when you press the button, what should you check first?", opciones: ["If the blocks are connected correctly","The color of the screen","The time"], correcta: "If the blocks are connected correctly", audioTexto: "Check if the blocks are connected." },
+      { tipo: 'true-false', instruccion: "True or False: A glitch is a mistake in the code that makes it not work correctly.", correcta: true, audioTexto: "A glitch is a code mistake." },
+      { tipo: 'drag-drop', instruccion: "Order the steps to test your program:", piezas: ["Run the program","Watch what happens","Fix any mistakes"], correcta: ["Run the program","Watch what happens","Fix any mistakes"], audioTexto: "Order the steps to test a program." },
+      { tipo: 'multiple-choice', instruccion: "When you get stuck on a problem, what is a good strategy?", opciones: ["Break it into smaller steps","Give up immediately","Ignore it"], correcta: "Break it into smaller steps", audioTexto: "Break big problems into smaller steps." }
+    ],
+    9: [
+      { tipo: 'multiple-choice', instruccion: "Before presenting your final project, you should...", opciones: ["Test it to make sure it works","Skip testing","Delete it"], correcta: "Test it to make sure it works", audioTexto: "Testing makes sure your project works." },
+      { tipo: 'true-false', instruccion: "True or False: When presenting your project, it helps to explain what problem it solves.", correcta: true, audioTexto: "Explain the problem your project solves." },
+      { tipo: 'classify', colA: "Computational thinking step", colB: "Not a computational thinking step", instruccion: "Drag each item to the correct group.", items: [{text:"Breaking a problem into steps",col:"A"},{text:"Finding patterns",col:"A"},{text:"Guessing randomly",col:"B"},{text:"Ignoring the problem",col:"B"}], audioTexto: "Classify computational thinking steps." },
+      { tipo: 'multiple-choice', instruccion: "Which of these uses coding in real life?", opciones: ["A traffic light system","A wooden chair","A rock"], correcta: "A traffic light system", audioTexto: "Traffic lights use programmed systems." }
+    ]
+  }
+};
+
 function getExercisesForWeek(tri, matId, week) {
   const mat = MATERIAS.find(m => m.id === matId);
   const isEn = mat.lang === 'en-US';
-  const themes = (SKILL_THEMES[matId] && SKILL_THEMES[matId][week]) || ["Skill 1", "Skill 2", "Skill 3", "Skill 4"];
-
-  if (isEn) {
-    return [
-      {
-        tipo: 'multiple-choice',
-        micro: `Trimester ${tri} · ${themes[0]}`,
-        instruccion: `Select the correct answer for ${mat.nombre} (Week ${week}): What is the primary focus of ${themes[0].toLowerCase()}?`,
-        opciones: [`Core concept of ${themes[0]}`, `Random incorrect step`, `Unrelated topic`],
-        correcta: `Core concept of ${themes[0]}`,
-        audioTexto: `Great job focusing on ${themes[0]}!`
-      },
-      {
-        tipo: 'fill-blank',
-        micro: `Trimester ${tri} · ${themes[1]}`,
-        instruccion: `Complete the key term for ${themes[1]}: "In week ${week}, we study the fundamental ___."`,
-        correcta: 'rule',
-        audioTexto: `Fill in the missing word: rule.`
-      },
-      {
-        tipo: 'true-false',
-        micro: `Trimester ${tri} · ${themes[2]}`,
-        instruccion: `True or False: Is ${themes[2]} an essential step for mastering ${mat.nombre} in Week ${week}?`,
-        correcta: true,
-        audioTexto: `${themes[2]} is very important!`
-      },
-      {
-        tipo: 'drag-drop',
-        micro: `Trimester ${tri} · ${themes[3]}`,
-        instruccion: `Arrange the steps in order to complete the mission for ${themes[3]}:`,
-        piezas: ['First Step', 'Next Step', 'Final Result'],
-        correcta: ['First Step', 'Next Step', 'Final Result'],
-        audioTexto: `Arrange the pieces in correct order!`
-      }
-    ];
-  } else {
-    return [
-      {
-        tipo: 'multiple-choice',
-        micro: `Trimestre ${tri} · ${themes[0]}`,
-        instruccion: `Selecciona la opción correcta en ${mat.nombre} (Semana ${week}): ¿Cuál es el propósito clave de ${themes[0].toLowerCase()}?`,
-        opciones: [`Concepto principal de ${themes[0]}`, `Pasos desordenados`, `Idea incorrecta`],
-        correcta: `Concepto principal de ${themes[0]}`,
-        audioTexto: `¡Excelente trabajo aprendiendo sobre ${themes[0]}!`
-      },
-      {
-        tipo: 'fill-blank',
-        micro: `Trimestre ${tri} · ${themes[1]}`,
-        instruccion: `Completa la palabra clave sobre ${themes[1]}: "En la semana ${week} aplicamos la ___."`,
-        correcta: 'regla',
-        audioTexto: `Escribe la palabra: regla.`
-      },
-      {
-        tipo: 'true-false',
-        micro: `Trimestre ${tri} · ${themes[2]}`,
-        instruccion: `¿Verdadero o Falso? El tema de ${themes[2]} ayuda a estructurar nuestras ideas en la semana ${week}.`,
-        correcta: true,
-        audioTexto: `¡Estructuramos nuestras ideas correctamente!`
-      },
-      {
-        tipo: 'drag-drop',
-        micro: `Trimestre ${tri} · ${themes[3]}`,
-        instruccion: `Ordena los pasos de la misión de ${themes[3]}:`,
-        piezas: ['Primer paso', 'Segundo paso', 'Resultado final'],
-        correcta: ['Primer paso', 'Segundo paso', 'Resultado final'],
-        audioTexto: `¡Arrastra las piezas en el orden correcto!`
-      }
-    ];
-  }
+  const themes = (SKILL_THEMES[matId] && SKILL_THEMES[matId][week]) || ["Tema 1", "Tema 2", "Tema 3", "Tema 4"];
+  const triLabel = isEn ? `Trimester ${tri}` : `Trimestre ${tri}`;
+  const raw = (EXERCISES_DATA[matId] && EXERCISES_DATA[matId][week]) || [];
+  return raw.map((ex, i) => Object.assign({}, ex, { micro: `${triLabel} · ${themes[i] || ''}` }));
 }
 
 async function renderExercises() {
@@ -557,7 +990,164 @@ function buildActionZone(ex, cardId) {
       </div>
     `;
   }
+  if (ex.tipo === 'classify') return buildClassify(ex, cardId);
+  if (ex.tipo === 'match')    return buildMatch(ex, cardId);
   return '';
+}
+
+// ---------- Clasificar en columnas (drag & tap) ----------
+function buildClassify(ex, cardId) {
+  const itemsHTML = ex.items.map((it, idx) => `
+    <div class="classify-piece" draggable="true" data-idx="${idx}"
+      ondragstart="cDragStart(event,${idx})"
+      onclick="classifySelect(this,'${cardId}',${idx})">${it.text}</div>
+  `).join('');
+  return `
+    <div class="classify-wrap">
+      <div class="classify-pool" id="pool-${cardId}">${itemsHTML}</div>
+      <div class="classify-cols">
+        <div class="classify-col" id="col-${cardId}-A"
+          ondragover="event.preventDefault();this.classList.add('dragover')"
+          ondragleave="this.classList.remove('dragover')"
+          ondrop="classifyDrop(event,'${cardId}','A')"
+          onclick="classifyPlace('${cardId}','A')">
+          <div class="classify-col-title">${esc(ex.colA)}</div>
+        </div>
+        <div class="classify-col" id="col-${cardId}-B"
+          ondragover="event.preventDefault();this.classList.add('dragover')"
+          ondragleave="this.classList.remove('dragover')"
+          ondrop="classifyDrop(event,'${cardId}','B')"
+          onclick="classifyPlace('${cardId}','B')">
+          <div class="classify-col-title">${esc(ex.colB)}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+let _classifySelected = {};
+let _cDragIdx = null;
+
+function cDragStart(ev, idx) { _cDragIdx = idx; }
+
+function classifySelect(el, cardId, idx) {
+  const card = document.getElementById(cardId);
+  if (card.classList.contains('correct') || el.classList.contains('placed-hidden')) return;
+  document.querySelectorAll(`#pool-${cardId} .classify-piece`).forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  _classifySelected[cardId] = idx;
+}
+
+function classifyPlace(cardId, col) {
+  const idx = _classifySelected[cardId];
+  if (idx === undefined) return;
+  resolveClassify(cardId, idx, col);
+}
+
+function classifyDrop(ev, cardId, col) {
+  ev.preventDefault();
+  const zone = document.getElementById(`col-${cardId}-${col}`);
+  zone.classList.remove('dragover');
+  const idx = _cDragIdx;
+  if (idx === null || idx === undefined) return;
+  resolveClassify(cardId, idx, col);
+}
+
+function resolveClassify(cardId, idx, col) {
+  const card = document.getElementById(cardId);
+  if (card.classList.contains('correct')) return;
+  const ex = card._ex;
+  const item = ex.items[idx];
+  if (!item) return;
+  const pieceEl = document.querySelector(`#pool-${cardId} .classify-piece[data-idx="${idx}"]`);
+  if (!pieceEl || pieceEl.classList.contains('placed-hidden')) return;
+  const targetCol = document.getElementById(`col-${cardId}-${col}`);
+
+  if (item.col === col) {
+    pieceEl.classList.add('placed-hidden');
+    pieceEl.classList.remove('selected');
+    const chip = document.createElement('div');
+    chip.className = 'classify-item-placed';
+    chip.textContent = item.text;
+    targetCol.appendChild(chip);
+    card._classified = (card._classified || 0) + 1;
+    delete _classifySelected[cardId];
+    _cDragIdx = null;
+    if (card._classified === ex.items.length) markCorrect(card);
+  } else {
+    S.attempts[cardId] = (S.attempts[cardId] || 0) + 1;
+    pieceEl.classList.remove('selected');
+    pieceEl.classList.add('wrong-piece');
+    card.classList.add('incorrect-flash');
+    setTimeout(() => { pieceEl.classList.remove('wrong-piece'); card.classList.remove('incorrect-flash'); }, 500);
+    delete _classifySelected[cardId];
+    _cDragIdx = null;
+    const mat = MATERIAS.find(m => m.id === S.materia);
+    speakPhonics(mat.lang === 'en-US' ? 'Try again!' : '¡Inténtalo de nuevo!', mat.lang);
+  }
+}
+
+// ---------- Emparejar (matching) ----------
+function shuffleArr(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildMatch(ex, cardId) {
+  const leftHTML = ex.pairs.map((p, i) =>
+    `<div class="match-item" data-side="L" data-idx="${i}" onclick="matchSelect(this,'${cardId}','L',${i})">${esc(p.left)}</div>`
+  ).join('');
+  const shuffledRight = shuffleArr(ex.pairs.map((p, i) => ({ text: p.right, idx: i })));
+  const rightHTML = shuffledRight.map(r =>
+    `<div class="match-item" data-side="R" data-idx="${r.idx}" onclick="matchSelect(this,'${cardId}','R',${r.idx})">${esc(r.text)}</div>`
+  ).join('');
+  return `<div class="match-wrap"><div class="match-col">${leftHTML}</div><div class="match-col">${rightHTML}</div></div>`;
+}
+
+let _matchSel = {};
+
+function matchSelect(el, cardId, side, idx) {
+  const card = document.getElementById(cardId);
+  if (card.classList.contains('correct') || el.classList.contains('matched')) return;
+  const sel = _matchSel[cardId];
+
+  if (!sel) {
+    card.querySelectorAll('.match-item').forEach(m => m.classList.remove('selected'));
+    el.classList.add('selected');
+    _matchSel[cardId] = { side, idx, el };
+    return;
+  }
+  if (sel.side === side) {
+    sel.el.classList.remove('selected');
+    el.classList.add('selected');
+    _matchSel[cardId] = { side, idx, el };
+    return;
+  }
+  if (sel.idx === idx) {
+    sel.el.classList.remove('selected');
+    sel.el.classList.add('matched');
+    el.classList.add('matched');
+    delete _matchSel[cardId];
+    card._matched = (card._matched || 0) + 1;
+    const ex = card._ex;
+    if (card._matched === ex.pairs.length) markCorrect(card);
+  } else {
+    S.attempts[cardId] = (S.attempts[cardId] || 0) + 1;
+    const selEl = sel.el;
+    selEl.classList.add('wrong-flash');
+    el.classList.add('wrong-flash');
+    setTimeout(() => {
+      selEl.classList.remove('selected', 'wrong-flash');
+      el.classList.remove('wrong-flash');
+    }, 500);
+    delete _matchSel[cardId];
+    const mat = MATERIAS.find(m => m.id === S.materia);
+    speakPhonics(mat.lang === 'en-US' ? 'Try again!' : '¡Inténtalo de nuevo!', mat.lang);
+  }
 }
 
 function esc(str) {
